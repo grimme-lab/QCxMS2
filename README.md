@@ -1,8 +1,8 @@
 # QCxMS2
 Program package for the quantum mechanical calculation of EI mass spectra using automated reaction network exploration.
 
-[![License](https://img.shields.io/github/license/grimme-lab/qcxms2)](https://github.com/grimme-lab/qcxms2/blob/main/COPYING)
-[![Latest Version](https://img.shields.io/github/v/release/grimme-lab/qcxms2)](https://github.com/grimme-lab/qcxms2/releases/latest)
+[![License](https://img.shields.io/github/license/grimme-lab/QCxMS2)](https://github.com/grimme-lab/QCxMS2/blob/main/COPYING)
+[![Latest Version](https://img.shields.io/github/v/release/grimme-lab/QCxMS2)](https://github.com/grimme-lab/QCxMS2/releases/latest)
 
 
 This is the download repository for the QCxMS2 program. 
@@ -11,7 +11,7 @@ This is the download repository for the QCxMS2 program.
 
 ### Binary 
 
-Statically linked binaries (Intel Compiler 21.3.0) can be found at the [latest release page](https://github.com/grimme-lab/qcxms2/releases/latest).
+Statically linked binaries (Intel Compiler 21.3.0) can be found at the [latest release page](https://github.com/grimme-lab/QCxMS2/releases/latest).
 
 
 Untar the zipped archive:
