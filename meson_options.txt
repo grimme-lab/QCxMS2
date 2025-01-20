@@ -1,0 +1,25 @@
+# This file is part of QCxMS2.
+
+option(
+  'lapack',
+  type: 'combo',
+  value: 'auto',
+  yield: true,
+  choices: ['auto', 'mkl', 'mkl-rt', 'openblas', 'netlib'],
+  description : 'linear algebra backend',
+)
+
+option(
+  'openmp',
+  type: 'boolean',
+  value: true,
+  yield: true,
+  description: 'use OpenMP parallelisation',
+)
+option(
+  'build_name',
+  type: 'string',
+  value: 'unknown',
+  description: 'Name of the build, will be overwritten automatically by git',
+)
+
