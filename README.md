@@ -90,11 +90,11 @@ qcxms2 --help
 
 A more detailed documentation on topics like input settings can be found at [read-the-docs](https://xtb-docs.readthedocs.io/en/latest/qcxms2_doc/qcxms2.html). 
 
-comming soon ...
+Coming soon ...
 
 **Citations**
 
-comming soon
+Coming soon ...
 
 
 
