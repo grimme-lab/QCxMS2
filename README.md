@@ -30,7 +30,6 @@ Place the executables into your ``$HOME/bin/`` directory or path.
 **required external programs:**
 
 **xtb** (version >= 6.7.1)
-
 [`xtb`](https://github.com/grimme-lab/xtb)
 
 
