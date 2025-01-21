@@ -72,3 +72,8 @@ python/build
 
 # external directory
 ext/
+
+#subprojects
+mctc-lib/
+rmsd-tool/
+toml-f/
