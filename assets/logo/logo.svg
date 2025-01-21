@@ -1,0 +1,2878 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg3844"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/gorges/current/logofancy.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs3838">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect1497"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect1493"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect5594"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9925"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1083">
+      <rect
+         style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:0.80000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99047618"
+         id="rect1085"
+         width="829.73505"
+         height="277.40909"
+         x="313.12198"
+         y="199.55228"
+         ry="0" />
+    </clipPath>
+    <circle
+       id="circle1678"
+       r="0.5"
+       cx="0"
+       cy="0"
+       style="stroke:currentColor;stroke-width:0.5" />
+    <path
+       id="path1680"
+       d="M -1,0 H 1 M 0,-1 v 2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="path1682"
+       d="M -1,-1 1,1 M 1,-1 -1,1"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="path1684"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="rect1686"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="rect1688"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148" />
+    <circle
+       id="circle1690"
+       cx="0"
+       cy="0"
+       r="1"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt5"
+       id="use1692"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="path1694"
+       d="m 0,-1.33 -1.33,2 h 2.66 z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt7"
+       id="use1696"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt7"
+       id="use1698"
+       transform="scale(-1)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt9"
+       id="use1700"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt3"
+       id="use1702"
+       transform="rotate(45)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt11"
+       id="use1704"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="path1706"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt13"
+       id="use1708"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <filter
+       id="filter1714"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood1710" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite1712" />
+    </filter>
+    <filter
+       id="filter1720"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood1716" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite1718" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5"
+       id="gpPt6" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7"
+       id="gpPt8" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7"
+       id="gpPt9"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9"
+       id="gpPt10" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3"
+       id="gpPt11"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11"
+       id="gpPt12" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13"
+       id="gpPt14" />
+    <filter
+       id="textbox"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26" />
+    </filter>
+    <filter
+       id="greybox"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31" />
+    </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1083-9">
+      <rect
+         style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:0.80000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99047618"
+         id="rect1085-9"
+         width="829.73505"
+         height="277.40909"
+         x="313.12198"
+         y="199.55228"
+         ry="0" />
+    </clipPath>
+    <circle
+       id="circle5867-1"
+       r="0.5"
+       cx="0"
+       cy="0"
+       style="stroke:currentColor;stroke-width:0.5" />
+    <path
+       id="path5869-0"
+       d="M -1,0 H 1 M 0,-1 v 2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="path5871-7"
+       d="M -1,-1 1,1 M 1,-1 -1,1"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="path5873-5"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="rect5875-8"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="rect5877-7"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148" />
+    <circle
+       id="circle5879-0"
+       cx="0"
+       cy="0"
+       r="1"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt5"
+       id="use5881-4"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="path5883-8"
+       d="m 0,-1.33 -1.33,2 h 2.66 z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt7"
+       id="use5885-0"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt7"
+       id="use5887-4"
+       transform="scale(-1)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt9"
+       id="use5889-2"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt3"
+       id="use5891-9"
+       transform="rotate(45)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt11"
+       id="use5893-6"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="path5895-1"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt13"
+       id="use5897-0"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <filter
+       id="filter5903-4"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood5899-2" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite5901-2" />
+    </filter>
+    <filter
+       id="filter5909-2"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood5905-0" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite5907-5" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-4"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-9"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-9"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-4"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-5"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-9"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-3"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-3"
+       id="gpPt6-5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-7"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-7"
+       id="gpPt8-0" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-7"
+       id="gpPt9-8"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-8"
+       id="gpPt10-1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-5"
+       id="gpPt11-9"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-9"
+       id="gpPt12-9" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-7"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-7"
+       id="gpPt14-8" />
+    <filter
+       id="textbox-2"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-5" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-3" />
+    </filter>
+    <filter
+       id="greybox-4"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-9" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-0" />
+    </filter>
+    <circle
+       id="gpDot-5"
+       r="0.5"
+       cx="0"
+       cy="0"
+       style="stroke:currentColor;stroke-width:0.5" />
+    <path
+       id="gpPt0-8"
+       d="M -1,0 H 1 M 0,-1 v 2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="gpPt1-4"
+       d="M -1,-1 1,1 M 1,-1 -1,1"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <path
+       id="gpPt2-3"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="gpPt3-7"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <rect
+       id="gpPt4-1"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2"
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148" />
+    <circle
+       id="gpPt5-38"
+       cx="0"
+       cy="0"
+       r="1"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt5-38"
+       id="gpPt6-0"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="gpPt7-9"
+       d="m 0,-1.33 -1.33,2 h 2.66 z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt7-9"
+       id="gpPt8-7"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt7-9"
+       id="gpPt9-9"
+       transform="scale(-1)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt9-9"
+       id="gpPt10-9"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt3-7"
+       id="gpPt11-3"
+       transform="rotate(45)"
+       style="stroke:currentColor"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <use
+       xlink:href="#gpPt11-3"
+       id="gpPt12-2"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <path
+       id="gpPt13-4"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z"
+       inkscape:connector-curvature="0"
+       style="stroke:currentColor;stroke-width:0.148" />
+    <use
+       xlink:href="#gpPt13-4"
+       id="gpPt14-3"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%" />
+    <filter
+       id="textbox-7"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-1" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-2" />
+    </filter>
+    <filter
+       id="greybox-2"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-0" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-2" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-3"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-7"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-6"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-1"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-50"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-6"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-5"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-5"
+       id="gpPt6-08" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-1"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-1"
+       id="gpPt8-2" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-1"
+       id="gpPt9-2"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-2"
+       id="gpPt10-6" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-50"
+       id="gpPt11-91"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-91"
+       id="gpPt12-0" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-42"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-42"
+       id="gpPt14-7" />
+    <filter
+       id="textbox-4"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-0" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-32" />
+    </filter>
+    <filter
+       id="greybox-8"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-03" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-7" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-50"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-73"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-8"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-2"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-3"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-0"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-7"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-7"
+       id="gpPt6-7" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-76"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-76"
+       id="gpPt8-9" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-76"
+       id="gpPt9-1"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-1"
+       id="gpPt10-19" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-3"
+       id="gpPt11-0"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-0"
+       id="gpPt12-8" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-9"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-9"
+       id="gpPt14-88" />
+    <filter
+       id="textbox-0"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-3" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-7" />
+    </filter>
+    <filter
+       id="greybox-0"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-6" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-9" />
+    </filter>
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-6"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-6-5"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-6-1"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2-9"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2-9-8"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2-9-2"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-7"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-6"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-3"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-7"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-7"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-2"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-3"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-72"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-72"
+       id="gpPt6-53" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-768"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-768"
+       id="gpPt8-1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-768"
+       id="gpPt9-3"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-3"
+       id="gpPt10-64" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-2"
+       id="gpPt11-03"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-03"
+       id="gpPt12-5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-8"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-8"
+       id="gpPt14-5" />
+    <filter
+       id="textbox-09"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-9" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-8" />
+    </filter>
+    <filter
+       id="greybox-02"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-4" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-90" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-1"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-2"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-0"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-0"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-6"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-39"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-0"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-0"
+       id="gpPt6-8" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-3"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-3"
+       id="gpPt8-8" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-3"
+       id="gpPt9-7"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-7"
+       id="gpPt10-3" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-6"
+       id="gpPt11-1"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-1"
+       id="gpPt12-00" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-5"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-5"
+       id="gpPt14-0" />
+    <filter
+       id="textbox-3"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-18" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-0" />
+    </filter>
+    <filter
+       id="greybox-1"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-7" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-91" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-48"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-4"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-69"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-29"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-0"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-30"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-33"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-33"
+       id="gpPt6-79" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-4"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-4"
+       id="gpPt8-99" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-4"
+       id="gpPt9-19"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-19"
+       id="gpPt10-4" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-0"
+       id="gpPt11-2"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-2"
+       id="gpPt12-06" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-59"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-59"
+       id="gpPt14-56" />
+    <filter
+       id="textbox-1"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-14" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-37" />
+    </filter>
+    <filter
+       id="greybox-27"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-3" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-3" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-38"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-0"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-92"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-31"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-8"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-7"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-4"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-4"
+       id="gpPt6-1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-6"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-6"
+       id="gpPt8-3" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-6"
+       id="gpPt9-85"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-85"
+       id="gpPt10-5" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-8"
+       id="gpPt11-01"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-01"
+       id="gpPt12-26" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-48"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-48"
+       id="gpPt14-562" />
+    <filter
+       id="textbox-5"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-2" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-6" />
+    </filter>
+    <filter
+       id="greybox-9"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-1" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-33" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-501"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-45"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-70"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-78"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-9"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-93"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-9"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-9"
+       id="gpPt6-4" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-64"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-64"
+       id="gpPt8-5" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-64"
+       id="gpPt9-5"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-5"
+       id="gpPt10-56" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-9"
+       id="gpPt11-06"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-06"
+       id="gpPt12-269" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-92"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-92"
+       id="gpPt14-9" />
+    <filter
+       id="textbox-6"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-55" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-38" />
+    </filter>
+    <filter
+       id="greybox-6"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-73" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-6" />
+    </filter>
+    <circle
+       style="stroke:currentColor;stroke-width:0.5"
+       cy="0"
+       cx="0"
+       id="gpDot-30"
+       r="0.5" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt0-27"
+       d="M -1,0 H 1 M 0,-1 v 2" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt1-99"
+       d="M -1,-1 1,1 M 1,-1 -1,1" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt2-5"
+       d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2" />
+    <rect
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt3-20"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <rect
+       style="fill:currentColor;stroke:currentColor;stroke-width:0.148"
+       id="gpPt4-8"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <circle
+       style="stroke:currentColor;stroke-width:0.148"
+       id="gpPt5-35"
+       cx="0"
+       cy="0"
+       r="1" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt5-35"
+       id="gpPt6-9" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt7-65"
+       d="m 0,-1.33 -1.33,2 h 2.66 z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt7-65"
+       id="gpPt8-6" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt7-65"
+       id="gpPt9-30"
+       transform="scale(-1)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt9-30"
+       id="gpPt10-2" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="stroke:currentColor"
+       xlink:href="#gpPt3-20"
+       id="gpPt11-07"
+       transform="rotate(45)" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt11-07"
+       id="gpPt12-4" />
+    <path
+       style="stroke:currentColor;stroke-width:0.148"
+       inkscape:connector-curvature="0"
+       id="gpPt13-73"
+       d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z" />
+    <use
+       height="100%"
+       width="100%"
+       y="0"
+       x="0"
+       style="fill:currentColor;stroke:none"
+       xlink:href="#gpPt13-73"
+       id="gpPt14-01" />
+    <filter
+       id="textbox-67"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="white"
+         flood-opacity="1"
+         result="bgnd"
+         id="feFlood24-57" />
+      <feComposite
+         in="SourceGraphic"
+         in2="bgnd"
+         operator="atop"
+         id="feComposite26-88" />
+    </filter>
+    <filter
+       id="greybox-90"
+       filterUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       height="1"
+       width="1">
+      <feFlood
+         flood-color="lightgrey"
+         flood-opacity="1"
+         result="grey"
+         id="feFlood29-78" />
+      <feComposite
+         in="SourceGraphic"
+         in2="grey"
+         operator="atop"
+         id="feComposite31-03" />
+    </filter>
+    <defs
+       id="defs34-5">
+      <circle
+         r="0.5"
+         id="circle9252"
+         cx="0"
+         cy="0"
+         style="stroke:currentColor;stroke-width:0.5" />
+      <path
+         d="M -1,0 H 1 M 0,-1 v 2"
+         id="path9254"
+         inkscape:connector-curvature="0"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <path
+         d="M -1,-1 1,1 M 1,-1 -1,1"
+         id="path9256"
+         inkscape:connector-curvature="0"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <path
+         d="M -1,0 H 1 M 0,-1 v 2 m -1,-2 2,2 m -2,0 2,-2"
+         id="path9258"
+         inkscape:connector-curvature="0"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <rect
+         height="2"
+         width="2"
+         y="-1"
+         x="-1"
+         id="rect9260"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <rect
+         height="2"
+         width="2"
+         y="-1"
+         x="-1"
+         id="rect9262"
+         style="fill:currentColor;stroke:currentColor;stroke-width:0.148" />
+      <circle
+         r="1"
+         cy="0"
+         cx="0"
+         id="circle9264"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <use
+         id="use9266"
+         xlink:href="#gpPt5-7"
+         style="fill:currentColor;stroke:none"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <path
+         d="m 0,-1.33 -1.33,2 h 2.66 z"
+         id="path9268"
+         inkscape:connector-curvature="0"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <use
+         id="use9270"
+         xlink:href="#gpPt7-76"
+         style="fill:currentColor;stroke:none"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <use
+         transform="scale(-1)"
+         id="use9272"
+         xlink:href="#gpPt7-76"
+         style="stroke:currentColor"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <use
+         id="use9274"
+         xlink:href="#gpPt9-1"
+         style="fill:currentColor;stroke:none"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <use
+         transform="rotate(45)"
+         id="use9276"
+         xlink:href="#gpPt3-3"
+         style="stroke:currentColor"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <use
+         id="use9278"
+         xlink:href="#gpPt11-0"
+         style="fill:currentColor;stroke:none"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <path
+         d="M 0,1.33 1.265,0.411 0.782,-1.067 -0.782,-1.076 -1.265,0.411 Z"
+         id="path9280"
+         inkscape:connector-curvature="0"
+         style="stroke:currentColor;stroke-width:0.148" />
+      <use
+         id="use9282"
+         xlink:href="#gpPt13-9"
+         style="fill:currentColor;stroke:none"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+      <filter
+         width="1"
+         height="1"
+         y="0"
+         x="0"
+         filterUnits="objectBoundingBox"
+         id="filter9288">
+        <feFlood
+           id="feFlood9284"
+           result="bgnd"
+           flood-opacity="1"
+           flood-color="white" />
+        <feComposite
+           id="feComposite9286"
+           operator="atop"
+           in2="bgnd"
+           in="SourceGraphic" />
+      </filter>
+      <filter
+         width="1"
+         height="1"
+         y="0"
+         x="0"
+         filterUnits="objectBoundingBox"
+         id="filter9294">
+        <feFlood
+           id="feFlood9290"
+           result="grey"
+           flood-opacity="1"
+           flood-color="lightgrey" />
+        <feComposite
+           id="feComposite9292"
+           operator="atop"
+           in2="grey"
+           in="SourceGraphic" />
+      </filter>
+    </defs>
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2-9-2-3"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect9700-3-2-9-2-3-7"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.65749511"
+     inkscape:cx="232.70431"
+     inkscape:cy="751.40663"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1848"
+     inkscape:window-height="1136"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     showguides="false"
+     inkscape:snap-global="false" />
+  <metadata
+     id="metadata3841">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#eab90c;stroke-width:1.55897701;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 31.835304,39.692021 c 1.338826,0.08844 2.677403,0.176864 5.237224,-2.562548 2.55982,-2.739411 6.341394,-8.307035 9.069956,-11.239374 2.728563,-2.93234 4.404258,-3.229996 5.603846,-1.214675 1.199587,2.015321 1.923247,6.342832 3.080733,8.619667 1.157485,2.276835 2.748119,2.500752 4.338726,2.724665"
+       id="path9698-4-2-2-4-6"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect9700-3-2-9-2-3"
+       inkscape:original-d="m 31.835304,39.692021 c 1.338844,0.08816 2.677422,0.176583 4.015737,0.265271 3.781365,-5.567191 7.562939,-11.134814 11.34401,-16.701823 1.675959,-0.29792 3.351654,-0.595576 5.027083,-0.892968 0.723637,4.328268 1.447297,8.655779 2.171471,12.985465 1.590956,0.223869 3.18159,0.447786 4.772184,0.67179"
+       sodipodi:nodetypes="cccccc"
+       transform="matrix(-1.4323976,-0.0029621,-0.19385271,2.0011287,217.73876,1.2431042)" />
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#909085;stroke-width:1.12262571;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 31.835304,39.692021 c 1.338826,0.08844 2.677403,0.176864 5.237224,-2.562548 2.55982,-2.739411 6.341394,-8.307035 9.069956,-11.239374 2.728563,-2.93234 4.404258,-3.229996 5.489988,-1.174052 1.08573,2.055944 1.581824,6.465666 2.790406,8.701627 1.208582,2.235962 3.129196,2.297917 5.04972,2.359868"
+       id="path9698-4-2-2-4-6-5"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect9700-3-2-9-2-3-7"
+       inkscape:original-d="m 31.835304,39.692021 c 1.338844,0.08816 2.677422,0.176583 4.015737,0.265271 3.781365,-5.567191 7.562939,-11.134814 11.34401,-16.701823 1.675959,-0.29792 3.351654,-0.595576 5.027083,-0.892968 0.496359,4.409457 0.992453,8.819179 1.488282,13.229167 1.921047,0.06186 3.841662,0.123812 5.762182,0.185874"
+       sodipodi:nodetypes="cccccc"
+       transform="matrix(-2.6663008,-0.00303679,-0.36084228,2.051584,262.68703,-0.5617197)" />
+    <g
+       id="g36-21"
+       style="color:#ffffff;fill:none;stroke:currentColor;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g38-77"
+       style="color:#000000;fill:none;stroke:currentColor;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g44-27"
+       style="color:#000000;fill:none;stroke:currentColor;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g50-45"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon48-6"
+         points="66.5,974.8 66.5,958.5 51.3,958.5 51.3,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path52-5"
+       d="m 34.56659,90.871692 v -1.243974 h 1.451174 v 1.243974 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g56-68"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon54-4"
+         points="93.9,974.8 93.9,939.5 78.7,939.5 78.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path58-8"
+       d="m 37.199846,90.871692 v -2.702955 h 1.451174 v 2.702955 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g62-8"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon60-38"
+         points="121.2,974.8 121.2,763.5 106.1,763.5 106.1,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path64-75"
+       d="M 39.833102,90.871692 V 74.653961 h 1.441563 v 16.217731 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g68-2"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon66-45"
+         points="148.6,974.8 148.6,944.9 133.4,944.9 133.4,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path70-0"
+       d="m 42.456747,90.871692 v -2.288298 h 1.451174 v 2.288298 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g74-5"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon72-73"
+         points="176,974.8 176,601 160.8,601 160.8,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path76-2"
+       d="M 45.090003,90.871692 V 62.175829 h 1.451173 v 28.695863 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g80-7"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon78-2"
+         points="203.3,974.8 203.3,812.2 188.2,812.2 188.2,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path82-13"
+       d="M 47.723258,90.871692 V 78.393561 h 1.441564 v 12.478131 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g86-4"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.03539255,29.636444,56.371036)">
+      <polygon
+         id="polygon84-94"
+         points="230.7,27 215.5,27 215.5,974.8 230.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path88-1"
+       d="M 50.212908,91.005687 V 56.999113 h 1.719164 v 34.006574 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:0.77901071;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g92-95"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon90-74"
+         points="258.1,974.8 258.1,896.2 242.9,896.2 242.9,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path94-12"
+       d="m 52.980159,90.871692 v -6.027897 h 1.451174 v 6.027897 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g98-21"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon96-6"
+         points="285.4,974.8 285.4,955.7 270.3,955.7 270.3,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path100-2"
+       d="M 55.613415,90.871692 V 89.41271 h 1.441563 v 1.458982 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g104-0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon102-2"
+         points="394.9,974.8 394.9,972 379.7,972 379.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path106-2"
+       d="m 66.127216,90.871692 v -0.207329 h 1.451174 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g110-97"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon108-43"
+         points="422.3,974.8 422.3,961.2 407.1,961.2 407.1,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path112-5"
+       d="m 68.760472,90.871692 v -1.036645 h 1.451174 v 1.036645 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g116-6"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon114-14"
+         points="449.6,974.8 449.6,963.9 434.5,963.9 434.5,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path118-0"
+       d="m 71.393728,90.871692 v -0.829316 h 1.441563 v 0.829316 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g122-31"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon120-27"
+         points="477,974.8 477,972 461.8,972 461.8,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path124-7"
+       d="m 74.017373,90.871692 v -0.207329 h 1.451174 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g128-9"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon126-8"
+         points="504.4,974.8 504.4,953 489.2,953 489.2,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path130-1"
+       d="m 76.650628,90.871692 v -1.666311 h 1.451174 v 1.666311 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g134-07"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon132-60"
+         points="531.7,974.8 531.7,972 516.6,972 516.6,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path136-1"
+       d="m 79.283884,90.871692 v -0.207329 h 1.441563 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g140-0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon138-2"
+         points="559.1,974.8 559.1,950.3 543.9,950.3 543.9,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path142-5"
+       d="m 81.907529,90.871692 v -1.87364 h 1.451174 v 1.87364 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g146-1"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon144-9"
+         points="586.5,974.8 586.5,969.3 571.3,969.3 571.3,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path148-7"
+       d="m 84.540785,90.871692 v -0.414658 h 1.451174 v 0.414658 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g152-1"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon150-3"
+         points="613.8,974.8 613.8,958.5 598.7,958.5 598.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path154-1"
+       d="m 87.174041,90.871692 v -1.243974 h 1.441563 v 1.243974 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g158-2"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon156-0"
+         points="641.2,974.8 641.2,709.3 626,709.3 626,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path160-68"
+       d="M 89.797686,90.871692 V 70.492024 h 1.451173 v 20.379668 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g164-7"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon162-49"
+         points="668.6,974.8 668.6,966.6 653.4,966.6 653.4,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path166-2"
+       d="m 92.430941,90.871692 v -0.621987 h 1.451174 v 0.621987 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g170-4"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon168-4"
+         points="695.9,974.8 695.9,972 680.8,972 680.8,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path172-5"
+       d="m 95.064197,90.871692 v -0.207329 h 1.441563 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g176-91"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon174-2"
+         points="723.3,974.8 723.3,972 708.1,972 708.1,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path178-8"
+       d="m 97.687842,90.871692 v -0.207329 h 1.451174 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g182-9"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon180-6"
+         points="750.7,974.8 750.7,972 735.5,972 735.5,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path184-0"
+       d="m 100.3211,90.871692 v -0.207329 h 1.45117 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g188-6"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon186-4"
+         points="778,974.8 778,972 762.9,972 762.9,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path190-0"
+       d="m 102.95435,90.871692 v -0.207329 h 1.44157 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g194-9"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon192-4"
+         points="832.8,974.8 832.8,972 817.6,972 817.6,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path196-54"
+       d="m 108.21125,90.871692 v -0.207329 h 1.45118 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g200-66"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon198-3"
+         points="887.5,974.8 887.5,969.3 872.3,969.3 872.3,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path202-99"
+       d="m 113.46816,90.871692 v -0.414658 h 1.45117 v 0.414658 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g206-5"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon204-2"
+         points="914.9,974.8 914.9,972 899.7,972 899.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path208-1"
+       d="m 116.10141,90.871692 v -0.207329 h 1.45117 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g212-3"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon210-0"
+         points="942.2,974.8 942.2,969.3 927.1,969.3 927.1,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path214-9"
+       d="m 118.73467,90.871692 v -0.414658 h 1.44156 v 0.414658 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g218-9"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon216-1"
+         points="997,974.8 997,712.1 981.8,712.1 981.8,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path220-3"
+       d="m 123.99157,90.871692 v -20.16466 h 1.45117 v 20.16466 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g224-4"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon222-5"
+         points="1024.3,974.8 1024.3,963.9 1009.2,963.9 1009.2,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path226-8"
+       d="m 126.62482,90.871692 v -0.829316 h 1.44157 v 0.829316 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g230-57"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon228-3"
+         points="1380.1,974.8 1380.1,972 1364.9,972 1364.9,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path232-38"
+       d="m 160.80909,90.871692 v -0.207329 h 1.45118 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g236-95"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon234-5"
+         points="1407.5,974.8 1407.5,441.3 1392.3,441.3 1392.3,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path238-3"
+       d="M 163.44235,90.871692 V 49.912706 h 1.45117 v 40.958986 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g242-8"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon240-60"
+         points="1434.8,974.8 1434.8,942.2 1419.7,942.2 1419.7,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path244-33"
+       d="m 166.07561,90.871692 v -2.495626 h 1.44156 v 2.495626 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g248-61"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:none;stroke-width:12.18785763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;shape-rendering:crispEdges"
+       transform="matrix(0.09610422,0,0,0.0767885,29.636444,16.018262)">
+      <polygon
+         id="polygon246-8"
+         points="1462.2,974.8 1462.2,972 1447,972 1447,974.8 "
+         style="fill:#00001b;fill-opacity:1;stroke-width:12.18785763;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+    <path
+       id="path250-70"
+       d="m 168.69925,90.871692 v -0.207329 h 1.45117 v 0.207329 z"
+       inkscape:connector-curvature="0"
+       style="color:#000000;fill:#00001b;fill-opacity:1;stroke:#000000;stroke-width:1.04700005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g255-5"
+       style="color:#ffffff;fill:none;stroke:#000000;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g257-1"
+       style="color:#000000;fill:none;stroke:currentColor;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g259-10"
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <g
+       id="g265-0"
+       style="color:#000000;fill:none;stroke:currentColor;stroke-width:1.09601724;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.10583333,0,0,0.07865798,14.686897,29.344935)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444447px;line-height:1.25;font-family:helvetica;-inkscape-font-specification:'helvetica Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="6.6817384"
+       y="55.054256"
+       id="text6095"><tspan
+         sodipodi:role="line"
+         id="tspan6093"
+         x="6.6817384"
+         y="59.874611"
+         style="stroke-width:0.26458332" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444447px;line-height:1.25;font-family:helvetica;-inkscape-font-specification:'helvetica Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="32.005524"
+       y="69.687263"
+       id="text6431"><tspan
+         sodipodi:role="line"
+         id="tspan6429"
+         x="32.005524"
+         y="74.507622"
+         style="stroke-width:0.26458332" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.89191437px;line-height:1.25;font-family:helvetica;-inkscape-font-specification:helvetica;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       x="17.177534"
+       y="45.006142"
+       id="text7221"
+       transform="scale(1.2657647,0.79003626)"><tspan
+         sodipodi:role="line"
+         id="tspan7219"
+         x="17.177534"
+         y="51.745838"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.59467697px;line-height:4;font-family:helvetica;-inkscape-font-specification:helvetica;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.8191064;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 22.096438,46.391003 21.857199,91.831234 H 171.14201"
+       id="path3281"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#07529a;stroke-width:2.79999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 163.89943,88.426591 C 154.41477,88.142051 144.93005,87.85751 133.66634,81.644755 122.40264,75.432001 109.36126,63.29167 98.809287,63.528636 88.25731,63.765602 80.195201,76.380432 72.632541,82.714647 c -7.56266,6.334216 -14.625244,6.387392 -21.688405,6.440572"
+       id="path5592"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect5594"
+       inkscape:original-d="M 163.89943,88.426591 C 154.41478,88.141779 144.93006,87.857237 135.44467,87.572948 122.40289,75.431728 109.36152,63.291396 96.319369,51.150851 88.257378,63.765646 80.195269,76.380475 72.132821,88.995685 65.069879,89.048601 58.007295,89.101777 50.944136,89.155219"
+       transform="translate(1.4227382,-7.6827859)"
+       sodipodi:nodetypes="ccccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:Rotunda;-inkscape-font-specification:Rotunda;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="31.388065"
+       y="-6.0155659"
+       id="text1479"><tspan
+         sodipodi:role="line"
+         id="tspan1477"
+         x="31.388065"
+         y="-1.8718383"
+         style="stroke-width:0.26458332" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.53150678px;line-height:1.25;font-family:'Ubuntu Condensed';-inkscape-font-specification:'Ubuntu Condensed, ';letter-spacing:0px;word-spacing:0px;fill:#909085;fill-opacity:1;stroke:none;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none"
+       x="19.745239"
+       y="43.640545"
+       id="text1483"><tspan
+         sodipodi:role="line"
+         id="tspan1481"
+         x="19.745239"
+         y="43.640545"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:33.2712326px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#909085;fill-opacity:1;stroke:#00001b;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#07529a;fill-opacity:1;stroke:#00001b;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan1485">QC</tspan>x<tspan
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#eab90c;fill-opacity:1;stroke:#00001b;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan1487">MS</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#00001b;fill-opacity:1;stroke:#00001b;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan1489">2</tspan></tspan></text>
+  </g>
+</svg>
