@@ -647,4 +647,50 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, *)
    end subroutine check_progs
 
-end module argparser
+   subroutine citation(env)
+      implicit none
+      type(runtypedata) :: env
+
+      write (*, '(3x,a)') &
+         "Cite this work as:", &
+         "* J.Gorges, S. Grimme, ChemRxiv, 2025,", &
+         " QCxMS2 - a program for the calculation of electron ionization mass ", &
+         "spectra via automated reaction network discovery", &
+         "DOI: 10.26434/chemrxiv-2025-277zm", &
+         "", &
+         "for GFN2-xTB:", &
+         "* C. Bannwarth, E. Caldeweyher, S. Ehlert, A. Hansen, P. Pracht,", &
+         "  J. Seibert, S. Spicher, S. Grimme, WIREs Comput. Mol. Sci., 2020, 11,", &
+         "  e01493. DOI: 10.1002/wcms.1493", &
+         "", &
+         "* C. Bannwarth, S. Ehlert and S. Grimme., J. Chem. Theory Comput., 2019,", &
+         "  15, 1652-1671. DOI: 10.1021/acs.jctc.8b01176", &
+         "", &
+         "for GFN1-xTB:", &
+         "* S. Grimme, C. Bannwarth, P. Shushkov, J. Chem. Theory Comput., 2017,", &
+         "  13, 1989-2009. DOI: 10.1021/acs.jctc.7b00118", &
+         "", &
+         "for CREST:", &
+         "* P.Pracht, S.Grimme, C.Bannwarth, F.Bohle, S.Ehlert,", &
+         "G.Feldmann, J.Gorges, M.Müller, T.Neudecker, C.Plett,", &
+         "S.Spicher, P.Steinbach, P.Wesołowski, F.Zeller,", &
+         "J. Chem. Phys., 2024, 160, 114110.", &
+         "DOI: 10.1063/5.0197592", &
+         "", &
+         "for ORCA:", &
+         "* F. Neese, WIREs Comput. Mol. Sci., 2022, 12, e1606.", &
+         "DOI: 10.1002/wcms.1606", &
+         "", &
+         "for MolBar:", &
+         "* N. van Staalduinen, C. Bannwarth,", &
+         "Digital Discovery, 2024,3, 2298-2319.", &
+         "DOI: 10.1039/D4DD00208C", &
+         "", &
+         "for geodesic interpolation:", &
+         "* X. Zhu and  K. C. Thompson, T. J. Martinez", &
+         "J. Chem. Phys. 150, 164103 (2019).", &
+         "DOI: 10.1063/1.5090303", &
+         ""
+         end subroutine citation
+
+         end module argparser

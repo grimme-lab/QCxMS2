@@ -71,8 +71,9 @@ program QCxMS2
 
    if (env%logo) then
       call qcxms2_logo
-      STOP
    end if
+   
+   call citation(env)
 
    !> inialize random numbers
    !>> if not exlicitly set, use true random
@@ -89,6 +90,7 @@ program QCxMS2
    call check_settings(env)
    ! check if all requested programs are in PATH
    call check_progs(env)
+
 
    ! just for testing purposes here:
    if (env%ircrun) then

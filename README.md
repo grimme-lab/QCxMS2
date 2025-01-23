@@ -96,9 +96,8 @@ A more detailed documentation on topics like input settings can be found at [rea
 Coming soon ...
 
 **Citations**
-
-Coming soon ...
-
+1. J.Gorges, S. Grimme, *ChemRxiv*, **2025**, "QCxMS2 - a program for the calculation of electron ionization mass spectra via automated reaction network discovery".
+  DOI: [10.26434/chemrxiv-2025-277zm](https://dx.doi.org/10.26434/chemrxiv-2025-277zm)
 
 
 **License**
