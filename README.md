@@ -8,7 +8,7 @@ Program package for the quantum mechanical calculation of EI mass spectra using 
 This is the download repository for the QCxMS2 program. 
 
 <div align="center">
-<img src="./assets/logo/qcxms2.svg" alt="Mass spectra calculation" width="220">
+<img src="./assets/logo/qcxms2.svg" alt="Mass spectra calculation" width="420">
 </div>
 
 **Installation**
