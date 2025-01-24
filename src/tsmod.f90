@@ -110,6 +110,9 @@ contains
          if (trim(env%tsfinder) == 'neb') then
             inquire (file='neb_finished', exist=ex)
             if (.not. ex) njobs = njobs + 1
+         elseif (trim(env%tsfinder) == 'crest_tsgen') then
+            inquire (file='crest_tsgen_finished', exist=ex)
+            if (.not. ex) njobs = njobs + 1
          else
             write (*, *) "Warning: other path searches than NEB not supported, stopping QCxMS2"
             stop
@@ -159,6 +162,16 @@ contains
                call append_char(dirs, trim(fragdirs_in(i, 1)))
             end if
          end if
+
+         !crest tsguess 
+         if (trim(env%tsfinder) == 'crest_tsgen') then
+            inquire (file='crest_tsgen_finished', exist=ex)
+            if (.not. ex) then
+               call prepcrest_tsgen(env, jobcall)
+               njobs = njobs + 1
+               call append_char(dirs, trim(fragdirs_in(i, 1)))
+            end if
+         end if
          call chdir(trim(env%path))
       end do
       !start TS search in parallel
@@ -173,6 +186,19 @@ contains
       call timing(t2, w2)
       env%tpath = env%tpath + (w2 - w1)
       write (*,'(a,f10.1,a)')  "Time spent for path search and barrier calculation: ", (w2 - w1), "s"
+
+      if (env%tsfinder == 'crest_tsgen') then
+         do i = 1, npairs_in
+            call chdir(trim(fragdirs_in(i, 1))) 
+            ! restore .UHF and .CHRG deleted by crest
+            !call move("uhftemp", ".UHF")
+            !call move("chrgtemp", ".CHRG")
+            ! TODO implement cleanup here
+            call chdir(trim(env%path))
+         end do
+      end if
+
+
 
       if (trim(env%tsfinder) == 'neb') then
          njobs = 0
@@ -1054,6 +1080,83 @@ contains
       call appendto('end.xyz', 'geoin.xyz')
       write (jobcall, '(a,i0,a)') 'geodesic_interpolate geoin.xyz --nimages ', env%tsnds, ' >geoout 2>geo2out'
    end subroutine prepgeodesic
+
+   subroutine prepcrest_tsgen(env,jobcall)
+      implicit none
+      character(len=1024), intent(out) :: jobcall
+      type(runtypedata) :: env
+      integer :: chrg, uhf
+
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+      
+
+      call write_cresttoml(env)
+      write(jobcall,'(a,i0,a,i0,a)') 'xtb start.xyz --hess --chrg ',chrg,' --uhf ',uhf,' > hess1.out 2> /dev/null'
+      write(jobcall,'(a)') trim(jobcall)//' && mv hessian hess1 && mv wbo wbo1'
+      write(jobcall,'(a,i0,a,i0,a)') trim(jobcall)//' && xtb end.xyz --hess --chrg ',chrg,' --uhf ',uhf,' > hess2.out 2> /dev/null'
+      write(jobcall,'(a)') trim(jobcall)//' && mv hessian hess2 && mv wbo wbo2'
+      write(jobcall,'(a,a)') trim(jobcall)//' && crest_tsgen --input input.toml > crest_tsgen.out 2> crest_tsgen_error.out', &
+      &  ' && touch crest_tsgen_finished'
+      write(*,*) "jobcall is", trim(jobcall)
+   end subroutine prepcrest_tsgen
+
+   subroutine write_cresttoml(env)
+      implicit none 
+      type(runtypedata) :: env
+      integer :: io, ich
+      integer :: chrg, uhf
+
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+      ! save .UHF and .CHRG which will be deleted by crest
+      call move(".UHF", "uhftemp")
+      call move(".CHRG", "chrgtemp")
+      
+
+      open (newunit=ich, file='input.toml')
+      write(ich,'(a)') '#This is a CREST input file'
+      write(ich,'(a)') 'input = "start.xyz"'
+      write(ich,'(a)') 'runtype = "ancopt"'
+      write(ich,'(a,i0)') 'threads =', env%threads
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[calculation]'
+      write(ich,'(a)') 'id = 3'
+      write(ich,'(a)') 'maxcycle = 219'
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "ssff"'
+      write(ich,'(a)') 'refgeo = "start.xyz"'
+      write(ich,'(a)') 'refhessian = "hess1"'
+      write(ich,'(a)') 'refwbo = "wbo1"'
+      write(ich,'(a)') 'refff = "ff1"'
+      write(ich,'(a)') 'useff = false'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf 
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "ssff"'
+      write(ich,'(a)') 'refgeo = "end.xyz"'
+      write(ich,'(a)') 'refhessian = "hess2"'
+      write(ich,'(a)') 'refwbo = "wbo2"'
+      write(ich,'(a)') 'refff = "ff2"'
+      write(ich,'(a)') 'useff = false'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf  
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "tsff"'
+      write(ich,'(a)') 'refff = "tsff"'
+      write(ich,'(a)') 'id1 = 1'
+      write(ich,'(a)') 'id2 = 2'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf
+      close(ich)
+
+
+
+   end subroutine write_cresttoml
 ! TODO move into orca module
 ! Routine to prepare neb calculation
    subroutine prepneb(env, jobcall, hbonddiss, restart, usegeo)
@@ -1221,6 +1324,8 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
+         elseif (env%tsfinder == "crest_tsgen") then
+            fname = 'crestopt.xyz'   
       end if
 
       inquire (file=trim(fname), exist=ex, size=nlines)
@@ -1261,6 +1366,17 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
+      elseif (env%tsfinder == "crest_tsgen") then
+         inquire(file='crestopt.xyz', exist=ex)
+         if (ex) then 
+            call copy('crestopt.xyz', 'ts.xyz')
+            found = .true.
+            return
+         else
+            write (*, *) "WARNING: no crestopt.xyz file found, search was not succesfull"
+            found = .false.
+            call printpwd() 
+         end if
       else
          write (*, *) "TS PICKER NOT YET IMPLEMENTED FOR OTHER SEARCHERS"
          write (*, *) "Just take end as TS"

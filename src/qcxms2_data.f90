@@ -38,7 +38,7 @@ module qcxms2_data
 
       ! external programs
       character(len=80) :: qmprog = 'orca' ! currently only orca possible
-      character(len=3)  :: tsfinder = 'neb' !xtb (not recommended) and neb
+      character(len=80)  :: tsfinder = 'neb' !xtb (not recommended) and neb
       character(len=80) :: topocheck = 'molbar' ! inchi or molbar for topo check after optimization
       logical :: tsgeodesic = .true. ! use geodesic interpolation as guess for transition state search
       logical :: nebnormal = .false. ! use normal settings for neb search

@@ -566,6 +566,12 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       if (env%chrg .lt. 0) write (*, *) "negative ion mode chosen, Hybrid DFT with diffuse basis sets recommended to use!!!"
       if (env%qmprog .ne. "orca") write (*, *) "Warning! currently only ORCA is supported as external QM program"
 
+      write(*,*) "Path search method:", trim(env%tsfinder)
+      if (env%tsfinder == "crest_tsgen") then 
+         write(*,*) "Using crest_tsgen for path search, Warning is not yet fully tested and requires crest_tsgen binary in path"
+         env%tsgeodesic = .false.
+      end if
+
       if (env%geolevel == "gxtb" .and. env%tsfinder == 'neb') then
          write (*, *) "Warning: special xTB version for NEB search necessary"
       end if
