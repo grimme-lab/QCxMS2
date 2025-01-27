@@ -113,7 +113,7 @@ contains
             call prepxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
             !      DFT, set orca or turbomole and read template file orca_temp.inp and cefinecall?
          case ('pbe', 'b973c', 'r2scan3c', 'pbeh3c' &
-            & , 'wb97x3c', 'pbe0', 'ccsdt', 'kpr2scan50d4', 'pbe0tzvpd', 'wb97xd4tz', 'wb97xd4qz') ! could be extended to other functionals
+            & , 'wb97x3c', 'pbe0', 'pbe0tzvpd','pbe0matzvp', 'ccsdt', 'kpr2scan50d4','wb97xd4tz', 'wb97xd4qz') ! could be extended to other functionals
             call preporca(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
             ! special methods
          case ('gxtb')
@@ -505,11 +505,14 @@ contains
          levelkeyword = 'wB97X-D4 def2-QZVP'
          etemp = 15000 ! TODO tune this value
       case ('pbe0')
-         levelkeyword = 'PBE0 def2-TZVP'
+         levelkeyword = 'PBE0 def2-TZVP D4'
          etemp = 10000
       case ('pbe0tzvpd')
-         levelkeyword = 'PBE0 def2-TZVP'
+         levelkeyword = 'PBE0 def2-TZVPD D4' 
          etemp = 10000
+      case ('pbe0matzvp')
+         levelkeyword = 'PBE0 ma-def2-TZVP D4'
+         etemp = 10000   
       case ('pw6b95d4tzvpd')
          levelkeyword = 'PW6B95-D4 def2-TZVP'
          etemp = 10600

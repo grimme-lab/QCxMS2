@@ -429,7 +429,7 @@ contains
       write (*, '(5x,''-tslevel  [method] : select level for computing reaction barriers'')')
       write (*, '(5x,''-iplevel  [method] : select level for computing IPs for charge assignment'')')
    write (*, '(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs'')')
-      write (*, '(8x,''available methods: ("gfn2","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb")'')') !dxtb gxtb wb97m3c
+      write (*, '(8x,''available methods: ("gfn2","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","pbe0matzvp")'')') !dxtb gxtb wb97m3c
       !write(*,'(5x,''-geolevel [method]      : method for geometry optimization and path search (("gfn2","gfn1","pm6","gff","pbe","b973c","r2scan3c","pbeh3c","wb97x3c","pbe0")'')') !dxtb gxtb wb97m3c
       !write(*,'(5x,''-tslevel  [method] : select level for computing reaction barriers ("pbe","b973c","r2scan3c","pbeh3c","wb97x3c","kpr2scan50d4","wb97xd4tz","pbe0","ccsdt","gfn2","gfn1","pm6","gff")'')')
       !write(*,'(5x,''-iplevel  [method] : select level for computing IPs for charge assignment ("pbe","b973c","r2scan3c","pbeh3c","wb97x3c","kpr2scan50d4","wb97xd4tz","pbe0","ccsdt","gfn2","gfn1","pm6","gff")'')')
@@ -452,7 +452,6 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, '(5x ''-msfragdist [real]: seperate fragments before TS search from each other (default 2.5 [Angstrom]) '')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
-      write (*, '(5x,''-cneintscale  : cale internal energy of subsequent fragmentations according to number of atoms '')')
       write (*, '(5x,''-noKER  : do not compute kinetic energy release (KER) '')')
       write (*, '(5x,''-usetemp  : take G_mRRHO contribution instead of only ZPVE ( ZPVE is default)  '')')
       write (*, '(5x,''-scaleeinthdiss [real] this decreases the internal energy only for -H or -H2 abstractions (default  0.5)'')')
@@ -461,7 +460,6 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, '(5x,''-sthr [int] : RRHO cutoff for thermo contribution  (default is 150 cm-1)'')')
       write (*, '(5x,''-ithr [int] : imaginary RRHO cutoff for thermo contribution  (default is 100 cm-1)'')')
       write (*, '(5x,''-nthermosteps [int] : number of increments to compute thermal corrections for IEE distribution (default 200, take a multiple of 10 )'')')
-      write(*,'(5x,''-topocheck [string] : check topology after optimization (default "molbar", "inchi" with "obabel" in path also possible, but not thoroughly tested. Set empty (i.e.," ") to deactivate) '')')
       write (*, '(/,1x,''Options for plotting of mass spectrum:'')')
       write (*, '(5x,''-noisotope  : only plot peak with highest isotope propability'')')
       write (*, '(5x,''-int_masses  : only plot masses as integers'')')
@@ -477,7 +475,9 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
 
       write (*, '(/,1x,''Advanced Options for testing:'')')
       write (*, '(5x,''-cid: compute a CID spectrum (not yet implemented)'')')
+      write(*,'(5x,''-topocheck [string] : check topology after optimization (default "molbar", "inchi" with "obabel" in path also possible, but not thoroughly tested. Set empty (i.e.," ") to deactivate) '')')
       write (*, '(5x,''-tf [real] time of flight in spectrometer in mukroseconds default is 50 '')')
+      write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to coordination number of reaction '')')
       !DEL write (*, '(5x,''-dxtbparam  : use special dxtb parameter - requires dxtb_param.txt in starting DIR '')')
       !DEL
       !DEL write (*, '(5x,''-reoptts  :reoptimize TS after path search (unstable so deactivated by default)) '')')

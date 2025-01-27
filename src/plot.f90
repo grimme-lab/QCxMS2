@@ -52,6 +52,7 @@ contains
 !subroutine to collect fragments after each fragmentation in file "fragments"
 ! directory (p1f1,p1f2p4f2), mass, pfrag,
    subroutine collectfrags(env, npairs, fragdirs, fname, startdir, fraglist, nfrags)
+      use xtb_mctc_convert
       implicit none
       character(len=80) :: dir, dir2, sumform
       character(len=*) :: fname
@@ -103,7 +104,7 @@ contains
       write (*, *) "dir | mass | sumformula | rel. I / %"
       if (npairs .ne. 0) then
          open (newunit=ich, file=fname)
-         write (ich, *) "Dir  fragment_type sumreac  de  barrier  irc"
+         write (ich,'(a)') "Dir  fragment_type sumreac(kcal/mol)  de(kcal/mol)  barrier(kcal/mol)  irc (cm-1)"
          do i = 1, npairs
             call rdshort_real(trim(fragdirs(i, 1))//"/barrier_"//trim(env%tslevel), barrier)
             call rdshort_real(trim(fragdirs(i, 1))//"/sumreac_"//trim(env%tslevel), sumreac)
@@ -111,25 +112,27 @@ contains
             call rdshort_real(trim(fragdirs(i, 1))//"/ircmode_"//trim(env%geolevel), irc)
             if (index(fragdirs(i, 3), 'p') .ne. 0) then
                write (product, *) trim(startdir)//trim(fragdirs(i, 1))//" fragmentpair"
-               write (ich, '(a,2x,f6.3,2x,f6.3,2x,f6.3,2x,f10.3)') trim(product), sumreac, de, barrier, irc
+               write (ich, '(a,2x,f6.1,2x,f6.1,2x,f6.1,2x,f10.1)') trim(product), sumreac*evtoau*autokcal, &
+               &  de*evtoau*autokcal, barrier*evtoau*autokcal, irc
                do j = 2, 3
                   call rdshort_real(trim(fragdirs(i, j))//"/mass", mass)
                   call rdshort_real(trim(fragdirs(i, j))//"/pfrag", pfrag)
                   call getsumform(trim(fragdirs(i, j))//"/fragment.xyz", sumform)
                   write (product, *) trim(startdir)//trim(fragdirs(i, j))
-                  write (ich, '(a,2x,f9.3,2x,a,2x,e10.4)') trim(product), mass, trim(sumform), pfrag
+                  write (ich, '(a,2x,f9.3,2x,a,2x,f10.1)') trim(product), mass, trim(sumform), pfrag/env%nsamples*100
                   if (pfrag .gt. env%pthr) then
                      write (*, '(a,2x,f9.3,2x,a,2x,f10.1)') trim(product), mass, trim(sumform), pfrag/env%nsamples*100
                   end if
                end do
             else
                write (product, *) trim(startdir)//trim(fragdirs(i, 1))//" isomer"
-               write (ich, '(a,2x,f6.3,2x,f6.3,2x,f6.3,2x,f10.3)') trim(product), sumreac, de, barrier, irc
+               write (ich, '(a,2x,f6.1,2x,f6.1,2x,f6.1,2x,f10.1)') trim(product), sumreac*evtoau*autokcal, &
+               &  de*evtoau*autokcal, barrier*evtoau*autokcal, irc
                call rdshort_real("mass", mass) ! has to be mass of starting structure
                call rdshort_real(trim(fragdirs(i, 1))//"/pfrag", pfrag)
                call getsumform(trim(fragdirs(i, 1))//"/isomer.xyz", sumform)
                write (product, *) trim(startdir)//trim(fragdirs(i, 1))
-               write (ich, '(a,2x,f9.3,2x,a,2x,e10.4)') trim(product), mass, trim(sumform), pfrag
+               write (ich, '(a,2x,f9.3,2x,a,2x,f10.1)') trim(product), mass, trim(sumform), pfrag/env%nsamples*100
                if (pfrag .gt. env%pthr) then
                   write (*, '(a30,2x,f9.3,2x,a,2x,f10.1)') trim(product), mass, trim(sumform), pfrag/env%nsamples*100
                end if
