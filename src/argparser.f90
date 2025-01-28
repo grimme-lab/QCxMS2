@@ -452,7 +452,7 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, '(5x ''-msfragdist [real]: seperate fragments before TS search from each other (default 2.5 [Angstrom]) '')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
-      write (*, '(5x,''-cneintscale  : cale internal energy of subsequent fragmentations according to number of atoms '')')
+      write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to number of atoms '')')
       write (*, '(5x,''-noKER  : do not compute kinetic energy release (KER) '')')
       write (*, '(5x,''-usetemp  : take G_mRRHO contribution instead of only ZPVE ( ZPVE is default)  '')')
       write (*, '(5x,''-scaleeinthdiss [real] this decreases the internal energy only for -H or -H2 abstractions (default  0.5)'')')
