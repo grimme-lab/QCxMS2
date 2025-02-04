@@ -58,9 +58,10 @@ Place the executables into your ``$HOME/bin/`` directory or path.
 
 ## Compilers 
 
-ifort(<=2021.10.0), icc(<=2021.10.0)
+1. ifort(<=2021.10.0), icc(<=2021.10.0)
+2. gfortran, gcc
 
-### Meson
+### Meson using ifort and icc
 
 Using [meson](https://mesonbuild.com/) as build system requires you to install a fairly new version like 0.062 or newer.
 To use the default backend of meson you have to install [ninja](https://ninja-build.org/) version 1.7 or newer.
@@ -69,6 +70,22 @@ To use the default backend of meson you have to install [ninja](https://ninja-bu
 export FC=ifort CC=icc
 meson setup build -Dfortran_link_args="-lifcoremt -static" 
 ninja -C build 
+```
+
+This will build a static linked binary in the ``build`` folder. Copy the binary from ``build/qcxms2`` file into a directory in your path, e.g. ``~/bin/``.
+
+
+### CMake using gfortran and gcc
+
+
+The CMake build system requires both make and CMake to be installed, the latter has to be version 3.9 or newer.
+
+Building `qcxms2` with CMake works with the following chain of commands:
+
+```bash
+export FC=gfortran CC=gcc
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+make -C build
 ```
 
 This will build a static linked binary in the ``build`` folder. Copy the binary from ``build/qcxms2`` file into a directory in your path, e.g. ``~/bin/``.
