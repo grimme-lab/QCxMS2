@@ -144,13 +144,18 @@ contains
       character(len=*) :: to
       character(len=512) :: line
       integer :: io
+
       inquire (file=from, exist=ex)
       if (ex) then
          open (newunit=ich, file=from)
          open (newunit=och, file=to)
          do
             read (ich, '(a)', iostat=io) line
-            if (io < 0) exit
+            if (io < 0) then 
+               close(ich)
+               close(och)
+               exit
+            end if
             write (och, '(a)') trim(line)
          end do
          close (och)
@@ -624,21 +629,7 @@ contains
       return
    end function filechecker
 
-! Checking directories with Fortran's inquire is not handled by the standard.
-! The interpretation whether or not to report a directory as file is compiler
-! specific and therefore always an extension to the Fortran standard.
-   function directory_exist(file) result(exist)
-      character(len=*), intent(in) :: file
-      logical :: exist
-!ifdef __INTEL_COMPILER
-      ! Intel provides the directory extension to inquire to handle this case
-      inquire (directory=file, exist=exist)
-!else
-      ! GCC handles directories as files, to make sure we get a directory and
-      ! not a file append a path separator and the current dir
-      inquire (file=trim(file)//"/.", exist=exist)
-!endif
-   end function directory_exist
+
 
 !--------------------------------------------------------------------------------------
 ! reads the second line of a file (REAL)

@@ -24,7 +24,8 @@ srcs += files(
 'reaction.f90',
 'isotopes.f90',
 'header.f90',
-'structools.f90'
+'structools.f90',
+'rmsd.f90'
 )
 
 prog += files(

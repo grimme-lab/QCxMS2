@@ -316,3 +316,4 @@ xtb_getOrbitalCoefficients(xtb_TEnvironment /* env */,
 #ifdef __cplusplus
 }
 #endif
+

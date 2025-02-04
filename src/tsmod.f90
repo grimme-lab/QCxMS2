@@ -5,7 +5,8 @@ module tsmod
    use qmmod
    use xtb_mctc_convert
    use utility
-   use rmsd, only: get_rmsd
+   use rmsd_ls
+   !use rmsd, only: get_rmsd
    implicit none
 contains
 
@@ -17,7 +18,6 @@ contains
       type(runtypedata) :: env
       character(len=80) :: reac, prod
       character(len=1024) :: jobcall, copycall, cleanupcall
-      character(len=80), dimension(12) :: cleanupfiles
       character(len=80), allocatable :: dirs(:), dirs0(:)
       character(len=80) :: job, fout, pattern ! fout and pattern for readout of qm data
       character(len=80) :: fragdirs_in(:, :)
@@ -329,17 +329,12 @@ contains
       end do
 
       ! cleanup NEB runs
-
-      cleanupfiles = ["orca_MEP.allxyz", "orca.interp", "geoout", &
-      & "geo2out", "orca.property.txt", "orca_initial_path_trj.xyz", &
-      & "orca.final.interp", "orca.bibtex", "orca.citations.tmp", &
-      & "orca.NEB.log", "orca_NEB-HEI_converged.xyz", "orca_MEP_ALL_trj.xyz"]
+      
+     
       write (cleanupcall, '(a)') 'rm orca_im*.gbw orca_im*.citations.tmp orca_im*.xtbrestart'
       do i = 1, npairs_in
          call chdir(trim(fragdirs_in(i, 1)))
-         do j = 1, size(cleanupfiles)
-            call remove(cleanupfiles(j))
-         end do
+         call cleanup_nebcalc()
          call execute_command_line(trim(cleanupcall))
          if (env%printlevel .lt. 3) then
             call remove('orca.out')
@@ -1837,7 +1832,8 @@ contains
       !  !> calculate root-mean-sqare-deviation of the two structures
       !write(*,*) "xyz1 is", nxyz1
       !write(*,*) "xyz2 is", nxyz2
-      call get_rmsd(nxyz1, nxyz2, root_msd)
+      !call get_rmsd(nxyz1, nxyz2, root_msd)
+      call get_rmsd_for_coord(nxyz1,nxyz2,root_msd)
 
       deallocate (nxyz1, nxyz2, cg)
 
@@ -1940,4 +1936,21 @@ contains
       close (ich2)
    end subroutine prepare_neb_restart
 
+   subroutine cleanup_nebcalc
+      implicit none
+      
+      call remove("orca_MEP.allxyz")
+      call remove("orca.interp")
+      call remove("geoout")
+      call remove("geo2out")
+      call remove("orca.property.txt")
+      call remove("orca_initial_path_trj.xyz")
+      call remove("orca.final.interp")
+      call remove("orca.bibtex")
+      call remove("orca.citations.tmp")
+      call remove("orca.NEB.log")
+      call remove("orca_NEB-HEI_converged.xyz")
+      call remove("orca_MEP_ALL_trj.xyz")
+   
+   end subroutine cleanup_nebcalc
 end module tsmod

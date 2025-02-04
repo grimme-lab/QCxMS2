@@ -93,7 +93,7 @@ contains
       env%eyring = .true. ! use eyring isntead of rrkm
       env%eyzpve = .false. ! use eyring instead of rrkm but only with ZPVE ...
       env%sthr = 150 ! RRHO cutoff in cm-1
-      env%ithr = 100 ! imagniary mode RRHO cutoff in cm-1
+      env%ithr = 100 ! imaginary mode RRHO cutoff in cm-1
       env%nthermosteps = 200 ! number of increments to compute thermal corrections for IEE distribution
       env%noplotisos = .false. ! plot isomers in mass spectrum
       env%ircrun = .false.

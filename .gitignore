@@ -45,24 +45,6 @@ man/*.pdf
 man/*.xml
 man/*.html
 
-# files produced by the program
-xtbrestart
-.EDISP
-energy
-wbo
-charges
-dftd4_gradient
-.tmpxtbmodef
-hessian
-molden.input
-tmpxx
-xtb_localmodes
-xtb_normalmodes
-xtbopt.xyz
-xtbopt.sdf
-xtbopt.coord
-xtbopt.log
-
 
 # python build artefacts
 __pycache__/
@@ -75,5 +57,15 @@ ext/
 
 #subprojects
 mctc-lib/
-rmsd-tool/
 toml-f/
+
+#cmake files
+#
+CMakeFiles/*
+*.cmake
+src/CMakeFiles/*
+src/*.cmake
+config/CMakeFiles/*
+config/CMakeFiles/progress.marks
+src/Makefile
+
