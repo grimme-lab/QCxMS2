@@ -21,7 +21,6 @@ jobs:
             - name: Install CMake
               run: pip install ninja cmake
             - name: Install libopenblas (Linux GNU build only)
-              if: ${{ matrix.compiler == 'gnu' && contains(matrix.os, 'ubuntu') }}
               run: sudo apt-get update && sudo apt-get install -y libopenblas-dev
             - name: Configure build
               run: cmake -B ${{ env.BUILD_DIR }} -G Ninja
