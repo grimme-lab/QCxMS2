@@ -1,3 +1,8 @@
+name: CI
+on: [push, pull_request]
+env:
+   BUILD_DIR: _build
+jobs:
 intel-meson-build:
       runs-on: ${{ matrix.os }}
       strategy:
