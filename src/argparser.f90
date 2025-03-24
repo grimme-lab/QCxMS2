@@ -67,6 +67,7 @@ contains
       env%msnshifts = 0 ! only set higher for planar molecules
       env%msnshifts2 = 0
       env%msfragdist = 2.5_wp
+      env%mskeepdir = .false. ! keep the MSDIR with the constrained optimizations 
       env%notemp = .true. ! only take ZPVE no thermal effects G(RRHO) ! the right way to do it ...
       ! for plotting
       env%noiso = .false.
@@ -174,6 +175,8 @@ contains
          case ('-msfragdist ')
             call readl(arg(i + 1), xx, j)! seperate fragments in crestms from each other
             env%msfragdist = xx(1)
+         case ('--mskeepdir ')
+            env%mskeepdir = .true. ! keep the MSDIR with the constrained optimizations  
          case ('-topocheck ')
             env%topocheck = arg(i + 1) ! topochech after optimization
          case ('-nobhess ')
@@ -450,6 +453,7 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, '(5x,''-msinchi: sort out topological duplicates by inchi codes (requires  sourced "obabel")'')')
       write (*, '(5x ''-msnfrag [int]: number of fragments that are printed by msreact (random selection)'')')
       write (*, '(5x ''-msfragdist [real]: seperate fragments before TS search from each other (default 2.5 [Angstrom]) '')')
+      write (*, '(5x ''-mskeepdir: keep the MSDIR directory with the constrained optimizations)'')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
       write (*, '(5x,''-noKER  : do not compute kinetic energy release (KER) '')')
