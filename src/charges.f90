@@ -284,9 +284,11 @@ contains
                q2 = env%chrg
             end if
             call wrshort_int('.CHRG', q1)
+            call remove('.UHF') ! always remove .UHF file if charge changes
             call chdir(trim(env%path))
             call chdir(fragdirs_out(i, 3))
             call wrshort_int('.CHRG', q2)
+            call remove('.UHF') ! always remove .UHF file if charge changes
             call chdir(trim(env%path))
          end if
       end do

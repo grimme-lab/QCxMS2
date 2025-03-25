@@ -29,6 +29,7 @@ contains
       env%tslevel = 'gfn2'
       env%tsfinder = 'neb'
       env%nebnormal = .false.
+      env%tsoptgmf = .false. ! special GMF optimizer in TS optimization
       env%pathlevel = 'none'
       env%tsnds = 9
       !programsettings
@@ -42,10 +43,15 @@ contains
 
       env%nfrag = 6
       env%fixe = 0.0_wp
-      env%reoptts = .false.
+      env%reoptts = .true.
       env%topocheck = 'molbar'
       env%sortoutcascade = .false.
 ! general runtype data
+      env%checkmult = .false. ! we only check multiplicity of ts and only for single-point and bhess calculation not for geometry optimization
+      env%pathmult = .false. !  compute reaction path with sum of multiplicities of products
+      ! path search is difficult with uhf+2 as energy just goes downhill and reoptimization of geometry with correct spin state is also difficult 
+      env%tsoptact = .false.
+      env%tsoptgmf = .false.
       env%nots = .false.
       env%esim = .false. ! simulate only different energies
       env%calcKER = .true.
@@ -63,7 +69,7 @@ contains
       env%msfulliso = .true.
       env%msnbonds = 3
       env%msinchi = .false. ! requires obabel in path and can be problematic for the NCI complexes
-      env%msmolbar = .true. ! requires mobar environment but is best for sorting out duplicates
+      env%msmolbar = .true. ! requires molbar environment but is best for sorting out duplicates
       env%msnshifts = 0 ! only set higher for planar molecules
       env%msnshifts2 = 0
       env%msfragdist = 2.5_wp
@@ -115,6 +121,7 @@ contains
       env%cid_mgas = 39.94800_wp ! argon ! mass of gas in u !He, Ne, Ar, Kr, Xe, N2 available TODO include them
       env%cid_rgas = 3.55266638_wp !  bohr vdw-radius of Ar ! TODO include them
       env%cid_scool = 1.0 ! no cooling of ions
+      env%solv = .false.
 
       do i = 1, nargs
          if (any((/character(7)::'-h', '-H', '--h', '--H', '-help', '--help'/) == trim(arg(i)))) then
@@ -127,7 +134,7 @@ contains
             call printhelp_advanced()
          end if
       end do
-
+    
       do i = 1, nargs
          argument = trim(arg(i))
          if (argument .ne. '') then
@@ -153,6 +160,14 @@ contains
             env%tsfinder = arg(i + 1) ! xtb and gsm possible
          case ('-nebnormal ')
             env%nebnormal = .true. ! use normal settings instead of loose settings for NEB search
+         case ('-checkmult ')
+            env%checkmult = .true. ! check multiplicity of input molecule
+         case ('-pathmult ')   
+            env%pathmult = .true. 
+         case ('-tsoptgmf ')
+            env%tsoptgmf = .true. ! special GMF optimizer in TS optimization
+         case ('-tsoptact ')
+            env%tsoptact = .true. ! optimize TS in ORCA by specifying active atoms
          case ('-tslevel ')
             env%tslevel = arg(i + 1) ! gfn1, gfn2, ptbrpbe, r2scan3c, pbeh3c, and wb97x3c possible
          case ('-iplevel ')
@@ -267,8 +282,8 @@ contains
          case ('-fixe ')  ! simulate only one energy for testing purposes
             call readl(arg(i + 1), xx, j)
             env%fixe = xx(1)
-         case ('-reoptts ') !reoptimize TS after path search ''
-            env%reoptts = .true.
+         case ('-noreoptts ') !reoptimize TS after path search ''
+            env%reoptts = .false.
          case ('-hotip ') !do not optimize fragments at charge 0 before computing IPs ''
             env%hotip = .true.
          case ('-sortoutcascade ') ! sort out fragments with same mass as input molecule in crestms
@@ -367,6 +382,8 @@ contains
          case ('-cidscool ') ! in u
             call readl(arg(i + 1), xx, j)
             env%cid_scool = xx(1)
+         case ('-solv ') ! in u
+            env%solv = .true.   
          case default
             continue
          end select
@@ -428,13 +445,13 @@ contains
       write (*, '(5x,''-geolevel [method]      : method for geometry optimization and path search'')')
       write (*, '(5x,''-tslevel  [method] : select level for computing reaction barriers'')')
       write (*, '(5x,''-iplevel  [method] : select level for computing IPs for charge assignment'')')
-   write (*, '(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs'')')
-      write (*, '(8x,''available methods: ("gfn2","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb")'')') !dxtb gxtb wb97m3c
-      !write(*,'(5x,''-geolevel [method]      : method for geometry optimization and path search (("gfn2","gfn1","pm6","gff","pbe","b973c","r2scan3c","pbeh3c","wb97x3c","pbe0")'')') !dxtb gxtb wb97m3c
-      !write(*,'(5x,''-tslevel  [method] : select level for computing reaction barriers ("pbe","b973c","r2scan3c","pbeh3c","wb97x3c","kpr2scan50d4","wb97xd4tz","pbe0","ccsdt","gfn2","gfn1","pm6","gff")'')')
-      !write(*,'(5x,''-iplevel  [method] : select level for computing IPs for charge assignment ("pbe","b973c","r2scan3c","pbeh3c","wb97x3c","kpr2scan50d4","wb97xd4tz","pbe0","ccsdt","gfn2","gfn1","pm6","gff")'')')
-      !write(*,'(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs ("pbe","b973c","r2scan3c","pbeh3c","wb97x3c","kpr2scan50d4","wb97xd4tz","pbe0","gfn2","gfn1","pm6","dxtb","gff")'')')
+      write (*, '(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs'')')
+      write (*, '(8x,''available methods: ("gfn2","gfn2spinpol","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb",")'')') !dxtb gxtb wb97m3c ! ma-
       write (*, '(5x,''-nebnormal: use normal settings instead of loose settings for NEB search'')')
+      write (*, '(5x,''-checkmult: check multiplicity of TS'')')
+      write (*, '(5x,''-pathmult: compute reaction path with sum of multiplicities of products'')')
+      write (*, '(5x,''-tsoptgmf: use  special GMF optimizer in ORCA for TS optimization, !NEED ORCA DEVEL VERSION FOR THIS!'')')
+      write (*, '(5x,''-tsoptact: optimize TS in ORCA by specifying active atoms'')')
       write (*, '(5x,''-notsgeo  : do not use geodesic interpolation as guess for restarting not converged NEB runs '')')
       write (*, '(5x,''-tsnodes [integer]: select number of nodes for path (default 9) '')')
       write (*, *)
@@ -485,7 +502,7 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       !TODO write (*, '(5x,''-qmprog [program]      : external code for DFT calculations ("orca currently default")'')')
       write (*, '(5x,''-plotk  : plot k(E) curves '')')
       write (*, '(5x,''-nobhess  : do not compute thermo correction for barrier with bhess '')') ! currently not implemented
-      write (*, '(5x,''-path [method]     : select pathfinder methods (default is "neb", "gsm" or "xtb" also possible)'')')
+      write (*, '(5x,''-path [method]     : select pathfinder methods (default is "neb", "gsm" also possible)'')')
       write (*, '(5x,''-fermi : apply  fermi smearing (deactivated by default)'')')
       write (*, '(5x,''-tfscale [real] : scale time of flight for subseauent fragmentations (default 1.0 means no scaling)'')')
       write (*, '(5x,''-scaleker [real] : scale kinetic energy release upon fragmentation (default 1.0 means no scaling)'')')
@@ -567,9 +584,11 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       if (env%qmprog .ne. "orca") write (*, *) "Warning! currently only ORCA is supported as external QM program"
 
       write(*,*) "Path search method:", trim(env%tsfinder)
-      if (env%tsfinder == "crest_tsgen") then 
-         write(*,*) "Using crest_tsgen for path search, Warning is not yet fully tested and requires crest_tsgen binary in path"
-         env%tsgeodesic = .false.
+
+      if (env%tsfinder == "gsm") then 
+         write(*,*) "Using double-ended growing string methods for path search, need gsm.orca and tm2orca.py binary in path"
+         if (env%tsnds .eq. 9)   env%tsnds = 15
+         write(*,*) "setting number of nodes by to ", env%tsnds   
       end if
 
       if (env%geolevel == "gxtb" .and. env%tsfinder == 'neb') then
@@ -589,7 +608,16 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
 
       !write(*,*) "Number of nodes for path search:", env%tsnds
       if (env%exstates .gt. 0) write (*, *) "Number of excited states to include via TDDFT:", env%exstates
+
+      ! CID specific settings TODO
+      if (env%cid_mode == 2) env%cid_elab=0.0_wp
+
+      if (env%solv) then 
+         write(*,*) "Solvation selected for barrier and energy calculations"
+      end if
       write (*, '(60(''*''))')
+
+      
 
    end subroutine check_settings
 
@@ -607,7 +635,14 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       !always needed
       call check_prog('xtb', .true., io)
       call check_prog('crest', .true., io)
-      call check_prog('orca', .true., io)
+
+      ! with GSM we can avoid using orca ...
+      if (env%reoptts) call check_prog('orca', .true., io)
+      if (env%tsfinder == "gsm") then 
+         call check_prog('gsm.orca', .true., io)
+         call check_prog('tm2orca.py', .true., io)
+      end if
+
       ! for xtb with orca TODO use setenv for this
       call execute_command_line("echo $(which xtb) > tmp.xtbpath")
       call rdshort_string('tmp.xtbpath', xtbpath)

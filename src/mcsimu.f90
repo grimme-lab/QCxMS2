@@ -325,7 +325,12 @@ contains
          if (maxiee .lt. 0 .or. maxiee .gt. env%cid_elab*1.5_wp) then
           if (env%printlevel .eq. 3) write (*, *) "maxiee is negative or larger than elab, something went wrong, set it to 1.5 elab"
             maxiee = env%cid_elab*1.5_wp
+            if (env%cid_elab .eq. 0) then
+               !write (*, *) "temprun mode, set energy to 60 eV"
+               maxiee = 60.0_wp !TODO repair eiee array!!
+            end if
          end if
+        
       end if
 
       allocate (ts_rrhos(nincr))

@@ -54,6 +54,7 @@ contains
       if (present(chrg)) then
          chrg1 = chrg
          call wrshort_int('.CHRG', chrg1)
+         call remove('.UHF') ! always remove .UHF file if charge changes
       else
          inquire (file='.CHRG', exist=ex)
          if (ex) then
@@ -61,16 +62,22 @@ contains
          else
             chrg1 = env%chrg
             call wrshort_int('.CHRG', chrg1)
+            call remove('.UHF') ! always remove .UHF file if charge changes
          end if
       end if
 
       if (present(uhf)) then
          uhf1 = uhf
       else
-         uhf1 = 0
-         call printspin(env, fname, spin, chrg1)
-         ! uhf in .UHF formalism of xtb is number of unpaired electrons
-         uhf1 = spin - 1
+         inquire (file='.UHF', exist=ex)
+         if (ex) then
+            call rdshort_int('.UHF', uhf1)
+         else
+            uhf1 = 0
+            call printspin(env, fname, spin, chrg1)
+            ! uhf in .UHF formalism of xtb is number of unpaired electrons
+            uhf1 = spin - 1
+         end if
          ! correct for H+
          if (uhf1 == -2) uhf1 = 0
       end if
@@ -92,10 +99,15 @@ contains
       ! special cases
       ! bhess only in xtb
       if (job == 'bhess') then
-         ! bhess always gfn2 or gxtb
-         call prepxtb(env, fname, 'gfn2', job, jobcall, fout, pattern, cleanupcall, re)
+         ! bhess always gfn2 or gfn2spinpol
+         if (env%geolevel == "gfn2spinpol") then 
+            call prepxtb(env, fname, 'gfn2spinpol', job, jobcall, fout, pattern, cleanupcall, re)
+         else
+            call prepxtb(env, fname, 'gfn2', job, jobcall, fout, pattern, cleanupcall, re)
+         end if
          !no TS optimization in xtb currently available
       elseif ((job == 'optts' .and. level == 'gfn2') &
+         & .or. (job == 'optts' .and. level == 'gfn2spinpol') &
          & .or. (job == 'optts' .and. level == 'gfn1') &
          & .or. (job == 'optts' .and. level == 'gxtb')) then
          call preporca(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
@@ -103,22 +115,27 @@ contains
          call preporca(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
       elseif (job == "hess") then ! ORCA freqs are strange ....
          ! we go here always for gfn2 frequencies in orca
-         call preporca(env, fname, 'gfn2', job, jobcall, fout, pattern, cleanupcall, re)
+         if (env%geolevel == "gfn2spinpol") then 
+            call preporca(env, fname, 'gfn2spinpol', job, jobcall, fout, pattern, cleanupcall, re)
+         else
+            call preporca(env, fname, 'gfn2', job, jobcall, fout, pattern, cleanupcall, re)
+         end if
       else
 
          ! check for program
          select case (level)
             ! xtb calculations TODO move gfn2 and gfn1 to tblite calculation
-         case ('gfn2', 'gfn1', 'pm6', 'dxtb', 'gff')
+         case ('gfn2','gfn2spinpol', 'gfn1', 'pm6', 'dxtb', 'gff')
             call prepxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
             !      DFT, set orca or turbomole and read template file orca_temp.inp and cefinecall?
          case ('pbe', 'b973c', 'r2scan3c', 'pbeh3c' &
-            & , 'wb97x3c', 'pbe0', 'ccsdt', 'kpr2scan50d4', 'pbe0tzvpd', 'wb97xd4tz', 'wb97xd4qz') ! could be extended to other functionals
+            & , 'wb97x3c', 'pbe0', 'ccsdt', 'kpr2scan50d4', 'pbe0tzvpd', 'wb97xd4tz', 'wb97xd4qz' &
+            & , 'wb97xd4matzvp') ! could be extended to other functionals
             call preporca(env, fname, level, job, jobcall, fout, pattern, cleanupcall, re)
             ! special methods
          case ('gxtb')
             if (job .eq. "sp" .or. job .eq. "opt") then
-               call prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall)
+               call prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,re)
             end if
             ! special QM methods have to be included here
          case default
@@ -192,7 +209,7 @@ contains
 
       ! checkfor H-atoms as QM codes sometimes don't like to calculate molecules without electrons
       call getsumform(trim(fname), sumform)
-      if (sumform == "H1" .and. chrg == 1 .and. level .ne. 'gfn1' .and. level .ne. 'gfn2' .and. level .ne. 'gxtb') then
+      if (sumform == "H1" .and. chrg == 1 .and. level .ne. 'gfn1' .and. level .ne. 'gfn2' .and. level .ne. 'gfn2spinpol' .and. level .ne. 'gxtb') then
          failed = .false.
          value = 0.0_wp
       else
@@ -442,6 +459,7 @@ contains
 
 ! prepare an ORCA calculation
    subroutine preporca(env, fname, level, job, jobcall, fout, pattern, cleanupcall, restart)
+      use structools
       implicit none
       type(runtypedata) :: env
       character(len=*), intent(in)      :: fname
@@ -454,6 +472,7 @@ contains
       character(len=80) :: levelkeyword
       character(len=80) :: sumform
       character(len=80) :: xtbstring
+      character(len=80) :: act_atom_string
 
       integer :: chrg
       integer :: uhf
@@ -501,6 +520,9 @@ contains
       case ('wb97xd4tz')
          levelkeyword = 'wB97X-D4 def2-TZVP'
          etemp = 15000 ! TODO tune this value
+      case('wb97xd4matzvp') ! 
+         levelkeyword = 'wB97X-D4 ma-def2-TZVP'
+         etemp = 15000 ! TODO tune this value
       case ('wb97xd4qz')
          levelkeyword = 'wB97X-D4 def2-QZVP'
          etemp = 15000 ! TODO tune this value
@@ -513,10 +535,6 @@ contains
       case ('pw6b95d4tzvpd')
          levelkeyword = 'PW6B95-D4 def2-TZVP'
          etemp = 10600
-         !if (env%chrg .lt. 0) levelkeyword = 'PBE0 ma-def2-TZVP'
-         ! if (env%chrg .lt. 0) levelkeyword = 'PBE0 def2-TZVPD SLOWCONV'
-         !
-         !!!!!!!! currently not needed REMOVE???
       case ('pbe')
          levelkeyword = 'PBE SV(P)'
          etemp = 5000
@@ -528,11 +546,19 @@ contains
             etemp = 5000
             fermi = .true.
          end if
+      case ('gfn2spinpol')
+         levelkeyword = 'XTB2'
+         etemp = 300
+         fermi = .false. ! activated by default anyway
+         if (restart) then
+            etemp = 5000
+            fermi = .true.
+         end if   
       case ('gxtb')
          levelkeyword = 'XTB2'
          fermi = .false.
          if (restart) then
-            etemp = 5000
+            etemp = 15000
             fermi = .true.
          end if
       case ('ccsdt')
@@ -565,8 +591,9 @@ contains
          jobkeyword = 'OPT FREQ' ! not sure if this works
          fermi = .false. ! ORCA hessians do not work with fermi smearing
       case ('optts')
-         !jobkeyword = 'OptTS(GMF) LOOSEOPT' !
+         
          jobkeyword = 'OptTS LOOSEOPT' !
+         if (env%tsoptgmf) jobkeyword = 'OptTS(GMF) LOOSEOPT' !
       case ('tddft')
          jobkeyword = 'SP' !
       end select
@@ -589,7 +616,22 @@ contains
       !if (level .ne. 'wb97x3c')
       write (ich, *) "! "//trim(levelkeyword)
 
+      if (env%solv) then 
+         if ( level =="gfn1" .or. level == 'gfn2' .or. level == 'gfn2spinpol') then 
+            write (ich, *) "! ALPB(water)" 
+         else
+          write (ich, *) "! CPCM(WATER)" 
+         end if
+      end if
+
       write (ich, *) "! "//trim(jobkeyword)
+             !use  tblite
+      if (level == 'gfn2spinpol') then
+         xtbstring = 'XTBINPUTSTRING2 "--tblite --spinpol"'
+         write (ich, *) "%xtb"
+         write (ich, '(a)') trim(xtbstring)
+         write (ich, *) "end"
+      end if
       if (job == 'optts') then
          ! for now we do it dirty like that, dont want to rewrite the whole routine ..
          call rdshort_int('nmode', nmode)
@@ -598,9 +640,16 @@ contains
          write (ich, *) " end"
          write (ich, *) ' inhess read  inhessname "orca.hess"'
          write (ich, *) " maxiter 100"
+         if (env%tsoptact) then
+            call get_active_cnstring(env, act_atom_string) 
+            write (ich, *)  "TS_Active_Atoms { "//trim(act_atom_string)//" }" ! atoms that are involved in TS, e.g. for proton
+         write (ich, *)  "end"
+         write(ich,*)    "TS_Active_Atoms_Factor 1.5" ! factor by which the cutoff for bonds is increased for
+         end if
          write (ich, *) "end"
          if (env%geolevel == 'gxtb') then
-            xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz''"'
+            xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -symthr 0.0 ''"'
+            if (fermi)  xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -tel 15000 -symthr 0.0''"'
             write (ich, *) "%xtb"
             write (ich, '(a)') trim(xtbstring)
             write (ich, *) "end"
@@ -727,11 +776,16 @@ contains
       !if (level .eq. "pm6") call wrpm6input()
       call copy(trim(fname), 'xtbin.xyz')
       write (jobkeyword, '(a)') 'xtb xtbin.xyz --'//trim(job)//' --'//trim(level)
+
+      ! use tblite for correct uhf
+      if (level == "gfn2spinpol") write (jobkeyword, '(a)') trim(jobkeyword)//' --tblite --spinpol'
       ! for gff optimizations, to prevent H rearranges back to initial position
       if (level == "gff" .and. job == 'opt') write (jobkeyword, '(a)') 'xtb xtbin.xyz --gff --opt vtight'
       !if (env%fermi) ! TODO check if this is really needed
       ! apply here high fermi smearing for xTB, this needs to be robust and converge everytime ?
       write (jobkeyword, '(a,i4)') trim(jobkeyword)//' --etemp ', etemp
+
+      if (env%solv) write (jobkeyword, '(a)') trim(jobkeyword)//' --alpb water '
 
        !!!>for TESTING
       !if (env%dxtb) write (jobkeyword, '(a)') trim(jobkeyword)//' --vparam dxtb_param.txt'
@@ -780,7 +834,7 @@ contains
    end subroutine prepxtb
 
 !  employ g-xTB, preliminary version
-   subroutine prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall)
+   subroutine prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,restart)
       implicit none
       type(runtypedata) :: env
       character(len=*), intent(in)      :: fname
@@ -794,6 +848,11 @@ contains
       integer :: etemp
       logical :: ex
       integer :: io
+      logical :: fermi ! apply fermi smearing
+      logical, intent(in) :: restart
+
+
+      if (restart) fermi = .true.
 
       call copy(trim(fname), 'xtbin.xyz')
 
@@ -807,8 +866,8 @@ contains
          call remove('.GRAD')
          call remove('.HESS')
 
-         if (env%fermi) then ! -etemp 15000 not needed
-            write (jobcall, '(a)') 'gxtb -c xtbin.xyz > gxtb.out 2>errorfile' ! TODO has currently no effect
+         if (env%fermi .or. fermi) then ! apply fermi smearing
+            write (jobcall, '(a)') 'gxtb -c xtbin.xyz -tel 15000 > gxtb.out 2>errorfile' ! TODO has currently no effect
          else
             write (jobcall, '(a)') 'gxtb -c xtbin.xyz > gxtb.out 2>errorfile'
          end if
@@ -818,7 +877,8 @@ contains
       case ('opt')
          call touch('.GRAD')
          call remove('coord') ! necessary the way the xtb driver works at the momen TODO fix this
-         write (jobcall, '(a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz" > opt.out 2>/dev/null'
+         write (jobcall, '(a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -symthr 0.0" > opt.out 2>/dev/null'
+         if (env%fermi .or. fermi) write (jobcall, '(a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -tel 15000 -symthr 0.0" > opt.out 2>/dev/null'
          write (jobcall, '(a)') trim(jobcall)//' && cp xtbopt.xyz opt.xyz'
          fout = 'opt.out'
          write (cleanupcall, '(a)') trim(cleanupcall)//' xtbdriver.xyz opt.out .GRAD'
@@ -828,6 +888,7 @@ contains
 
          call execute_command_line(trim(jobcall), exitstat=io)
          write (jobcall, '(a)') 'gxtb -c xtbin.xyz > gxtb.out 2>/dev/null'
+         if (env%fermi .or. fermi)  write (jobcall, '(a)') 'gxtb -c xtbin.xyz tel 15000 > gxtb.out 2>/dev/null'
          fout = 'gxtb.out'
          !pattern='total                    :'
          ! pattern="total                         -115.33940557"
