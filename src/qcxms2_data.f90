@@ -81,6 +81,7 @@ module qcxms2_data
       integer :: msnshifts2 = 0
       logical :: msinchi = .false. ! sort out according to inchi code (needs obabel in path)
       logical :: msmolbar = .false. ! sort out according to molbar (needs molbar in path)
+      logical :: mskeepdir = .false. ! keep directories for MSREACT
 
       real(wp) :: msfragdist = 0.0_wp ! distance of fragments in msreact
       logical :: bhess = .true. ! add thermocontribution to barrier   ! is automatically included in de, barrier, sumreac

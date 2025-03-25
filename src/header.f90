@@ -39,6 +39,8 @@ subroutine qcxms2_version
    include 'qcxms2_version.fh'
    write (*, '(3x,"*",*(1x,a))') &
       & "QCxMS2 version", version, "compiled by", author, "on", date
+
+      
 end subroutine qcxms2_version
 
 subroutine disclamer()

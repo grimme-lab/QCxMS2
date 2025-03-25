@@ -82,7 +82,7 @@ contains
 
       call setompthreads(env, njobs)
       write (*, *) "starting ", njobs, trim(env%iplevel), " calculations in parallel"
-      call omp_samejobcall(njobs, dirs, jobcall)
+      call omp_samejobcall(njobs, dirs, jobcall)  
 
       dirs0 = dirs
       njobs0 = njobs

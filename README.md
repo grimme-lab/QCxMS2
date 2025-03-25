@@ -8,7 +8,7 @@ Program package for the quantum mechanical calculation of EI mass spectra using 
 This is the download repository for the QCxMS2 program. 
 
 <div align="center">
-<img src="./assets/logo/qcxms2.svg" alt="Mass spectra calculation" width="220">
+<img src="./assets/logo/qcxms2.svg" alt="Mass spectra calculation" width="420">
 </div>
 
 **Installation**
@@ -33,7 +33,9 @@ Place the executables into your ``$HOME/bin/`` directory or path.
 
 **required external programs:**
 
-**xtb** (version > 6.7.1 - bleeding edge version!)
+
+**xtb** (version > 6.7.1 - bleeding edge version)
+
 [`xtb`](https://github.com/grimme-lab/xtb)
 
 
@@ -58,9 +60,10 @@ Place the executables into your ``$HOME/bin/`` directory or path.
 
 ## Compilers 
 
-ifort(<=2021.10.0), icc(<=2021.10.0)
+1. ifort(<=2021.10.0), icc(<=2021.10.0)
+2. gfortran, gcc
 
-### Meson
+### Meson using ifort and icc
 
 Using [meson](https://mesonbuild.com/) as build system requires you to install a fairly new version like 0.062 or newer.
 To use the default backend of meson you have to install [ninja](https://ninja-build.org/) version 1.7 or newer.
@@ -69,6 +72,22 @@ To use the default backend of meson you have to install [ninja](https://ninja-bu
 export FC=ifort CC=icc
 meson setup build -Dfortran_link_args="-lifcoremt -static" 
 ninja -C build 
+```
+
+This will build a static linked binary in the ``build`` folder. Copy the binary from ``build/qcxms2`` file into a directory in your path, e.g. ``~/bin/``.
+
+
+### CMake using gfortran and gcc
+
+
+The CMake build system requires both make and CMake to be installed, the latter has to be version 3.9 or newer.
+
+Building `qcxms2` with CMake works with the following chain of commands:
+
+```bash
+export FC=gfortran CC=gcc
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+make -C build
 ```
 
 This will build a static linked binary in the ``build`` folder. Copy the binary from ``build/qcxms2`` file into a directory in your path, e.g. ``~/bin/``.
@@ -96,9 +115,8 @@ A more detailed documentation on topics like input settings can be found at [rea
 Coming soon ...
 
 **Citations**
-
-Coming soon ...
-
+1. J.Gorges, S. Grimme, *ChemRxiv*, **2025**, "QCxMS2 - a program for the calculation of electron ionization mass spectra via automated reaction network discovery".
+  DOI: [10.26434/chemrxiv-2025-277zm](https://dx.doi.org/10.26434/chemrxiv-2025-277zm)
 
 
 **License**

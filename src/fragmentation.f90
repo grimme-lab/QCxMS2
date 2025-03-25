@@ -85,7 +85,7 @@ contains
          if (failed1 .and. failed2) stop "first SPH calucation failed, aborting run, something is wrong with the input geometry"
          call execute_command_line(trim(cleanupcall), exitstat=io)
       end if
-
+   
    end subroutine calc_startfragment
 ! new fragmentation
    subroutine calcfragments(env, fname, eiee, piee, nfragl, startdir, fraglist, nfrags)
@@ -284,7 +284,6 @@ contains
       implicit none
       character(len=1024) :: jobcall, dir
       character(len=80) :: fname
-      character(len=80), dimension(15) :: cleanupfiles
       character(len=4) :: fraglevel ! gfn1 or gfn2
       integer :: io, i, ich
       integer :: nshifts, nat, nfrags
@@ -381,15 +380,7 @@ contains
       ! Cleanup
       call rmrf('MSDIR')
 
-      cleanupfiles = ["cregen.out.tmp", "cre_members", "crest_allproducts.xyz", &
-      & "crest_best.xyz", "cresterror.out", "crest_input_copy.xyz", &
-      & "crestms.inp", "crest.restart", "crest_unique_products.xyz", &
-      & "crest_unique_products.sorted", "fragmentpairs.xyz", "coord", &
-      & "scoord.1", "coordprot.0", "lmocent.coord"]
-
-      do i = 1, size(cleanupfiles)
-         call remove(cleanupfiles(i))
-      end do
+    
       if (env%printlevel .lt. 2) then
          call remove('crest_msreact_products.xyz')
          call remove('infrag.xyz')
@@ -469,5 +460,30 @@ contains
 
       write (*, *) "Number of generated fragments and isomers is", nfrags, nisomers
    end subroutine readfraglist
+
+   subroutine cleanup_crestmsreact
+      implicit none
+
+     
+
+      call remove("cregen.out.tmp")
+      call remove("cre_members")
+      call remove("crest_allproducts.xyz")
+      call remove("crest_best.xyz")
+      call remove("cresterror.out")
+      call remove("crest_input_copy.xyz")
+      call remove("crestms.inp")
+      call remove("crest.restart")
+      call remove("crest_unique_products.xyz")
+      call remove("crest_unique_products.sorted")
+      call remove("fragmentpairs.xyz")
+      call remove("coord")
+      call remove("scoord.1")
+      call remove("coordprot.0")
+      call remove("lmocent.coord")
+
+      
+
+   end subroutine cleanup_crestmsreact
 
 end module fragmentation

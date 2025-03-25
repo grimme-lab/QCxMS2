@@ -245,29 +245,24 @@ contains
       end if
 
       write (qmdatentry, *) trim(query)//"  ", value ! two spaces for easier reading
+
       inquire (file=fqm, exist=ex, iostat=ierr)
       if (ex) then !  This is done so that always the newest value is first found by the grepval routine
-         call copy(fqm, 'qmdatatemp')
-         call remove('qmdata')
-         open (newunit=ich, file=fqm, status="new", action="write")
-         write (ich, *) trim(qmdatentry)
-         call appendto('qmdatatemp', fqm)
-         call remove('qmdatatemp')
+         open (newunit=ich, file=fqm, position="append", status="old", action="write")
+         write (ich, '(a)') trim(qmdatentry)
+         close (ich)
       else
-         open (newunit=ich, file=fqm, status="new", action="write")
-         write (ich, *) trim(qmdatentry)
+         open (newunit=ich, file=fqm)
+         write (ich, '(a)') trim(qmdatentry)
+         close (ich)
       end if
-      close (ich)
+     
       ! write for comparison sp energy to qmdata
       if (job == 'tddft') then
          write (query, '(a,1x,a,1x,i0,1x,i0)') trim(level), "sp", chrg, uhf
-         write (qmdatentry, *) trim(query)//"  ", etot
-         call copy(fqm, 'qmdatatemp')
-         call remove('qmdata')
-         open (newunit=ich, file=fqm, status="new", action="write")
-         write (ich, *) trim(qmdatentry)
-         call appendto('qmdatatemp', fqm)
-         call remove('qmdatatemp')
+         write (qmdatentry, '(a)') trim(query)//"  ", etot
+         open (newunit=ich, file=fqm, position="append", status="old", action="write")
+         write (ich, '(a)') trim(qmdatentry)
          close (ich)
       end if
 
@@ -527,11 +522,14 @@ contains
          levelkeyword = 'wB97X-D4 def2-QZVP'
          etemp = 15000 ! TODO tune this value
       case ('pbe0')
-         levelkeyword = 'PBE0 def2-TZVP'
+         levelkeyword = 'PBE0 def2-TZVP D4'
          etemp = 10000
       case ('pbe0tzvpd')
-         levelkeyword = 'PBE0 def2-TZVP'
+         levelkeyword = 'PBE0 def2-TZVPD D4' 
          etemp = 10000
+      case ('pbe0matzvp')
+         levelkeyword = 'PBE0 ma-def2-TZVP D4'
+         etemp = 10000   
       case ('pw6b95d4tzvpd')
          levelkeyword = 'PW6B95-D4 def2-TZVP'
          etemp = 10600
@@ -604,7 +602,7 @@ contains
       mult = uhf + 1
       ! TODO check here for orca template file
 
-      OPEN (newunit=ich, FILE=' orca.inp')
+      OPEN (newunit=ich, FILE='orca.inp')
       if (level .ne. "ccsdt") write (ich, *) "! DEFGRID2 "
       ! end if
 
@@ -708,11 +706,11 @@ contains
             pattern = "Total correction"
          end if
          ! convert to g98 format
-         call copy(trim(fname), 'xtbin.xyz')
+         !call copy(trim(fname), 'xtbin.xyz')
          !TODO new xtb version
          ! inquire (file='g98.out', exist=ex)
          !if (.not. ex) then write (jobcall, '(a)') trim(jobcall)//' && xtb xtbin.xyz --hess  > xtbhess.out 2>/dev/null'
-         write (jobcall, '(a)') trim(jobcall)//' && xtb thermo xtbin.xyz --orca orca.hess  > thermo.out 2>/dev/null'
+         !write (jobcall, '(a)') trim(jobcall)//' && xtb thermo xtbin.xyz --orca orca.hess  > thermo.out 2>/dev/null'
          ! write (jobcall, '(a)') trim(jobcall)//' && xtb xtbin.xyz --hess  > xtbhess.out 2>/dev/null'
          ! write(cleanupcall,'(a)') trim(cleanupcall)//" charges xtbhess.out xtbrestart xtbtopo.mol xtbhess.xyz wbo"
       case ('ohess')

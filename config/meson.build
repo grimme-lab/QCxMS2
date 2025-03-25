@@ -104,14 +104,16 @@ mctc_dep = dependency(
 )
 exe_deps += mctc_dep
 
-# Create the rmsd tool as subproject
-rmsd_dep = dependency(
-  'rmsd-tool',
-  version: '>=0.1',
-  fallback: ['rmsd-tool', 'rmsd_dep'],
-  default_options: ['default_library=static'],
-)
-exe_deps += rmsd_dep
+tomlf_dep = dependency(
+  'toml-f',
+  version: '>=0.2.0',
+   fallback: ['toml-f', 'tomlf_dep'],
+   default_options: ['default_library=static'],
+ )
+ exe_deps += tomlf_dep
+
+
+
 # Create the tight-binding framework as subproject
 #tblite_dep = dependency(
 #  'tblite',

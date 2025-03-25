@@ -27,7 +27,7 @@ qcxms_lib = library(
   meson.project_name(),
   sources: srcs,
   dependencies: exe_deps,
-  include_directories: include_directories('subprojects'),
+  #  include_directories: include_directories('subprojects'),
 )
 
 # Export as dependency

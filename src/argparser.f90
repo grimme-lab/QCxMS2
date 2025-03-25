@@ -73,6 +73,7 @@ contains
       env%msnshifts = 0 ! only set higher for planar molecules
       env%msnshifts2 = 0
       env%msfragdist = 2.5_wp
+      env%mskeepdir = .false. ! keep the MSDIR with the constrained optimizations 
       env%notemp = .true. ! only take ZPVE no thermal effects G(RRHO) ! the right way to do it ...
       ! for plotting
       env%noiso = .false.
@@ -99,7 +100,7 @@ contains
       env%eyring = .true. ! use eyring isntead of rrkm
       env%eyzpve = .false. ! use eyring instead of rrkm but only with ZPVE ...
       env%sthr = 150 ! RRHO cutoff in cm-1
-      env%ithr = 100 ! imagniary mode RRHO cutoff in cm-1
+      env%ithr = 100 ! imaginary mode RRHO cutoff in cm-1
       env%nthermosteps = 200 ! number of increments to compute thermal corrections for IEE distribution
       env%noplotisos = .false. ! plot isomers in mass spectrum
       env%ircrun = .false.
@@ -189,6 +190,8 @@ contains
          case ('-msfragdist ')
             call readl(arg(i + 1), xx, j)! seperate fragments in crestms from each other
             env%msfragdist = xx(1)
+         case ('--mskeepdir ')
+            env%mskeepdir = .true. ! keep the MSDIR with the constrained optimizations  
          case ('-topocheck ')
             env%topocheck = arg(i + 1) ! topochech after optimization
          case ('-nobhess ')
@@ -462,11 +465,12 @@ contains
       write (*, '(5x,''-msnoattrh: deactivate attractive potential between hydrogen and LMO centers)'')')
       write (*, '(5x,''-msnshifts [int]: perform n optimizations with randomly shifted atom postions (default 0) '')')
       write(*,'(5x,''-msnshifts2 [int]: perform n optimizations with randomly shifted atom postions and repulsive potential applied to bonds (default 0) '')')
-     write (*, '(5x ''-msnbonds [int]: maximum number of bonds between atoms pairs for applying repulsive potential (default 3)'')')
-write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (activated by default - requires  sourced "molbar")'')')
+      write (*, '(5x ''-msnbonds [int]: maximum number of bonds between atoms pairs for applying repulsive potential (default 3)'')')
+      write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (activated by default - requires  sourced "molbar")'')')
       write (*, '(5x,''-msinchi: sort out topological duplicates by inchi codes (requires  sourced "obabel")'')')
       write (*, '(5x ''-msnfrag [int]: number of fragments that are printed by msreact (random selection)'')')
       write (*, '(5x ''-msfragdist [real]: seperate fragments before TS search from each other (default 2.5 [Angstrom]) '')')
+      write (*, '(5x ''-mskeepdir: keep the MSDIR directory with the constrained optimizations)'')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
       write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to number of atoms '')')
@@ -478,7 +482,6 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, '(5x,''-sthr [int] : RRHO cutoff for thermo contribution  (default is 150 cm-1)'')')
       write (*, '(5x,''-ithr [int] : imaginary RRHO cutoff for thermo contribution  (default is 100 cm-1)'')')
       write (*, '(5x,''-nthermosteps [int] : number of increments to compute thermal corrections for IEE distribution (default 200, take a multiple of 10 )'')')
-      write(*,'(5x,''-topocheck [string] : check topology after optimization (default "molbar", "inchi" with "obabel" in path also possible, but not thoroughly tested. Set empty (i.e.," ") to deactivate) '')')
       write (*, '(/,1x,''Options for plotting of mass spectrum:'')')
       write (*, '(5x,''-noisotope  : only plot peak with highest isotope propability'')')
       write (*, '(5x,''-int_masses  : only plot masses as integers'')')
@@ -494,7 +497,9 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
 
       write (*, '(/,1x,''Advanced Options for testing:'')')
       write (*, '(5x,''-cid: compute a CID spectrum (not yet implemented)'')')
+      write(*,'(5x,''-topocheck [string] : check topology after optimization (default "molbar", "inchi" with "obabel" in path also possible, but not thoroughly tested. Set empty (i.e.," ") to deactivate) '')')
       write (*, '(5x,''-tf [real] time of flight in spectrometer in mukroseconds default is 50 '')')
+      write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to coordination number of reaction '')')
       !DEL write (*, '(5x,''-dxtbparam  : use special dxtb parameter - requires dxtb_param.txt in starting DIR '')')
       !DEL
       !DEL write (*, '(5x,''-reoptts  :reoptimize TS after path search (unstable so deactivated by default)) '')')
@@ -688,4 +693,50 @@ write (*, '(5x,''-msmolbar: sort out topological duplicates by molbar codes (act
       write (*, *)
    end subroutine check_progs
 
-end module argparser
+   subroutine citation(env)
+      implicit none
+      type(runtypedata) :: env
+
+      write (*, '(3x,a)') &
+         "Cite this work as:", &
+         "* J.Gorges, S. Grimme, ChemRxiv, 2025,", &
+         " QCxMS2 - a program for the calculation of electron ionization mass ", &
+         "spectra via automated reaction network discovery", &
+         "DOI: 10.26434/chemrxiv-2025-277zm", &
+         "", &
+         "for GFN2-xTB:", &
+         "* C. Bannwarth, E. Caldeweyher, S. Ehlert, A. Hansen, P. Pracht,", &
+         "  J. Seibert, S. Spicher, S. Grimme, WIREs Comput. Mol. Sci., 2020, 11,", &
+         "  e01493. DOI: 10.1002/wcms.1493", &
+         "", &
+         "* C. Bannwarth, S. Ehlert and S. Grimme., J. Chem. Theory Comput., 2019,", &
+         "  15, 1652-1671. DOI: 10.1021/acs.jctc.8b01176", &
+         "", &
+         "for GFN1-xTB:", &
+         "* S. Grimme, C. Bannwarth, P. Shushkov, J. Chem. Theory Comput., 2017,", &
+         "  13, 1989-2009. DOI: 10.1021/acs.jctc.7b00118", &
+         "", &
+         "for CREST:", &
+         "* P.Pracht, S.Grimme, C.Bannwarth, F.Bohle, S.Ehlert,", &
+         "G.Feldmann, J.Gorges, M.Müller, T.Neudecker, C.Plett,", &
+         "S.Spicher, P.Steinbach, P.Wesołowski, F.Zeller,", &
+         "J. Chem. Phys., 2024, 160, 114110.", &
+         "DOI: 10.1063/5.0197592", &
+         "", &
+         "for ORCA:", &
+         "* F. Neese, WIREs Comput. Mol. Sci., 2022, 12, e1606.", &
+         "DOI: 10.1002/wcms.1606", &
+         "", &
+         "for MolBar:", &
+         "* N. van Staalduinen, C. Bannwarth,", &
+         "Digital Discovery, 2024,3, 2298-2319.", &
+         "DOI: 10.1039/D4DD00208C", &
+         "", &
+         "for geodesic interpolation:", &
+         "* X. Zhu and  K. C. Thompson, T. J. Martinez", &
+         "J. Chem. Phys. 150, 164103 (2019).", &
+         "DOI: 10.1063/1.5090303", &
+         ""
+         end subroutine citation
+
+         end module argparser

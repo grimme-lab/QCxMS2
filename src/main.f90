@@ -36,7 +36,7 @@ program QCxMS2
    integer :: iunit
    integer :: nfrags1, nfrags2, nfrags3, nfrags4, ntot, nfrags
    integer :: nfrags5, nfrags6, nfrags7, nfrags8
-   integer :: iseed(1)
+   integer :: iseed(33)
    real(wp) :: ip, pf1, pf2, pfrag, dum, edum
    real(wp), allocatable :: eiee(:), piee(:)
    real(wp) :: t1, w1, t2, w2, rrho, sumreac, dethr ! energy threshold for subsequent fragmentation
@@ -71,8 +71,9 @@ program QCxMS2
 
    if (env%logo) then
       call qcxms2_logo
-      STOP
    end if
+
+   call citation(env)
 
    !> inialize random numbers
    !>> if not exlicitly set, use true random
@@ -89,6 +90,7 @@ program QCxMS2
    call check_settings(env)
    ! check if all requested programs are in PATH
    call check_progs(env)
+
 
    ! just for testing purposes here:
    if (env%ircrun) then

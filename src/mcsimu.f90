@@ -89,7 +89,7 @@ contains
       write (*, *) "----------------------------------------------------------------------"
       write (*, *)
       call getcwd(thisdir)
- if (env%eyring) write (*, '(a,f4.2,a)') "Eyring equation is used to compute rate constants, with mRRHO-cutoff: ", env%sthr, " cm-1"
+ if (env%eyring) write (*, '(a,i3,a)') "Eyring equation is used to compute rate constants, with mRRHO-cutoff: ", env%sthr, " cm-1"
       if (.not. env%eyring) write (*, *) "Simplified RRKM equation is used to compute rate constants"
 
       tav0 = 0.0_wp
