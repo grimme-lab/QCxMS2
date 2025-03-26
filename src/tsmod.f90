@@ -1629,7 +1629,7 @@ contains
       maxtime = 3600000 ! 1000 hours
       if (trim(env%geolevel) == 'gfn2' .or. trim(env%geolevel) == 'gfn1') maxtime = 3600
       if (trim(env%geolevel) == 'gxtb') maxtime = 10000 ! TODO make dependent on number of atoms
-       write(jobcall,'(a,i,a)') 'timeout ',maxtime,' gsm > gsm.out 2> gsmerror.out'
+       write(jobcall,'(a,i0,a)') 'timeout ',maxtime,' gsm > gsm.out 2> gsmerror.out'
       !write (jobcall, '(a,i,a)') ' timeout ', maxtime, ' gsm.orca > /dev/null 2>/dev/null' ! note if gsm failes gsm.out gets very large, just dont write it
       write (jobcall, '(a)') trim(jobcall)//' && touch gsm_finished '
       if (env%printlevel .le. 1) write (jobcall, '(a)') trim(jobcall)//' && rm -r scratch '

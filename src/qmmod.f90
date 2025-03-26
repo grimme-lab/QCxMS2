@@ -29,7 +29,7 @@ contains
       logical :: re
       character(len=*), intent(in)      :: fname
 
-      character(len=80) :: sumform
+      character(len=80) :: sumformula
       character(len=80) :: query
       character(len=80) :: fqm
       logical :: ex, ldum
@@ -171,7 +171,7 @@ contains
       type(runtypedata) :: env
       character(len=80), intent(in) :: fout, pattern
       character(len=*), intent(in) :: level, job
-      character(len=80) :: sumform
+      character(len=80) :: sumformula
       character(len=80) :: fqm, query
       character(len=162) :: qmdatentry
       character(len=*)      :: fname ! xyz structure file
@@ -208,8 +208,8 @@ contains
       end if
 
       ! checkfor H-atoms as QM codes sometimes don't like to calculate molecules without electrons
-      call getsumform(trim(fname), sumform)
-      if (sumform == "H1" .and. chrg == 1 .and. level .ne. 'gfn1' .and. level .ne. 'gfn2' .and. level .ne. 'gfn2spinpol' .and. level .ne. 'gxtb') then
+      call getsumform(trim(fname), sumformula)
+      if (sumformula == "H1" .and. chrg == 1 .and. level .ne. 'gfn1' .and. level .ne. 'gfn2' .and. level .ne. 'gfn2spinpol' .and. level .ne. 'gxtb') then
          failed = .false.
          value = 0.0_wp
       else
@@ -465,7 +465,7 @@ contains
       character(len=1024), intent(out) :: cleanupcall ! remove uneccessary files
       character(len=200) ::  jobkeyword
       character(len=80) :: levelkeyword
-      character(len=80) :: sumform
+      character(len=80) :: sumformula
       character(len=80) :: xtbstring
       character(len=80) :: act_atom_string
 
@@ -919,7 +919,7 @@ contains
       integer :: nhatoms
       integer, intent(in) :: npairs_in
       integer, intent(out) :: npairs_out
-      character(len=80) :: sumform
+      character(len=80) :: sumformula
       logical :: ex
       logical :: ishatom
       real(wp) :: edum
@@ -937,9 +937,9 @@ contains
          !check if  fragment  is isomer ! only fragments can be H-atom
          !  if (index(fragdirs(i,3),'p') .ne. 0) then
          do j = 2, 3
-            ! call getsumform(trim(fragdirs(i,j))//"/fragment.xyz",sumform)
-            call getsumform(trim(fname), sumform)
-            if (sumform == "H1") then
+            ! call getsumform(trim(fragdirs(i,j))//"/fragment.xyz",sumformula)
+            call getsumform(trim(fname), sumformula)
+            if (sumformula == "H1") then
                !hatomlist(i,j) = .true.
                ishatom = .true.
                nhatoms = nhatoms + 1
