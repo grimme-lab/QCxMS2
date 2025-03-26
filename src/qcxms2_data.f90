@@ -38,10 +38,11 @@ module qcxms2_data
 
       ! external programs
       character(len=80) :: qmprog = 'orca' ! currently only orca possible
-      character(len=3)  :: tsfinder = 'neb' !xtb (not recommended) and neb
+      character(len=80)  :: tsfinder = 'neb' !xtb (not recommended) and neb
       character(len=80) :: topocheck = 'molbar' ! inchi or molbar for topo check after optimization
       logical :: tsgeodesic = .true. ! use geodesic interpolation as guess for transition state search
       logical :: nebnormal = .false. ! use normal settings for neb search
+      logical :: tsoptgmf = .false. ! optimize TS with gmf
       !some global parameters
       character(len=1024) :: path !TODO FIXME can be removed
       character(len=1024) :: index !TODO FIXME can be removed
@@ -102,6 +103,9 @@ module qcxms2_data
       logical :: sortoutcascade = .false. ! sort out structures with more than one maximum in reaction path
       logical :: ignoreip = .false. ! ignore IPs, both fragments get full intensity
       logical :: reoptts = .true. ! reoptimize TS after GSM search
+      logical :: tsoptact  = .false. ! optimize TS in ORCA by specifying active atoms
+      logical :: checkmult = .false. ! check multiplicity of TS
+      logical :: pathmult = .false. ! compute reaction path with sum of multiplicities of products
       logical :: eyring = .true. ! use eyr for rate constant calculation
       logical :: eyzpve = .false. ! use eyr but only with ZPVE for rate constant calculation
       real(wp) :: mthr = 0.0_wp ! m/z threshold for plotting
@@ -141,6 +145,7 @@ module qcxms2_data
       real(wp) :: cid_mgas = 39.94800_wp ! argon ! mass of gas in u !He, Ne, Ar, Kr, Xe, N2 available TODO include them
       real(wp) :: cid_rgas = 3.55266638_wp !  bohr vdw-radius of Ar ! TODO include them
       real(wp) :: cid_scool = 1.0 ! scale collissional cooling
+      logical :: solv = .false. ! use solvation for fragmentations
    end type runtypedata
 
    ! some more constants

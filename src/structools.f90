@@ -361,6 +361,40 @@ contains
 
    end subroutine get_active_cn
 
+   ! execute this only in "ts" directory!!!
+   subroutine get_active_cnstring(env, act_atom_string)
+      implicit none
+      type(runtypedata) :: env
+      character(len=80), intent(out) :: act_atom_string
+      integer, allocatable :: actatoms(:) ! atom indices of active atoms
+      integer :: i, nat
+      logical :: ex
+      character(len=1024) :: thisdir
+      character(len=80) :: fname
+      real(wp), allocatable :: cn0(:), cn(:), bond0(:, :), bond(:, :)
+      integer, allocatable :: rhbond0(:), rhbond(:)
+
+      act_atom_string = ""
+      call getcwd(thisdir)
+      call chdir("..") ! go in ts search directory
+      call rdshort_int('start.xyz', nat)
+      fname = "start.xyz"
+      call get_CN(fname, cn0, bond0, .false.)
+      fname = "end.xyz"
+      call get_CN(fname, cn, bond, .false.)
+      call compare_bond(nat, bond0, bond, actatoms)
+      do i = 1, size(actatoms)
+         actatoms(i) = actatoms(i) - 1 ! ORCA indices start with 0 ...
+         if (actatoms(i) .gt. -1) then
+            write(act_atom_string, '(a,x,i0)') trim(act_atom_string), actatoms(i)
+         end if
+      end do
+      write(*,*) "active atoms are ", trim(act_atom_string)
+      call chdir(trim(thisdir)) ! go back in "ts" dir
+
+   end subroutine get_active_cnstring
+
+
 ! compare two bond order matrices and get active atoms of reaction
    subroutine compare_bond(nat, bond0, bond, actatoms)
       implicit none

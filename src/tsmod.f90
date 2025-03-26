@@ -10,7 +10,7 @@ module tsmod
    implicit none
 contains
 
-   !> TODO implement other path search methods
+   !>  TODO implement other path search methods
    !>  CURRENTLY only for NEB with geodesic and without geodesic
    subroutine tssearch(env, fname, npairs_in, npairs_out, fragdirs_in, fragdirs_out)
       implicit none
@@ -40,7 +40,9 @@ contains
       real(wp) :: barrier ! barrier height
       real(wp) :: barrier_tddft, e_start_tddft ! if we include tddt excited states
       real(wp), allocatable :: e_ts_tddft(:)
+      real(wp), allocatable :: e_ts_2uhf(:), e_ts_tddft_2uhf(:)
       real(wp) :: edum
+      integer :: uhf1, uhf2
       real(wp) :: t1, w1, t2, w2
 
       njobs = 0
@@ -59,15 +61,40 @@ contains
       else
          call rdshort_int('.CHRG', chrg)
       end if
+
+      ! determine correct spin state
+      ! always compute path at multiplicity of reactant
       inquire (file='.UHF', exist=ex)
-      if (.not. ex) then
-         write (*, *) "Error: UHF file not found, just computing uhf from input charge ", env%chrg
-         call printspin(env, fname, spin, chrg)
-         uhf = spin - 1
-         if (uhf == -2) uhf = 0 ! for H+
-      else
-         call rdshort_int('.UHF', uhf)
+         if (.not. ex) then
+            write (*, *) "Error: UHF file not found, just computing uhf from input charge ", env%chrg
+            call printspin(env, fname, spin, chrg)
+            uhf = spin - 1
+            if (uhf == -2) uhf = 0 ! for H+
+         else
+            call rdshort_int('.UHF', uhf)
+         end if
+         do i = 1, npairs_in
+            call wrshort_int(trim(env%path)//"/"//trim(fragdirs_in(i, 1))//'/.UHF', uhf)
+         end do
+
+
+      ! for homolytic bond dissociation we have to sum up the uhf values of the fragments
+      if (env%pathmult) then
+         do i = 1, npairs_in
+           if (index(fragdirs_in(i, 3), 'p') .ne. 0) then
+               call rdshort_int(trim(env%path)//"/"//trim(fragdirs_in(i, 2))//"/.UHF", uhf1)
+               call rdshort_int(trim(env%path)//"/"//trim(fragdirs_in(i, 3))//"/.UHF", uhf2)
+               uhf = uhf1 + uhf2
+               if (uhf .gt. 1) then
+                  write(*,*) "computing path of ",trim(env%path)//"/"//trim(fragdirs_in(i, 1))," with UHF ",uhf
+               end if
+               call wrshort_int(trim(env%path)//"/"//trim(fragdirs_in(i, 1))//'/.UHF', uhf)
+           end if
+         end do 
       end if
+
+
+      
 
       ! prepare start and end geometries
       do i = 1, npairs_in
@@ -79,7 +106,7 @@ contains
          if (ex) prod = 'isomer.xyz'
          call copy(trim(prod), "end.xyz")
          call wrshort_int('.CHRG', chrg)
-         call wrshort_int('.UHF', uhf)
+         
          call chdir(trim(env%path))
       end do
 
@@ -110,6 +137,10 @@ contains
          if (trim(env%tsfinder) == 'neb') then
             inquire (file='neb_finished', exist=ex)
             if (.not. ex) njobs = njobs + 1
+         
+         elseif (trim(env%tsfinder) == 'gsm') then
+            inquire (file='gsm_finished', exist=ex)
+            if (.not. ex) njobs = njobs + 1   
          else
             write (*, *) "Warning: other path searches than NEB not supported, stopping QCxMS2"
             stop
@@ -159,6 +190,17 @@ contains
                call append_char(dirs, trim(fragdirs_in(i, 1)))
             end if
          end if
+
+          !xtbpath
+         if (trim(env%tsfinder) == 'gsm') then
+            inquire (file='gsm_finished', exist=ex)
+            if (.not. ex) then
+               call prepgsm(env, jobcall,hbonddiss, .false., .false.)
+               njobs = njobs + 1
+               call append_char(dirs, trim(fragdirs_in(i, 1)))
+            end if
+         end if
+
          call chdir(trim(env%path))
       end do
       !start TS search in parallel
@@ -173,6 +215,10 @@ contains
       call timing(t2, w2)
       env%tpath = env%tpath + (w2 - w1)
       write (*,'(a,f10.1,a)')  "Time spent for path search and barrier calculation: ", (w2 - w1), "s"
+
+
+
+
 
       if (trim(env%tsfinder) == 'neb') then
          njobs = 0
@@ -212,7 +258,6 @@ contains
                end if
                call chdir(trim(env%path))
             end do
-
             call setomptoone()
             write (*, *) "Retry NEB searches for ", njobs, " pairs"
             call omp_samejobcall(njobs, dirs, jobcall)
@@ -392,7 +437,15 @@ contains
          else
             io = makedir('ts')
             call copysub('ts.xyz', 'ts')
+
+            ! copy charge and multiplicity
+            call copysub('.UHF', 'ts')
+            call copysub('.CHRG', 'ts')
             tsopt(i) = .false.
+            if (.not. env%reoptts) then
+                tsopt(i) = .true. ! just set it to true if we do not want to reoptimize (avoid to use orca)
+                njobs = 0
+            end if
          end if
          call chdir(trim(env%path))
       end do
@@ -531,10 +584,10 @@ contains
          call chdir("ts")
          call readoutqm(env, 'ts.xyz', env%geolevel, 'optts', fout, pattern, edum, failed)
          if (failed) then
-            nmode(i) = 0
-            write (*, *) "TS Optimization not converged we have to take last point of path as ts and ircmodeis set to 0"
-            call copy("../ts.xyz", "ts.xyz")
-            ircmode = 0.0_wp
+               nmode(i) = 0 
+               write (*, *) "TS Optimization not converged we have to take last point of path as ts and ircmodeis set to 0"
+               call copy("../ts.xyz", "ts.xyz")
+               ircmode = 0.0_wp
          end if
          call chdir("..")
          call wrshort_real('ircmode_'//trim(env%geolevel), ircmode)
@@ -649,7 +702,7 @@ contains
       call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
 
       ! NOW COMPUTE BARRIERS
-      ! call setompthreads(env, npairs_out) ! now again with all npair_out
+      call setompthreads(env, npairs_out) ! now again with all npair_out
       deallocate (dirs)
       allocate (dirs(1)) ! first element always empty
       dirs = ['']
@@ -727,15 +780,13 @@ contains
       if (njobs .gt. 0) write (*, *) "Restarting ", njobs, " "//trim(env%tslevel)//" singlepoint calculations on TS"
       call omp_samejobcall(njobs, dirs, jobcall)
 
+
       ! readout energies
       allocate (e_ts(npairs_out), e_rrho(npairs_out))
       if (env%exstates .gt. 0) then
          allocate (e_ts_tddft(npairs_out))
       end if
-
-      write (query, '(a,1x,i0,1x,i0)') trim(env%tslevel)//" sp", chrg, uhf
-
-!TODO CONTINUE HERE
+      
       do i = 1, npairs_out
          call chdir(trim(fragdirs_out(i, 1)))
          call chdir("ts")
@@ -754,6 +805,124 @@ contains
       ! cleanup
       call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
 
+
+      ! Check for higher spin states (uhf +2)
+      if (env%checkmult) then 
+         call setompthreads(env, npairs_out) ! now again with all npair_out
+         deallocate (dirs)
+         allocate (dirs(1)) ! first element always empty
+         dirs = ['']
+         njobs = 0
+
+         fname = 'ts.xyz'
+         !TDDFT?
+         if (env%exstates .gt. 0) then
+            job = 'tddft'
+         else
+            job = 'sp'
+         end if
+
+         do i = 1, npairs_out
+            call chdir(trim(fragdirs_out(i, 1)))
+            call chdir("ts")
+            call prepqm(env, fname, env%tslevel, job, jobcall, fout, pattern, cleanupcall, there, .false.,chrg,uhf+2)
+            if (.not. there) njobs = njobs + 1
+            call chdir("..")
+            call chdir(trim(env%path))
+         end do
+
+         call setompthreads(env, njobs)
+         deallocate (dirs)
+         allocate (dirs(1)) ! first element always empty
+         dirs = ['']
+
+         do i = 1, npairs_out
+            call chdir(trim(fragdirs_out(i, 1)))
+            call chdir("ts")
+            call prepqm(env, fname, env%tslevel, job, jobcall, fout, pattern, cleanupcall, there, .false.,chrg,uhf+2)
+            if (.not. there) then
+               call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts')
+            end if
+            call chdir("..")
+            call chdir(trim(env%path))
+         end do
+
+         write (*, *) "Starting ", njobs, " "//trim(env%tslevel)//" Singlepoint calculations on TS with UHF+2"
+         call omp_samejobcall(njobs, dirs, jobcall)
+
+         deallocate (dirs0)
+         dirs0 = dirs
+         njobs0 = njobs
+         njobs = 0
+         ! check failed singlepoints
+
+         do i = 1, npairs_out
+            call chdir(trim(fragdirs_out(i, 1)))
+            call chdir("ts")
+            call readoutqm(env, fname, env%tslevel, job, fout, pattern, edum, failed)
+            if (failed) njobs = njobs + 1
+            call chdir("..")
+            call chdir(trim(env%path))
+         end do
+
+         ! actually restart failed singlepoints
+         call setompthreads(env, njobs)
+         deallocate (dirs)
+         allocate (dirs(1)) ! first element always empty
+         dirs = ['']
+
+         do i = 1, npairs_out
+            call chdir(trim(fragdirs_out(i, 1)))
+            call chdir("ts")
+            call readoutqm(env, fname, env%tslevel, job, fout, pattern, edum, failed)
+            if (failed) then
+               call prepqm(env, fname, env%tslevel, job, jobcall, fout, pattern, cleanupcall, there, .true.)
+               call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts')
+            end if
+            call chdir("..")
+            call chdir(trim(env%path))
+         end do
+
+         if (njobs .gt. 0) write (*, *) "Restarting ", njobs, " "//trim(env%tslevel)//" singlepoint calculations on TS with UHF+2"
+         call omp_samejobcall(njobs, dirs, jobcall)
+
+         ! readout energies
+         allocate (e_ts_2uhf(npairs_out))
+         if (env%exstates .gt. 0) then
+            allocate (e_ts_tddft_2uhf(npairs_out))
+         end if
+
+         do i = 1, npairs_out
+            call chdir(trim(fragdirs_out(i, 1)))
+            call chdir("ts")
+            if (env%exstates .gt. 0) then
+               call readoutqm(env, fname, env%tslevel, job, fout, pattern, e_ts_tddft_2uhf(i), failed)
+               if (failed) e_ts_tddft_2uhf(i) = 1000000.0_wp ! just set to high value TODO FIXME
+               call readoutqm(env, fname, env%tslevel, 'sp', fout, pattern, e_ts_2uhf(i), failed)
+            else
+               call readoutqm(env, fname, env%tslevel, job, fout, pattern, e_ts_2uhf(i), failed)
+               if (failed) e_ts_2uhf(i) = 1000000.0_wp ! just set to high value TODO FIXME
+            end if
+            call chdir("..")
+            call chdir(trim(env%path))
+         end do
+          ! cleanup
+         call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
+
+         do i = 1, npairs_out 
+            if (e_ts_2uhf(i) .lt. e_ts(i)) then
+               write (*, *) "TS energy for pair ", trim(fragdirs_out(i, 1)), " is lower for UHF+2 spin state, we take this one"
+               e_ts(i) = e_ts_2uhf(i)
+               if (env%exstates .gt. 0) e_ts_tddft(i) = e_ts_tddft_2uhf(i)
+            else
+               ! write old multiplicity in directory 
+               call wrshort_int('.UHF',uhf)
+            end if
+         end do
+      end if 
+
+
+
       ! determine number of jobs not necessary for bhess calculations
       deallocate (dirs)
       allocate (dirs(1)) ! first element always empty
@@ -766,6 +935,9 @@ contains
             call chdir("ts")
             io = makedir('bhess')
             call copysub('ts.xyz', 'bhess')
+            call copysub('.CHRG', 'bhess')
+            ! compute bhess at correct spin state ! TODO reoptimization necessary?
+            call copysub('.UHF', 'bhess')
             call chdir("bhess")
             call prepqm(env, fname, env%geolevel, 'bhess', jobcall, fout, pattern, cleanupcall, there, .false.)
             if (.not. there) then
@@ -1049,6 +1221,10 @@ contains
       call appendto('end.xyz', 'geoin.xyz')
       write (jobcall, '(a,i0,a)') 'geodesic_interpolate geoin.xyz --nimages ', env%tsnds, ' >geoout 2>geo2out'
    end subroutine prepgeodesic
+
+
+!
+  
 ! TODO move into orca module
 ! Routine to prepare neb calculation
    subroutine prepneb(env, jobcall, hbonddiss, restart, usegeo)
@@ -1120,6 +1296,10 @@ contains
          levelkeyword = 'XTB2'
          etemp = 300
          if (re) etemp = 5000
+      case ('gfn2spinpol')
+         levelkeyword = 'XTB2'
+         etemp = 300
+         if (re) etemp = 5000   
       case ('gfn1')
          levelkeyword = 'XTB1'
          etemp = 300
@@ -1150,11 +1330,29 @@ contains
          open (newunit=ich, file='orca.inp')
       end if
 
+
+
       write (ich, '(a)') '! NEB   ' ! "LOOSE-NEB" doesnt work ....
+      
+      if (env%solv) then
+         if (env%geolevel == 'gfn2' .or. env%geolevel == 'gfn1' .or. env%geolevel == 'gfn2spinpol') then
+         write (ich, *) "! ALPB(water)" 
+         end if
+     end if
+
       if (trim(env%geolevel) .ne. 'wb97x3c') write (ich, *) "! "//trim(levelkeyword)
       write (ich, *) "%maxcore 8000" ! TODO make parameter or read in orca sample input file
+
+      !use  tblite
+      if (env%geolevel == 'gfn2spinpol') then
+         xtbstring = 'XTBINPUTSTRING2 "--tblite --spinpol"'
+         write (ich, *) "%xtb"
+         write (ich, '(a)') trim(xtbstring)
+         write (ich, *) "end"
+      end if
       if (env%geolevel == 'gxtb') then
-         xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz''"'
+         xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -symthr 0.0''"'
+         if (fermi) xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -tel 15000 -symthr 0.0''"'
          write (ich, *) "%xtb"
          write (ich, '(a)') trim(xtbstring)
          write (ich, *) "end"
@@ -1169,7 +1367,7 @@ contains
       end if
       write (ich, *) "end"
 
-      if (env%fermi .or. env%geolevel == "gfn2") then
+      if (fermi .or. env%geolevel == "gfn2") then
          write (ich, *) "%scf"
          write (ich, *) "SmearTemp ", etemp
          write (ich, *) "end"
@@ -1201,6 +1399,245 @@ contains
       write (jobcall, '(a)') '$(which orca) orca.inp > orca.out 2> orcaerr.out && touch neb_finished '
    end subroutine prepneb
 
+   !> prepare gsm.orca calculation
+   subroutine prepgsm(env, jobcall,hbonddiss, restart, usegeo)
+      implicit none
+      integer :: nnds, i, io, ich, tsre
+      character(len=1024), intent(out) :: jobcall
+      character(len=1024) :: copycall
+      character(len=1024) :: cefinecall1, cefinecall2, adgcall
+      character(len=80) :: geolevel
+      integer :: maxtime
+      integer :: maxiter
+      integer :: chrg, mult, uhf
+      real(wp) :: convtol, addnodetol
+      integer :: etemp
+      type(runtypedata) :: env
+      logical, intent(in), optional  :: restart
+      logical, intent(in) :: usegeo
+      logical, intent(in) :: hbonddiss ! only H-dissociation, very loose settings
+      logical :: ex, re
+      logical :: fermi
+    
+
+      if (present(restart)) then
+         re = restart
+      else
+         re = .false.
+      end if
+
+      if (env%fermi) then
+         fermi = .true.
+      else
+         fermi = .false.
+      end if
+      if (re) then 
+         fermi = .true.
+      end if 
+
+      maxiter = 20 ! 15
+      convtol = 0.001_wp ! default 0.0005
+      addnodetol = 0.25_wp ! default 0.1
+
+      !if (hbonddiss) then 
+      !   maxiter = 10 ! 10
+      !   convtol = 0.01_wp ! default 0.0005
+     !    addnodetol = 0.5_wp ! default 0.1
+     ! end if
+      ! use geodesic as guess ?
+      if (usegeo) then
+         tsre = 1
+         call move('interpolated.xyz', 'restart.xyz0000')
+      else
+         tsre = 0
+      end if
+
+      nnds = env%tsnds
+      write (*, *) "nnds is", nnds
+      ! TODO FIXME, maybe use template files here instead
+      !erstmal mit gsm.orca und tm2orca.py in path
+      !inpfileq und ograd wird geschrieben
+      ! prepare inpfileq
+      open (newunit=ich, file='inpfileq')
+      write (ich, '(a)') '------------- QCHEM Scratch Info ------------------------ '
+      write (ich, '(a)') '$QCSCRATCH/                               '                !  path for scratch dir. end with "/"'
+      write (ich, '(a)') '    GSM_go1q                              '                         ! # name of run
+      write (ich, '(a)') ' --------------------------------------------------------- '
+      write (ich, '(a)') ' ------------ String Info --------------------------------'
+      write (ich, '(a)') ' SM_TYPE                 GSM      '    ! SSM, FSM or GSM
+      write (ich, '(a,i0)') ' RESTART               ', tsre            !1  read restart.xyz ! geodesic guess?
+      write (ich, '(a,i0)') ' MAX_OPT_ITERS      ',maxiter      !15 should be sufficient, complicated paths anyway strange! 100 ! maximum iterations
+      write (ich, '(a)') ' STEP_OPT_ITERS          30       '    ! for FSM/SSM
+     ! write (ich, '(a,f9.7)') ' CONV_TOL                       ',convtol  !0.0005       ! perp grad
+     ! write (ich, '(a,f9.7)') ' ADD_NODE_TOL                    ',addnodetol !0.25      '   ! 0.1 ! for GSM
+      write (ich, '(a)') ' CONV_TOL                       0.0005'       ! perp grad
+      write (ich, '(a)') ' ADD_NODE_TOL                    0.1      '   ! 0.1 ! for GSM
+      write (ich, '(a)') ' SCALING                                1.0      '    ! for opt steps
+      write (ich, '(a)') ' SSM_DQMAX               0.8      '    ! add step size
+      write (ich, '(a)') ' GROWTH_DIRECTION        2        '    ! normal/react/prod: 0/1/2 ! most reactions endothermic, TS near end Hammond's postulate timing for rearr worse
+      write (ich, '(a)') ' INT_THRESH              2.0      '    ! intermediate detection
+      write (ich, '(a)') ' MIN_SPACING             5.0      '    ! node spacing SSM
+      write (ich, '(a)') ' BOND_FRAGMENTS          1        '    ! make ICs for fragments
+      write (ich, '(a)') ' INITIAL_OPT             5        '   ! opt steps first node
+      write (ich, '(a)') ' FINAL_OPT               100     '    ! opt steps last SSM node
+      write (ich, '(a)') ' PRODUCT_LIMIT           300.0    '    ! kcal/mol
+      write (ich, '(a)') ' TS_FINAL_TYPE           0        '    ! any/delta bond: 0/1
+      write (ich, '(a,i0)') ' NNODES        ', nnds           ! including endpoints
+      write (ich, '(a)') ' ---------------------------------------------------------'
+      close (ich)
+      ! prepare ograd
+      ! write xtbcall here
+      if (env%geolevel == "gfn1" .or. env%geolevel == "gfn2" .or. env%geolevel == "pm6" .or. env%geolevel == "gxtb" .or. env%geolevel == "aimnet2") then
+         etemp = 300.0_wp
+         if (re) etemp = 5000.0_wp
+         write (jobcall, '(a)') 'xtb $ofile.xyz -grad --'//trim(env%geolevel)
+         if (env%fermi) write (jobcall, '(a,i4)') trim(jobcall)//' --etemp ', etemp
+         if (env%dxtb) write (jobcall, '(a)') trim(jobcall)//' --vparam dxtb_param.txt'
+   
+         write (jobcall, '(a)') trim(jobcall)//' > $ofile.xtbout'
+         if (env%geolevel == 'gxtb') then
+            write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad > $ofile.xtbout'
+            if (env%fermi) write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad -tel 15000 > $ofile.xtbout'
+         end if
+         if (env%geolevel == 'aimnet2') then
+            call remove('coord') ! necessary the way the xtb driver works at the momen TODO fix this
+            write (jobcall, '(a)') 'xtb $ofile.xyz -grad --driver aimnet2grad  > $ofile.xtbout'
+         end if
+         open (newunit=ich, file='ograd')
+         write (ich, '(a)') '#!/bin/bash                                                                               '
+         write (ich, '(a)') '# The path to ORCA should be added to .bashrc or exported in command line                 '
+         write (ich, '(a)') 'export PATH=/usr/software/orca_web:$PATH                                                  '
+         write (ich, '(a)') 'export PATH=/usr/software/orca_web/openmpi/bin:$PATH                                      '
+         write (ich, '(a)') 'export LD_LIBRARY_PATH=/usr/bin:/usr/software/orca_web/openmpi/lib:$LD_LIBRARY_PATH'
+         write (ich, '(a)') '                                                                                          '
+         write (ich, '(a)') 'if [ -z $2 ]                                                                              '
+         write (ich, '(a)') 'then                                                                                      '
+         write (ich, '(a)') '  echo " need two arguments "                                                             '
+         write (ich, '(a)') '  exit                                                                                    '
+         write (ich, '(a)') 'fi                                                                                        '
+         write (ich, '(a)') '                                                                                          '
+         write (ich, '(a)') '#echo " in ograd: $1 $2 "                                                                 '
+         write (ich, '(a)') '                                                                                          '
+         write (ich, '(a)') 'ofile=orcain$1.in                                                                         '
+         write (ich, '(a)') 'ofileout=orcain$1.out                                                                     '
+         write (ich, '(a)') 'molfile=structure$1                                                                       '
+         write (ich, '(a)') 'ncpu=$2                                                                                   '
+         write (ich, '(a)') 'basename="${ofile%.*}"                                                                    '
+         write (ich, '(a)') '#echo " ofile: $ofile ofileout: $ofileout molfile: $molfile ncpu: $ncpu"                  '
+         write (ich, '(a)') '                                                                                          '
+         write (ich, '(a)') '########## XTB/TM settings: #################                                             '
+         write (ich, '(a)') 'cd scratch                                                                                '
+         write (ich, '(a)') 'wc -l < $molfile > $ofile.xyz                                                             '
+         write (ich, '(a)') 'echo "Dummy for XTB/TM calculation" >> $ofile.xyz                                         '
+         write (ich, '(a)') 'cat $molfile >> $ofile.xyz                                                                '
+         write (ich, '(a)') 'mkdir -p $basename'
+         write (ich, '(a)') 'cd $basename'
+         write (ich, '(a)') 'cp ../$ofile.xyz .'
+         write (ich, '(a)') 'cp ../.CHRG .'! important !!!!
+         write (ich, '(a)') 'cp ../.UHF .' ! important !!!!
+         write (ich, '(a)') trim(jobcall)
+         write (ich, '(a)') 'tm2orca.py $basename '
+         write (ich, '(a)') 'mv $basename.out ../$basename.out'
+         write (ich, '(a)') 'mv $basename.engrad ../$basename.engrad'
+         write (ich, '(a)') 'cd ..'
+         write (ich, '(a)') 'cd ..'
+         close (ich)
+   elseif (env%geolevel == "pbe" .or. env%geolevel == "r2scan3c" .or. env%geolevel == "b973c" .or. env%geolevel == "pbeh3c" .or. env%geolevel == "wb97x3c" .or. env%geolevel == "pbe0") then ! todo make check for dft here
+      select case (env%geolevel)
+      case ('pbeh3c')
+         geolevel = 'PBEh-3c'
+         etemp = 13400
+      case ('r2scan3c')
+         geolevel = 'R2SCAN-3c'
+         etemp = 5000
+      case ('b973c')
+         geolevel = 'B97-3c'
+         etemp = 5000
+      case ('pbe')
+         geolevel = 'PBE SV(P)'
+         etemp = 5000      
+      case ('wb97x3c')
+         geolevel = 'wB97X-3c'
+         etemp = 15000 ! TODO tune this value
+      case ('pbe0')
+         geolevel = 'PBE0 def2-TZVP'
+		 !if (env%chrg .lt. 0) levelkeyword = 'PBE0 ma-def2-TZVP'
+       if (env%chrg .lt. 0) geolevel = 'PBE0 def2-TZVPD SLOWCONV'
+         etemp = 10000
+      case default
+         geolevel = trim(env%geolevel)
+         etemp = 5000
+      end select
+       
+            call rdshort_int('.CHRG', chrg)
+            call rdshort_int(".UHF", uhf)
+      !is this right ?
+            mult = uhf + 1
+         open (newunit=ich, file='ograd')
+            write (ich, '(a)') '#!/bin/bash  '     
+            write (ich, '(a)') 'ofile=scratch/orcain$1.in'
+            write (ich, '(a)') 'ofileout=scratch/orcain$1.out'
+            write (ich, '(a)') 'molfile=scratch/structure$1'   ! for ORCA 5.0 
+            write (ich, '(a)') 'ncpu=$2'  
+            write (ich, '(a)') 'basename="${ofile%.*}"'                        
+            write (ich, '(a)') 'echo "! UKS '//trim(geolevel)//'" > $ofile' ! just use development version of orca for this'
+            ! leads to abortion due to bug in ORCA write (ich, '(a)') 'echo "! RIJONX def2/J" >> $ofile'
+            write (ich, '(a)') 'echo "! LOOSESCF" >> $ofile'
+            write (ich, '(a)') 'echo "! ENGRAD" >> $ofile'
+            write (ich, '(a)') 'echo "! nomoprint" >> $ofile'
+            write (ich, '(a)') 'echo "%scf" >> $ofile'
+            write (ich, '(a)') 'echo "maxiter 350" >> $ofile'
+            if (fermi) write (ich, '(a,i0,a)') 'echo " SmearTemp ',etemp,'" >> $ofile'
+            write (ich, '(a)') 'echo "end" >> $ofile'
+            write (ich, '(a)') 'echo "%pal" >> $ofile'
+            write (ich, '(a,i0,a)') 'echo " nprocs ',env%threads,'" >> $ofile'
+            write (ich, '(a)') 'echo "end" >> $ofile'
+            write (ich, '(a,i0,1x,i0,1x,a)') 'echo "*xyz ', chrg, mult,'">> $ofile'
+            write (ich, '(a)') 'cat $molfile  >> $ofile'
+            write (ich, '(a)') 'echo "*" >> $ofile'
+            write (ich, '(a)') 'orcabin=$(which orca)'
+            write (ich, '(a)') '$orcabin $ofile > $ofileout'
+            !write (ich, '(a,i0,a)') 'srun --nodes 1 --ntasks ',env%threads, ' --cpus-per-task 1 $orcabin $ofile > $ofileout' 
+
+            close(ich)
+   end if
+
+      call execute_command_line('chmod u+x ograd')
+      io = makedir('scratch')
+      call execute_command_line('sed -i "2s/.*/ /" start.xyz')
+      call copy('start.xyz', 'initial0000.xyz')
+      call copy('.CHRG', 'scratch/.CHRG')
+      call copy('.UHF', 'scratch/.UHF')
+      !somehow its important to delete this line to prevent bugs with gsm.orca
+      ! TODO FIXME necessary??
+      call execute_command_line('sed -i "2s/.*/ /" end.xyz')
+      call appendto('end.xyz', 'initial0000.xyz')
+
+      call copy('initial0000.xyz', 'scratch/initial0000.xyz')
+      if (env%dxtb) then
+         write (copycall, '(a)') "cp "//trim(env%startdir)//"/dxtb_param.txt scratch/dxtb_param.txt"
+         call execute_command_line(trim(copycall))
+      end if
+     
+
+      !somehow its important to delete this line to prevent bugs with gsm.orca
+      ! TODO FIXME necessary??
+      !  call execute_command_line('sed -i "2s/.*/ /" scratch/initial0000.xyz')
+      write (*, *) "Starting GSM Run with", nnds, "nodes"
+      !how to deal with GSM which does not converge?
+      !timeout command, make dependent on number of atoms?
+      maxtime = 3600000 ! 1000 hours
+      if (trim(env%geolevel) == 'gfn2' .or. trim(env%geolevel) == 'gfn1') maxtime = 3600
+      if (trim(env%geolevel) == 'gxtb') maxtime = 10000 ! TODO make dependent on number of atoms
+       write(jobcall,'(a,i0,a)') 'timeout ',maxtime,' gsm > gsm.out 2> gsmerror.out'
+      !write (jobcall, '(a,i,a)') ' timeout ', maxtime, ' gsm.orca > /dev/null 2>/dev/null' ! note if gsm failes gsm.out gets very large, just dont write it
+      write (jobcall, '(a)') trim(jobcall)//' && touch gsm_finished '
+      if (env%printlevel .le. 1) write (jobcall, '(a)') trim(jobcall)//' && rm -r scratch '
+
+      ! && cp scratch/tsq0000.xyz ts.xyz'
+
+   end subroutine prepgsm
+
 !> check if TS search worked technically
    subroutine checkpath(env, failed)
       implicit none
@@ -1216,6 +1653,7 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
+   
       end if
 
       inquire (file=trim(fname), exist=ex, size=nlines)
@@ -1256,6 +1694,16 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
+         inquire(file='crestopt.xyz', exist=ex)
+         if (ex) then 
+            call copy('crestopt.xyz', 'ts.xyz')
+            found = .true.
+            return
+         else
+            write (*, *) "WARNING: no crestopt.xyz file found, search was not succesfull"
+            found = .false.
+            call printpwd() 
+         end if
       else
          write (*, *) "TS PICKER NOT YET IMPLEMENTED FOR OTHER SEARCHERS"
          write (*, *) "Just take end as TS"

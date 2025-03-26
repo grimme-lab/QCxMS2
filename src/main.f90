@@ -139,23 +139,26 @@ program QCxMS2
    fname = trim(env%infile)
 
    call setompthreads(env, 1)
-   ! restart run
-   inquire (file='ip_'//trim(env%iplevel), exist=ex)
-   if (ex) then
-      call rdshort_real('ip_'//trim(env%iplevel), ip)
-   else
-      write (*, *) "Optimizing starting structure at the ", trim(env%geolevel), " level"
-      call prepqm(env, fname, env%geolevel, 'opt', jobcall, fout, pattern, cleanupcall, there, .false., 0)
-      if (.not. there) call execute_command_line(trim(jobcall), exitstat=io)
-      write (*, *) "Compute IP at level ", trim(env%iplevel)
-      call getip1(env, fname, ip)
-   end if
 
-   write (*, *)
-   write (*, '(a,f10.3,a)') "IP of input molecule is", ip, " eV"
+   if (env%mode == "ei") then 
+      ! restart run
+      inquire (file='ip_'//trim(env%iplevel), exist=ex)
+      if (ex) then
+         call rdshort_real('ip_'//trim(env%iplevel), ip)
+      else
+         write (*, *) "Optimizing starting structure at the ", trim(env%geolevel), " level"
+         call prepqm(env, fname, env%geolevel, 'opt', jobcall, fout, pattern, cleanupcall, there, .false., 0)
+         if (.not. there) call execute_command_line(trim(jobcall), exitstat=io)
+         write (*, *) "Compute IP at level ", trim(env%iplevel)
+         call getip1(env, fname, ip)
+      end if
 
-   env%ehomo = ip ! Just use Koopmans theorem for now
+      write (*, *)
+      write (*, '(a,f10.3,a)') "IP of input molecule is", ip, " eV"
 
+      env%ehomo = ip ! Just use Koopmans theorem for now
+   end if 
+   
    ! optimize and compute energies of starting fragment
    call calc_startfragment(env, fname, 1)
 

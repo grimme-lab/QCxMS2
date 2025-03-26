@@ -86,16 +86,20 @@ contains
 
       logical :: ex
 
-      ! TODO FIXME, i.e. add freq here and compute kmax for the fastest reaction
-      if (.not. env%eyring) then
-         write (*, *) 'Error: CID mode only works currently only with Eyring enabled'
-         stop
-      end if
+
+
       write (*, *) "CID mode", env%cid_mode
       if (env%cid_mode == 2) then
          write (*, *) " CID Temprun mode, no collisions are performed"
          return
       end if
+      
+      ! TODO FIXME, i.e. add freq here and compute kmax for the fastest reaction
+      if (.not. env%eyring) then
+         write (*, *) 'Error: CID mode only works currently only with Eyring enabled'
+         stop
+      end if
+  
 
       inquire (file="fragment.xyz", exist=ex)
       if (ex) then

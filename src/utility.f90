@@ -154,9 +154,9 @@ contains
       call OMP_Set_Num_Threads(omp)
 
       ! for slurm to be safe compute everything which would be cpu per taks on one core
-      !envompthreads = env%threads
-      !      if (envompthreads .gt. 8) envompthreads = 8 ! 8 cores should be enough for calculations with xtb (molbar??)
-      envompthreads = 1
+      envompthreads = env%threads
+         if (envompthreads .gt. 8) envompthreads = 8 ! 8 cores should be enough for calculations with xtb (molbar??)
+      !envompthreads = 1
       io = setenv('OMP_NUM_THREADS', envompthreads)
       io = setenv('MKL_NUM_THREADS', envompthreads)
       ! for TURBOMOLE
