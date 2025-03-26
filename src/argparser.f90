@@ -689,6 +689,14 @@ contains
          end if
       end do
 
+      ! for DFT we need ORCA!
+      do i = 1, 4
+         if (trim(levels(i)) .ne. "gfn2" .and. trim(levels(i)) .ne. "gfn1" .and. trim(levels(i)) .ne. "") then 
+            call check_prog('orca', .true., io)
+         end if 
+      end do
+
+
       write (*, '(60(''''))')
       write (*, *)
    end subroutine check_progs
