@@ -1001,6 +1001,9 @@ contains
          call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
 
       end if
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int('.UHF', uhf)
       ! now compute barriers
       if (env%exstates .gt. 0) then
          write (query, '(a,1x,i0,1x,i0)') trim(env%tslevel)//" tddft", chrg, uhf
@@ -1694,16 +1697,6 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
-         inquire(file='crestopt.xyz', exist=ex)
-         if (ex) then 
-            call copy('crestopt.xyz', 'ts.xyz')
-            found = .true.
-            return
-         else
-            write (*, *) "WARNING: no crestopt.xyz file found, search was not succesfull"
-            found = .false.
-            call printpwd() 
-         end if
       else
          write (*, *) "TS PICKER NOT YET IMPLEMENTED FOR OTHER SEARCHERS"
          write (*, *) "Just take end as TS"
