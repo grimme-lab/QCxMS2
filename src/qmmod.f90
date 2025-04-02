@@ -39,6 +39,8 @@ contains
       integer :: chrg1
       integer :: spin, uhf1
 
+      integer :: nat
+
       if (present(restart)) then
          re = restart
       else
@@ -96,6 +98,14 @@ contains
          there = .true.
       end if
 
+      ! do not perform 1-atom optimizations
+      call rdshort_int(fname, nat)
+      if (nat .eq. 1 .and. job == 'opt') then
+         there = .true.
+         write(*,*) "1-atom optimization detected, skipping"
+      end if
+
+
       ! special cases
       ! bhess only in xtb
       if (job == 'bhess') then
@@ -137,6 +147,10 @@ contains
             if (job .eq. "sp" .or. job .eq. "opt") then
                call prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,re)
             end if
+         case ('atb')
+            if (job .eq. "sp" .or. job .eq. "opt") then
+               call prepatb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,re)
+            end if   
             ! special QM methods have to be included here
          case default
             write (*, *) "Warning! Keyword ", level, " is not supported!!!"
@@ -172,12 +186,13 @@ contains
       character(len=80), intent(in) :: fout, pattern
       character(len=*), intent(in) :: level, job
       character(len=80) :: sumformula
+      character(len=1024) :: atbcall
       character(len=80) :: fqm, query
       character(len=162) :: qmdatentry
       character(len=*)      :: fname ! xyz structure file
       real(wp), intent(out) :: value
       real(wp) :: bwenergie, edisp, etot, escf ! for tddft
-      integer :: chrg, uhf, ich, ierr
+      integer :: chrg, uhf, ich, ierr, nat
       logical ::   ex, ldum
       logical, intent(out) :: failed
       failed = .false.
@@ -199,6 +214,9 @@ contains
          return
       end if
 
+       
+
+
       write (query, '(a,1x,a,1x,i0,1x,i0)') trim(level), trim(job), chrg, uhf
 
       call grepval(fqm, trim(query), ldum, value) ! check if value already there
@@ -206,6 +224,14 @@ contains
          failed = .false.
          return
       end if
+
+      ! check for one-atom "optimizations"
+      call rdshort_int(fname, nat)
+      if (nat .eq. 1 .and. job == 'opt') then
+         failed = .false.
+         return
+      end if 
+
 
       ! checkfor H-atoms as QM codes sometimes don't like to calculate molecules without electrons
       call getsumform(trim(fname), sumformula)
@@ -268,7 +294,11 @@ contains
 
       if (.not. failed) then
          if (job == 'optts' .or. job == 'opt' .or. job == 'ohess') then
-            call move('opt.xyz', trim(fname))
+            if (level == 'atb') then
+               write(atbcall, '(a)') "python $(which atb2optxyz.py) atb.out opt.xyz" 
+              call execute_command_line(trim(atbcall), exitstat=ierr)
+            end if 
+            call move('opt.xyz', trim(fname)) 
          end if
       end if
 
@@ -830,6 +860,76 @@ contains
       write (cleanupcall, '(a)') trim(cleanupcall)//' xtbtopo.mol .xtboptok'
       write (cleanupcall, '(a)') trim(cleanupcall)//'  >/dev/null 2>/dev/null'
    end subroutine prepxtb
+
+  ! employ a-xTB, preliminary version
+   subroutine prepatb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,restart)
+      implicit none
+      type(runtypedata) :: env
+      character(len=*), intent(in)      :: fname
+      character(len=*), intent(in)      :: level
+      character(len=*), intent(in)      :: job
+      character(len=1024), intent(out) :: jobcall
+      character(len=80), intent(out) :: fout, pattern ! fout and pattern for readout
+      character(len=1024), intent(out) :: cleanupcall
+      character(len=1024) :: jobcall2
+      character(len=80) :: levelkeyword
+      logical :: ex
+      integer :: io, ich
+      integer :: chrg, uhf, mult
+      logical :: fermi ! apply fermi smearing
+      logical, intent(in) :: restart
+
+
+      if (restart) fermi = .true.
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+      !is this right ?
+      mult = uhf + 1
+
+      OPEN (newunit=ich, FILE='atb.inp')
+      write (ich, *) "! atb"
+      write (ich, *) "% maxcore 1000"
+      write (ich, '(a,i0)') "% npara ", env%threads
+
+      ! for restart we use different solver
+      if (restart) then 
+         write (ich, *) ">scf"
+         write (ich, *) "diis qdiis"
+         write (ich, *) "end"
+      end if
+
+      if (restart) call remove('atb.out')
+      if (restart) call remove('atb.mo')
+
+      !TODO if (env%fermi .or. fermi) apply fermi smearing in atb???
+      write (jobcall, '(a)') 'amesp atb.inp atb.out '
+
+      fout = 'atb.out'
+      select case (job)
+      case ('sp')
+        pattern = 'Final Energy:'
+      case ('opt')
+        write(ich,*) "! opt"
+        pattern = 'Current Energy :' 
+      end select
+      
+       write(*,*) "jobcall is ",trim(jobcall)
+      ! if (env%fermi .or. fermi) then 
+      write (ich, *) ">xyz ", chrg, " ", mult
+      close (ich)
+      write(jobcall2,*) 'sed "1,2d" '//trim(fname)//' > atbcoords'
+      call execute_command_line(trim(jobcall2), exitstat=io)
+      call appendto('atbcoords','atb.inp')
+      OPEN (newunit=ich, FILE='atb.inp', status='old', position='append')
+      write (ich, *) "end"
+      close (ich)
+      cleanupcall = 'rm atb.mo '
+        
+            
+      
+         
+   end subroutine prepatb
 
 !  employ g-xTB, preliminary version
    subroutine prepgxtb(env, fname, level, job, jobcall, fout, pattern, cleanupcall,restart)

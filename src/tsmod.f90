@@ -137,7 +137,9 @@ contains
          if (trim(env%tsfinder) == 'neb') then
             inquire (file='neb_finished', exist=ex)
             if (.not. ex) njobs = njobs + 1
-         
+          elseif (trim(env%tsfinder) == 'crest_tsgen') then
+            inquire (file='crest_tsgen_finished', exist=ex)
+            if (.not. ex) njobs = njobs + 1
          elseif (trim(env%tsfinder) == 'gsm') then
             inquire (file='gsm_finished', exist=ex)
             if (.not. ex) njobs = njobs + 1   
@@ -190,7 +192,16 @@ contains
                call append_char(dirs, trim(fragdirs_in(i, 1)))
             end if
          end if
-
+         !crest tsguess 
+         if (trim(env%tsfinder) == 'crest_tsgen') then
+            inquire (file='crest_tsgen_finished', exist=ex)
+            if (.not. ex) then
+               call prepcrest_tsgen(env, jobcall)
+               njobs = njobs + 1
+               call append_char(dirs, trim(fragdirs_in(i, 1)))
+            end if
+         end if
+ 
           !xtbpath
          if (trim(env%tsfinder) == 'gsm') then
             inquire (file='gsm_finished', exist=ex)
@@ -216,7 +227,16 @@ contains
       env%tpath = env%tpath + (w2 - w1)
       write (*,'(a,f10.1,a)')  "Time spent for path search and barrier calculation: ", (w2 - w1), "s"
 
-
+      if (env%tsfinder == 'crest_tsgen') then
+         do i = 1, npairs_in
+            call chdir(trim(fragdirs_in(i, 1))) 
+            ! restore .UHF and .CHRG deleted by crest
+            !call move("uhftemp", ".UHF")
+            !call move("chrgtemp", ".CHRG")
+            ! TODO implement cleanup here
+            call chdir(trim(env%path))
+         end do
+      end if
 
 
 
@@ -1490,12 +1510,13 @@ contains
       close (ich)
       ! prepare ograd
       ! write xtbcall here
-      if (env%geolevel == "gfn1" .or. env%geolevel == "gfn2" .or. env%geolevel == "pm6" .or. env%geolevel == "gxtb" .or. env%geolevel == "aimnet2") then
+      if (env%geolevel == "gfn1" .or. env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" .or. env%geolevel == "pm6" .or. env%geolevel == "gxtb" .or. env%geolevel == "aimnet2") then
          etemp = 300.0_wp
          if (re) etemp = 5000.0_wp
          write (jobcall, '(a)') 'xtb $ofile.xyz -grad --'//trim(env%geolevel)
          if (env%fermi) write (jobcall, '(a,i4)') trim(jobcall)//' --etemp ', etemp
          if (env%dxtb) write (jobcall, '(a)') trim(jobcall)//' --vparam dxtb_param.txt'
+         if (env%geolevel == 'gfn2spinpol') write (jobcall, '(a)') trim(jobcall)//' --tblite --spinpol'
    
          write (jobcall, '(a)') trim(jobcall)//' > $ofile.xtbout'
          if (env%geolevel == 'gxtb') then
@@ -1506,6 +1527,7 @@ contains
             call remove('coord') ! necessary the way the xtb driver works at the momen TODO fix this
             write (jobcall, '(a)') 'xtb $ofile.xyz -grad --driver aimnet2grad  > $ofile.xtbout'
          end if
+        
          open (newunit=ich, file='ograd')
          write (ich, '(a)') '#!/bin/bash                                                                               '
          write (ich, '(a)') '# The path to ORCA should be added to .bashrc or exported in command line                 '
@@ -1600,10 +1622,49 @@ contains
             write (ich, '(a)') 'echo "*" >> $ofile'
             write (ich, '(a)') 'orcabin=$(which orca)'
             write (ich, '(a)') '$orcabin $ofile > $ofileout'
+            write (ich, '(a)') 'tm2orca.py $basename '
             !write (ich, '(a,i0,a)') 'srun --nodes 1 --ntasks ',env%threads, ' --cpus-per-task 1 $orcabin $ofile > $ofileout' 
 
             close(ich)
    end if
+
+   ! for atb we need amesp and atb2orcy.py! 
+   if (env%geolevel == 'atb') then
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+   
+      mult = uhf + 1
+      open (newunit=ich, file='ograd')
+
+      write (ich, '(a)') '#!/bin/bash  '     
+      write (ich, '(a)') 'ofile=orcain$1.in'
+      write (ich, '(a)') 'ofileout=orcain$1.out'
+      write (ich, '(a)') 'molfile=structure$1'   ! for ORCA 5.0 
+      write (ich, '(a)') 'ncpu=$2'  
+      write (ich, '(a)') 'basename="${ofile%.*}"'  
+       write (ich, '(a)') 'cd scratch '
+      write (ich, '(a)') 'echo "! atb" > $ofile' 
+      write (ich, '(a)') 'echo "! opt" >> $ofile'
+      write (ich, '(a)') 'echo "% maxcore 1000" >> $ofile'
+       write (ich, '(a,i0,a)') 'echo " % npara ',env%threads,'" >> $ofile'
+      write (ich, '(a)') 'echo ">opt" >> $ofile'
+      write (ich, '(a)') 'echo " maxcyc 1" >> $ofile'
+      write (ich, '(a)') 'echo "end" >> $ofile'
+
+      !qdis converges better?
+      write (ich, '(a)') 'echo ">scf" >> $ofile'
+      write (ich, '(a)') 'echo "diis qdiis" >> $ofile'
+      write (ich, '(a)') 'echo "end" >> $ofile'
+      
+      write (ich, '(a,i0,1x,i0,1x,a)') 'echo ">xyz ', chrg, mult,'">> $ofile'
+      write (ich, '(a)') 'cat $molfile  >> $ofile'
+      write (ich, '(a)') 'echo "end" >> $ofile'
+      write (ich, '(a)') 'amesp $ofile  $ofileout'
+      write (ich, '(a)') 'python $(which atb2orca.py) $ofileout --basename $basename'
+      write (ich, '(a)') 'cd ..'
+      close(ich)
+      end if
+   
 
       call execute_command_line('chmod u+x ograd')
       io = makedir('scratch')
@@ -1633,7 +1694,10 @@ contains
       if (trim(env%geolevel) == 'gfn2' .or. trim(env%geolevel) == 'gfn1') maxtime = 3600
       if (trim(env%geolevel) == 'gxtb') maxtime = 10000 ! TODO make dependent on number of atoms
        write(jobcall,'(a,i0,a)') 'timeout ',maxtime,' gsm > gsm.out 2> gsmerror.out'
-      !write (jobcall, '(a,i,a)') ' timeout ', maxtime, ' gsm.orca > /dev/null 2>/dev/null' ! note if gsm failes gsm.out gets very large, just dont write it
+      ! if (env%geolevel == 'atb') then
+       !   write (jobcall, '(a,i0,a)') ' timeout ', maxtime, ' gsm.orca > gsm.out 2> gsmerror.out' ! note if gsm failes gsm.out gets very large, just dont write it
+        !  write (jobcall, '(a,i0,a)') ' timeout ', maxtime, ' gsm.orca > /dev/null 2>/dev/null' ! note if gsm failes gsm.out gets very large, just dont write it
+       !end if
       write (jobcall, '(a)') trim(jobcall)//' && touch gsm_finished '
       if (env%printlevel .le. 1) write (jobcall, '(a)') trim(jobcall)//' && rm -r scratch '
 
@@ -1656,7 +1720,8 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
-   
+      elseif (env%tsfinder == "crest_tsgen") then
+         fname = 'crestopt.xyz'      
       end if
 
       inquire (file=trim(fname), exist=ex, size=nlines)
@@ -1697,6 +1762,17 @@ contains
          fname = 'xtbpath.xyz'
       elseif (env%tsfinder == "neb") then
          fname = 'orca_MEP_trj.xyz'
+      elseif (env%tsfinder == "crest_tsgen") then
+         inquire(file='crestopt.xyz', exist=ex)
+         if (ex) then 
+            call copy('crestopt.xyz', 'ts.xyz')
+            found = .true.
+            return
+         else
+            write (*, *) "WARNING: no crestopt.xyz file found, search was not succesfull"
+            found = .false.
+            call printpwd() 
+         end if   
       else
          write (*, *) "TS PICKER NOT YET IMPLEMENTED FOR OTHER SEARCHERS"
          write (*, *) "Just take end as TS"
@@ -2394,4 +2470,81 @@ contains
       call remove("orca_MEP_ALL_trj.xyz")
    
    end subroutine cleanup_nebcalc
+
+   subroutine prepcrest_tsgen(env,jobcall)
+      implicit none
+      character(len=1024), intent(out) :: jobcall
+      type(runtypedata) :: env
+      integer :: chrg, uhf
+
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+      
+
+      call write_cresttoml(env)
+      write(jobcall,'(a,i0,a,i0,a)') 'xtb start.xyz --hess --chrg ',chrg,' --uhf ',uhf,' > hess1.out 2> /dev/null'
+      write(jobcall,'(a)') trim(jobcall)//' && mv hessian hess1 && mv wbo wbo1'
+      write(jobcall,'(a,i0,a,i0,a)') trim(jobcall)//' && xtb end.xyz --hess --chrg ',chrg,' --uhf ',uhf,' > hess2.out 2> /dev/null'
+      write(jobcall,'(a)') trim(jobcall)//' && mv hessian hess2 && mv wbo wbo2'
+      write(jobcall,'(a,a)') trim(jobcall)//' && crest_tsgen --input input.toml > crest_tsgen.out 2> crest_tsgen_error.out', &
+      &  ' && touch crest_tsgen_finished'
+      !write(*,*) "jobcall is", trim(jobcall)
+   end subroutine prepcrest_tsgen
+
+   subroutine write_cresttoml(env)
+      implicit none 
+      type(runtypedata) :: env
+      integer :: io, ich
+      integer :: chrg, uhf
+
+
+      call rdshort_int('.CHRG', chrg)
+      call rdshort_int(".UHF", uhf)
+      ! save .UHF and .CHRG which will be deleted by crest
+      call move(".UHF", "uhftemp")
+      call move(".CHRG", "chrgtemp")
+      
+
+      open (newunit=ich, file='input.toml')
+      write(ich,'(a)') '#This is a CREST input file'
+      write(ich,'(a)') 'input = "start.xyz"'
+      write(ich,'(a)') 'runtype = "ancopt"'
+      write(ich,'(a,i0)') 'threads =', env%threads
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[calculation]'
+      write(ich,'(a)') 'id = 3'
+      write(ich,'(a)') 'maxcycle = 219'
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "ssff"'
+      write(ich,'(a)') 'refgeo = "start.xyz"'
+      write(ich,'(a)') 'refhessian = "hess1"'
+      write(ich,'(a)') 'refwbo = "wbo1"'
+      write(ich,'(a)') 'refff = "ff1"'
+      write(ich,'(a)') 'useff = false'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf 
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "ssff"'
+      write(ich,'(a)') 'refgeo = "end.xyz"'
+      write(ich,'(a)') 'refhessian = "hess2"'
+      write(ich,'(a)') 'refwbo = "wbo2"'
+      write(ich,'(a)') 'refff = "ff2"'
+      write(ich,'(a)') 'useff = false'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf  
+      write(ich,'(a)') ''
+      write(ich,'(a)') '[[calculation.level]]'
+      write(ich,'(a)') 'method = "tsff"'
+      write(ich,'(a)') 'refff = "tsff"'
+      write(ich,'(a)') 'id1 = 1'
+      write(ich,'(a)') 'id2 = 2'
+      write(ich,'(a,i0)') 'chrg =', chrg
+      write(ich,'(a,i0)') 'uhf =', uhf
+      close(ich)
+
+
+
+   end subroutine write_cresttoml
 end module tsmod

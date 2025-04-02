@@ -319,8 +319,8 @@ contains
             do j = 1, size(actatoms)
                if (actatoms(j) .ne. 0) then
                   n_act = n_act + 1
-                  write (*, *) "active atom is ", actatoms(j)
-                  write (*, *) "CN of active atom is ", cn0(actatoms(j))
+                !  write (*, *) "active atom is ", actatoms(j)
+                 ! write (*, *) "CN of active atom is ", cn0(actatoms(j))
                   active_cn(i) = active_cn(i) + cn0(actatoms(j))
                end if
             end do
@@ -347,8 +347,8 @@ contains
             do j = 1, size(actatoms)
                if (actatoms(j) .ne. 0) then
                   n_act = n_act + 1
-                  write (*, *) "active atom is ", actatoms(j)
-                  write (*, *) "CN of active atom is ", cn0(actatoms(j))
+                ! write (*, *) "active atom is ", actatoms(j)
+                !  write (*, *) "CN of active atom is ", cn0(actatoms(j))
                   active_cn(i) = active_cn(i) + cn0(actatoms(j))
                end if
             end do
@@ -389,7 +389,7 @@ contains
             write(act_atom_string, '(a,x,i0)') trim(act_atom_string), actatoms(i)
          end if
       end do
-      write(*,*) "active atoms are ", trim(act_atom_string)
+      !write(*,*) "active atoms are ", trim(act_atom_string)
       call chdir(trim(thisdir)) ! go back in "ts" dir
 
    end subroutine get_active_cnstring
@@ -1125,9 +1125,9 @@ contains
          end do
       end do
 
-      do i = 1, nat
-         write (*, *) "CN of atom ", i, " is ", cn(i)
-      end do
+     ! do i = 1, nat
+         !write (*, *) "CN of atom ", i, " is ", cn(i)
+     ! end do
 
    end subroutine get_CN
 
