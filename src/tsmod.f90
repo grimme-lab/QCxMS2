@@ -1714,7 +1714,7 @@ contains
          lastpoint = nnds
       end if
 
-      tsthr = 1.0_wp
+      tsthr = 0.0_wp
       inquire (file=trim(fname), exist=ex, size=nlines)
       if (ex .and. nlines .gt. 0) then ! gsm can fail and produces and empty stringfile
          open (newunit=ich, file=trim(fname))
@@ -1764,7 +1764,7 @@ contains
          emin_loc = e_rels(1)
          nmax = 0
          ! but  threshold values is needed take 1 kcal?
-         tsthr = 1.0_wp ! kcal threshold for a TS ! xyz(j) is taken already for threshold 0.0 so a different threshold here makes no sense ! TODO FIXME incosistent
+         tsthr = 1.0_wp ! here different threshold than for taking highest point
 
          diffthr = 0.0_wp ! can not set too high value, if sampling is very dense -> no maximum is detected
 
