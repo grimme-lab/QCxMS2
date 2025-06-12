@@ -1291,9 +1291,6 @@ contains
       case ('wb97x3c')
          levelkeyword = 'wB97X-3c'
          etemp = 15000
-         write (jobcall, '(a,i0,a)') 'o4wb3c --mpi ', env%threads, '  --struc start.xyz >/dev/null 2>/dev/null' !--tightscf
-         call execute_command_line(trim(jobcall), exitstat=io)
-         call rename('wb97x3c.inp', 'orca.inp')
      !!!!!!!! currently not needed REMOVE???
       case ('gfn2')
          levelkeyword = 'XTB2'
@@ -1323,17 +1320,7 @@ contains
 
       nnds = env%tsnds - 2
       ! nnds = env%tsnds !  only if preopt end true selected reduce it by two to make it comparable to geodesic, xtb and gsm
-      if (env%geolevel == 'wb97x3c') then
-         call execute_command_line('sed -i "s/RKS/UKS/" orca.inp')
-         call execute_command_line('sed -i "s/NormalSCF/LOOSESCF/" orca.inp')
-         open (newunit=ich, file='orca.inp', status="old", position="append", action="write")
-         write (ich, *) "! RIJONX"
-
-      else
-         open (newunit=ich, file='orca.inp')
-      end if
-
-
+      open (newunit=ich, file='orca.inp')
 
       write (ich, '(a)') '! NEB   ' ! "LOOSE-NEB" doesnt work ....
       
@@ -1343,7 +1330,11 @@ contains
          end if
      end if
 
-      if (trim(env%geolevel) .ne. 'wb97x3c') write (ich, *) "! "//trim(levelkeyword)
+      
+      write (ich, *) "! "//trim(levelkeyword)
+      if (env%geolevel .ne. 'gfn1' .and. env%geolevel .ne. 'gfn2' .and. env%geolevel .ne. 'gfn2spinpol') then
+         write (ich, *) "! LOOSESCF UKS" ! DFT calculations with UKS for correct dissociation and LOOSESCF for faster convergence
+      end if
       write (ich, *) "%maxcore 8000" ! TODO make parameter or read in orca sample input file
 
       !use  tblite
@@ -2392,6 +2383,8 @@ contains
       call remove("orca.NEB.log")
       call remove("orca_NEB-HEI_converged.xyz")
       call remove("orca_MEP_ALL_trj.xyz")
+      call execute_command_line("rm orca_atom*")
+      call execute_command_line("rm orca_im*")
    
    end subroutine cleanup_nebcalc
 end module tsmod
