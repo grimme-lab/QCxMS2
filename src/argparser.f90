@@ -90,6 +90,8 @@ contains
       env%noirc = .false.
 ! for testing
       env%cneintscale = .false.
+      env%iee_cn_scale = 1.0_wp
+      env%iee_prot_scale = 0.0_wp 
       env%printlevel = 1 ! 1: normal, 2: verbose, 3: debug mode
       env%ignoreip = .false.
       env%fermi = .false. ! TODO make default
@@ -108,6 +110,8 @@ contains
       env%erelaxtime = 5.0e-12_wp !
       env%scaleeinthdiss = 0.5_wp
 
+      env%eltemp_gga = 0 ! electronic temperature for fermi smearing
+      env%eltemp_hybrid = 0 ! electronic temperature for fermi smearing
       ! CID specific settings
       env%cid_mode = 1 ! 1: auto 2: temprun (no collisions) 3: only collisions
       env%cid_elab = 40 ! collision energy in laboratory fram in eV
@@ -293,6 +297,12 @@ contains
             env%sortoutcascade = .true.
          case ('-fermi ') !apply fermi smearing
             env%fermi = .true.
+         case ('-eltemp_gga ') ! electronic temperature for fermi smearing for GGAs
+            call readl(arg(i + 1), xx, j)
+            env%eltemp_gga = int(xx(1))
+         case ('-eltemp_hybrid ') ! electronic temperature for fermi smearing for Hybrids
+            call readl(arg(i + 1), xx, j)
+            env%eltemp_hybrid = int(xx(1))   
          case ('-rrkm ') ! use simplified RRKM instead of Eyring
             env%eyring = .false.
          case ('-eyzpve ') ! use eyring but with DH (without entropy) instead of DG
@@ -300,7 +310,13 @@ contains
             env%eyzpve = .true.
          case ('-cneintscale ') ! scale internal energy of subsequent fragmentations according to number of atoms
             env%cneintscale = .true.
+         case ('-iee_cn_scale ')
+            call readl(arg(i + 1), xx, j)      
+            env%iee_cn_scale =  xx(1) 
             !SEED FOR RANDOM NO. GENERATOR
+         case ('-iee_prot_scale ')
+            call readl(arg(i + 1), xx, j)    
+            env%iee_prot_scale = xx(1)
          case ('iseed ')
             call readl(arg(i + 1), xx, j)
             iseed = int(xx(1))
@@ -449,7 +465,7 @@ contains
       write (*, '(5x,''-tslevel  [method] : select level for computing reaction barriers'')')
       write (*, '(5x,''-iplevel  [method] : select level for computing IPs for charge assignment'')')
       write (*, '(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs'')')
-      write (*, '(8x,''available methods: ("gfn2","gfn2spinpol","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb",")'')') !dxtb gxtb wb97m3c ! ma-
+      write (*, '(8x,''available methods: ("gfn2","gfn2spinpol","gfn2_tblite","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb",")'')') !dxtb gxtb wb97m3c ! ma-
       write (*, '(5x,''-nebnormal: use normal settings instead of loose settings for NEB search'')')
       write (*, '(5x,''-checkmult: check multiplicity of TS'')')
       write (*, '(5x,''-pathmult: compute reaction path with sum of multiplicities of products'')')
@@ -473,7 +489,9 @@ contains
       write (*, '(5x ''-mskeepdir: keep the MSDIR directory with the constrained optimizations)'')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
-      write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to number of atoms '')')
+      write (*, '(5x,''-cneintscale  : scale internal energy according to effective coordination number of reaction '')')
+      write (*, '(5x,''-iee_cn_scale [real] : give scaling factor for CN-scaling. Positive values favour reactions in the inner region of the molecule &
+     & , negative values favour reactions in the outer region (default 1.0)'')')
       write (*, '(5x,''-noKER  : do not compute kinetic energy release (KER) '')')
       write (*, '(5x,''-usetemp  : take G_mRRHO contribution instead of only ZPVE ( ZPVE is default)  '')')
       write (*, '(5x,''-scaleeinthdiss [real] this decreases the internal energy only for -H or -H2 abstractions (default  0.5)'')')
@@ -509,6 +527,8 @@ contains
       write (*, '(5x,''-nobhess  : do not compute thermo correction for barrier with bhess '')') ! currently not implemented
       write (*, '(5x,''-path [method]     : select pathfinder methods (default is "neb", "gsm" also possible)'')')
       write (*, '(5x,''-fermi : apply  fermi smearing (deactivated by default)'')')
+      write (*, '(5x,''-eltemp_gga [int] : electronic temperature for fermi smearing for GGAs and GFNn-xTB (default 0 means 300K)'')')
+      write (*, '(5x,''-eltemp_hybrid [int] : electronic temperature for fermi smearing for hybrids (default 0)'')')
       write (*, '(5x,''-tfscale [real] : scale time of flight for subseauent fragmentations (default 1.0 means no scaling)'')')
       write (*, '(5x,''-scaleker [real] : scale kinetic energy release upon fragmentation (default 1.0 means no scaling)'')')
       write (*, '(5x,''-sumreacscale [real] : scale sumreac in mcsimu (default 1.0 means no scaling)'')')
@@ -622,6 +642,15 @@ contains
       end if
       write (*, '(60(''*''))')
 
+      if (env%eltemp_hybrid .gt. 0) then 
+         write(*,*) "Fermi smearing is applied for hybrids with electronic Temperature of:, ",env%eltemp_hybrid,"K"
+      end if
+      if (env%eltemp_gga .gt. 0) then 
+         write(*,*) "Fermi smearing is applied for GGAs and GFNn-xTB with electronic Temperature of:, ",env%eltemp_gga,"K"
+      end if
+      if (env%fermi) then 
+         write(*,*) "Fermi smearing is applied for all levels at their given electronic Temperature"
+      end if
       
 
    end subroutine check_settings

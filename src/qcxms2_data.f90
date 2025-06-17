@@ -98,6 +98,8 @@ module qcxms2_data
       logical :: calcKER = .false. ! compute kinetic energy release
       ! special modes
       logical :: cneintscale = .false. ! scale internal energy according to CN of active atoms
+      real(wp) :: iee_cn_scale = 0.0_wp ! internal energy scaling factor for CN scaling
+      real(wp) :: iee_prot_scale = 0.0_wp ! internal energy scaling factor for energy scaling near to protontation side
       logical :: dxtb = .false. ! use special dxtb parameter requires dxtb_param.txt in starting DIR
 
       logical :: sortoutcascade = .false. ! sort out structures with more than one maximum in reaction path
@@ -130,6 +132,8 @@ module qcxms2_data
 
       ! CID DATA
       ! TODO
+      integer :: eltemp_gga = 0 ! electron temperature in K for GGAs
+      integer :: eltemp_hybrid = 0 ! electronic temperature in K for hybrids  
       logical :: prot = .false.   ! for positve ESI Mode
       logical :: deprot = .false.    ! for negative ESI Mode
       integer  :: cid_mode = 1 ! 1: auto 2: temprun (no collisions) 3: only collisions

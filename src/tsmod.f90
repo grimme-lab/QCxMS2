@@ -12,19 +12,21 @@ contains
 
    !>  TODO implement other path search methods
    !>  CURRENTLY only for NEB with geodesic and without geodesic
-   subroutine tssearch(env, fname, npairs_in, npairs_out, fragdirs_in, fragdirs_out)
+   subroutine tssearch(env, fname, npairs_in, npairs_out2, fragdirs_in, fragdirs_out2)
       implicit none
       type(timer):: tim
       type(runtypedata) :: env
       character(len=80) :: reac, prod
       character(len=1024) :: jobcall, copycall, cleanupcall
       character(len=80), allocatable :: dirs(:), dirs0(:)
-      character(len=80) :: job, fout, pattern ! fout and pattern for readout of qm data
+      character(len=80) :: job, fout, pattern, fout2, pattern2 ! fout and pattern for readout of qm data
       character(len=80) :: fragdirs_in(:, :)
-      character(len=80), allocatable, intent(out)   :: fragdirs_out(:, :)
+      character(len=80), allocatable :: fragdirs_out(:, :)
+      character(len=80), allocatable, intent(out)   :: fragdirs_out2(:, :)
       character(len=80) :: query, fname
       integer, intent(in) :: npairs_in
-      integer, intent(out) :: npairs_out
+      integer :: npairs_out
+      integer, intent(out) :: npairs_out2
       integer :: i, j, njobs, njobs0
       integer, allocatable :: nmode(:), nmode2(:)
       integer :: chrg, uhf, spin
@@ -402,8 +404,8 @@ contains
          call cleanup_nebcalc()
          call execute_command_line(trim(cleanupcall))
          if (env%printlevel .lt. 3) then
-            call remove('orca.out')
-            call remove('orcaerr.out')
+            !call remove('orca.out')
+            !call remove('orcaerr.out')
             call remove('geoin.xyz')
             call remove('.data')
          end if
@@ -569,6 +571,7 @@ contains
          call chdir(trim(env%path))
       end do
 
+      
       ! cleanup
       call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
 
@@ -695,6 +698,7 @@ contains
       ! readout frequencies
 
       allocate (nmode2(npairs_out))
+      nmode2 = 0
       do i = 1, npairs_out
          if (tsopt(i)) cycle
          if (nmode(i) .le. 0) cycle
@@ -713,7 +717,7 @@ contains
          ! overwrite ircmode with optimized ts if we have still one, otherwise leave old ircmode ...
          if (nmode2(i) .ne. 0) then
             call wrshort_real('ircmode_'//trim(env%geolevel), ircmode)
-            call wrshort_int('nmode', nmode(i)) ! overwrite nmode
+            call wrshort_int('nmode', nmode2(i)) ! overwrite nmode
          end if
          call chdir(trim(env%path))
       end do
@@ -812,11 +816,21 @@ contains
          call chdir("ts")
          if (env%exstates .gt. 0) then
             call readoutqm(env, fname, env%tslevel, job, fout, pattern, e_ts_tddft(i), failed)
-            if (failed) e_ts_tddft(i) = 1000000.0_wp ! just set to high value TODO FIXME
+            if (failed) then 
+               write (*, *) "Singl-point calculation of TS failed, pair ", trim(fragdirs_out(i, 1)), " is sorted out"
+               fragdirs_out(i, 1) = ''
+            end if
             call readoutqm(env, fname, env%tslevel, 'sp', fout, pattern, e_ts(i), failed)
+            if (failed) then 
+               write (*, *) "Singl-point calculation of TS failed, pair ", trim(fragdirs_out(i, 1)), " is sorted out"
+               fragdirs_out(i, 1) = ''
+            end if
          else
             call readoutqm(env, fname, env%tslevel, job, fout, pattern, e_ts(i), failed)
-            if (failed) e_ts(i) = 1000000.0_wp ! just set to high value TODO FIXME
+            if (failed) then 
+               write (*, *) "Singl-point calculation of TS failed, pair ", trim(fragdirs_out(i, 1)), " is sorted out"
+               fragdirs_out(i, 1) = ''
+            end if
          end if
          call chdir("..")
          call chdir(trim(env%path))
@@ -825,7 +839,7 @@ contains
       ! cleanup
       call omp_samejobcall(njobs0, dirs0, cleanupcall, .false.)
 
-
+      !TODO DEL this option is spin forbidden anyways
       ! Check for higher spin states (uhf +2)
       if (env%checkmult) then 
          call setompthreads(env, npairs_out) ! now again with all npair_out
@@ -921,6 +935,10 @@ contains
                call readoutqm(env, fname, env%tslevel, 'sp', fout, pattern, e_ts_2uhf(i), failed)
             else
                call readoutqm(env, fname, env%tslevel, job, fout, pattern, e_ts_2uhf(i), failed)
+               if (failed) then 
+                  write (*, *) "single point calculation calculation of TS failed,reaction ", trim(fragdirs_out(i, 1)), " is sorted out"
+                  fragdirs_out(i, 1) = ''
+               end if
                if (failed) e_ts_2uhf(i) = 1000000.0_wp ! just set to high value TODO FIXME
             end if
             call chdir("..")
@@ -941,7 +959,7 @@ contains
          end do
       end if 
 
-
+     
 
       ! determine number of jobs not necessary for bhess calculations
       deallocate (dirs)
@@ -951,22 +969,26 @@ contains
       njobs = 0
       if (env%bhess) then
          do i = 1, npairs_out
-            call chdir(trim(fragdirs_out(i, 1)))
-            call chdir("ts")
-            io = makedir('bhess')
-            call copysub('ts.xyz', 'bhess')
-            call copysub('.CHRG', 'bhess')
-            ! compute bhess at correct spin state ! TODO reoptimization necessary?
-            call copysub('.UHF', 'bhess')
-            call chdir("bhess")
-            call prepqm(env, fname, env%geolevel, 'bhess', jobcall, fout, pattern, cleanupcall, there, .false.)
-            if (.not. there) then
-               njobs = njobs + 1
-               call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts/bhess')
+            ! compute bhess for if pair is there and we cannot use the hessian
+            if ((index(fragdirs_out(i, 1), 'p') .ne. 0 .and. nmode(i) .ne. 1 .and. nmode2(i) .ne. 1) &
+            & .or. (env%geolevel .ne. "gfn2" .and. env%geolevel .ne. "gfn2spinpol" .and. env%geolevel .ne. "gfn2_tblite"))  then
+               call chdir(trim(fragdirs_out(i, 1)))
+               call chdir("ts")
+               io = makedir('bhess')
+               call copysub('ts.xyz', 'bhess')
+               call copysub('.CHRG', 'bhess')
+               ! compute bhess at correct spin state ! TODO reoptimization necessary?
+               call copysub('.UHF', 'bhess')
+               call chdir("bhess")
+               call prepqm(env, fname, env%geolevel, 'bhess', jobcall, fout, pattern, cleanupcall, there, .false.)
+               if (.not. there) then
+                  njobs = njobs + 1
+                  call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts/bhess')
+               end if
+               call chdir("..")
+               call chdir("..")
+               call chdir(trim(env%path))
             end if
-            call chdir("..")
-            call chdir("..")
-            call chdir(trim(env%path))
          end do
 
          call setompthreads(env, njobs)
@@ -985,36 +1007,65 @@ contains
 
          njobs = 0
          do i = 1, npairs_out
-            call chdir(trim(fragdirs_out(i, 1)))
-            call chdir("ts")
-            io = makedir('bhess')
-            call copysub('ts.xyz', 'bhess')
-            call chdir("bhess")
-            call readoutqm(env, fname, env%geolevel, 'bhess', fout, pattern, edum, failed)
-            if (failed) then
-               call prepqm(env, fname, env%geolevel, 'bhess', jobcall, fout, pattern, cleanupcall, there, .true.)
-               njobs = njobs + 1
-               call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts/bhess')
+            if ((index(fragdirs_out(i, 1), 'p') .ne. 0 .and. nmode(i) .ne. 1 .and. nmode2(i) .ne. 1) &
+            & .or. (env%geolevel .ne. "gfn2" .and. env%geolevel .ne. "gfn2spinpol" .and. env%geolevel .ne. "gfn2_tblite"))  then
+               call chdir(trim(fragdirs_out(i, 1)))
+               call chdir("ts")
+               io = makedir('bhess')
+               call copysub('ts.xyz', 'bhess')
+               call chdir("bhess")
+               call readoutqm(env, fname, env%geolevel, 'bhess', fout, pattern, edum, failed)
+               if (failed) then
+                  call prepqm(env, fname, env%geolevel, 'bhess', jobcall, fout, pattern, cleanupcall, there, .true.)
+                  njobs = njobs + 1
+                  call append_char(dirs, trim(fragdirs_out(i, 1))//'/ts/bhess')
+               end if
+               call chdir("..")
+               call chdir("..")
+               call chdir(trim(env%path))
             end if
-            call chdir("..")
-            call chdir("..")
-            call chdir(trim(env%path))
          end do
 
          call setompthreads(env, njobs)
          if (njobs .gt. 0) write (*, *) "Restarting ", njobs, " failed bhess calculations on TS structures"
          call omp_samejobcall(njobs, dirs, jobcall)
 
+
+         fout2 = 'orca.out'
+         pattern2 = 'Zero point energy                ...'
          ! readout RRHO
          do i = 1, npairs_out
-            call chdir(trim(fragdirs_out(i, 1)))
-            call chdir("ts")
-            call chdir("bhess")
-            call readoutqm(env, fname, env%geolevel, 'bhess', fout, pattern, e_rrho(i), failed)
-            if (failed) e_rrho(i) = 10000000.0_wp ! just set to high value  TODO FIXME
-            call chdir("..")
-            call chdir("..")
-            call chdir(trim(env%path))
+            if (index(fragdirs_out(i, 1), 'p') .ne. 0) then
+               call chdir(trim(fragdirs_out(i, 1)))             
+               call chdir("ts")
+                  if ((nmode(i) .ne. 1 .and. nmode2(i) .ne. 1) & 
+                  & .or. (env%geolevel .ne. "gfn2" .and. env%geolevel .ne. "gfn2spinpol" .and. env%geolevel .ne. "gfn2_tblite")) then 
+                  call chdir("bhess")
+                  call readoutqm(env, fname, env%geolevel, 'bhess', fout, pattern, e_rrho(i), failed)
+                  if (failed) then 
+                     write (*, *) "bhess calculation failed, fragment ", trim(fragdirs_out(i, 1)), " is sorted out"
+                     fragdirs_out(i, 1) = ''
+                  end if
+                 
+               elseif (nmode2(i) .eq. 1) then
+                  call chdir("hess2")
+                  call readoutqm(env, fname, env%geolevel, 'hess', fout2, pattern2, e_rrho(i), failed)
+                  if (failed) then 
+                     write (*, *) "hess2 calculation failed, fragment ", trim(fragdirs_out(i, 1)), " is sorted out"
+                     fragdirs_out(i, 1) = ''
+                  end if
+               elseif (nmode(i) .eq. 1) then
+                  call chdir("hess")
+                  call readoutqm(env, fname, env%geolevel, 'hess', fout2, pattern2, e_rrho(i), failed)
+                  if (failed) then 
+                     write (*, *) "hess2 calculation failed, fragment ", trim(fragdirs_out(i, 1)), " is sorted out"
+                     fragdirs_out(i, 1) = ''
+                  end if      
+               end if
+               call chdir("..")
+               call chdir("..")
+               call chdir(trim(env%path))    
+            end if
          end do
 
          ! cleanup
@@ -1038,29 +1089,32 @@ contains
       end if
 
       do i = 1, npairs_out
-         call chdir(trim(fragdirs_out(i, 1)))
-         barrier = (e_ts(i) - e_start)*autoev
-         if (env%bhess) then
-            drrho = (e_rrho(i) - rrho_start)*autoev
-            barrier = barrier + drrho
-            !DEL? not really needed just for diagnostice
-            call wrshort_real('earrho_'//trim(env%geolevel), drrho)
-         end if
-
-         if (env%exstates .gt. 0) then
-            barrier_tddft = (e_ts_tddft(i) - e_start_tddft)*autoev
+         if (index(fragdirs_out(i, 1), 'p') .ne. 0) then
+            call chdir(trim(fragdirs_out(i, 1)))
+            barrier = (e_ts(i) - e_start)*autoev
             if (env%bhess) then
-               barrier_tddft = barrier_tddft + drrho
+               drrho = (e_rrho(i) - rrho_start)*autoev
+               barrier = barrier + drrho
+               !DEL? not really needed just for diagnostice
+               call wrshort_real('earrho_'//trim(env%geolevel), drrho)
             end if
-            call wrshort_real('barrier_'//trim(env%tslevel), barrier_tddft)
-            call wrshort_real('barriergs_'//trim(env%tslevel), barrier) ! GS barrier, just for testing
-            write (*, *) "Contributions of higher states to barrier:", barrier - barrier_tddft
-         else
-            call wrshort_real('barrier_'//trim(env%tslevel), barrier)
+
+            if (env%exstates .gt. 0) then
+               barrier_tddft = (e_ts_tddft(i) - e_start_tddft)*autoev
+               if (env%bhess) then
+                  barrier_tddft = barrier_tddft + drrho
+               end if
+               call wrshort_real('barrier_'//trim(env%tslevel), barrier_tddft)
+               call wrshort_real('barriergs_'//trim(env%tslevel), barrier) ! GS barrier, just for testing
+               write (*, *) "Contributions of higher states to barrier:", barrier - barrier_tddft
+            else
+               call wrshort_real('barrier_'//trim(env%tslevel), barrier)
+            end if
+            call chdir(trim(env%path))
          end if
-         call chdir(trim(env%path))
       end do
 
+      call sortout0elements( npairs_out,npairs_out2,fragdirs_out,fragdirs_out2,env%removedirs)
    end subroutine tssearch
 
 ! read first 9 modes from g98 file, messy routine TODO FIXME
@@ -1284,6 +1338,16 @@ contains
          fermi = .true.
       end if
 
+      if (env%eltemp_hybrid .gt. 0 ) then 
+         fermi = .true.
+      end if
+
+      if (env%geolevel == 'gfn2' .or. env%geolevel == 'gfn1') then
+         if (env%eltemp_gga .gt. 0) then
+            fermi = .true.
+         end if
+      end if
+
       !maxiter = 100 ! complicated rearr. anyway strange !500 default
       maxiter = 500 ! default
 
@@ -1300,38 +1364,46 @@ contains
       mult = uhf + 1
       select case (env%geolevel)
       case ('pbeh3c')
-         levelkeyword = 'PBEh-3c'
+         levelkeyword = 'UKS PBEh-3c'
          etemp = 13400
       case ('b973c')
-         levelkeyword = 'B97-3c'
+         levelkeyword = 'UKS B97-3c'
          etemp = 5000
       case ('r2scan3c')
-         levelkeyword = 'R2SCAN-3c'
+         levelkeyword = 'UKS R2SCAN-3c'
          etemp = 5000
       case ('wb97x3c')
-         levelkeyword = 'wB97X-3c'
+         levelkeyword = 'UKS wB97X-3c'
          etemp = 15000
-         write (jobcall, '(a,i0,a)') 'o4wb3c --mpi ', env%threads, '  --struc start.xyz >/dev/null 2>/dev/null' !--tightscf
-         call execute_command_line(trim(jobcall), exitstat=io)
-         call rename('wb97x3c.inp', 'orca.inp')
+         if (env%eltemp_hybrid .gt. 0) etemp = env%eltemp_hybrid
      !!!!!!!! currently not needed REMOVE???
       case ('gfn2')
          levelkeyword = 'XTB2'
          etemp = 300
-         if (re) etemp = 5000
+         if (env%eltemp_gga .gt. 0) etemp = env%eltemp_gga
+         if (re) etemp = 5000 !force convergence
       case ('gfn2spinpol')
          levelkeyword = 'XTB2'
          etemp = 300
-         if (re) etemp = 5000   
+         if (env%eltemp_gga .gt. 0) etemp = env%eltemp_gga
+         if (re) etemp = 5000
+      case ('gfn2_tblite')
+         levelkeyword = 'XTB2'
+         etemp = 300
+         if (env%eltemp_gga .gt. 0) etemp = env%eltemp_gga
+         if (re) etemp = 5000         
       case ('gfn1')
          levelkeyword = 'XTB1'
          etemp = 300
-         if (re) etemp = 5000
+         if (env%eltemp_gga .gt. 0) etemp = env%eltemp_gga
+         if (re) etemp = 5000 !force convergence
       case ('gxtb')
          levelkeyword = 'XTB'
          fermi = .false.
+        
+         if (env%eltemp_hybrid .gt. 0) etemp = env%eltemp_hybrid
          if (re) then
-            etemp = 5000
+            etemp = 15000 ! force convergence
             fermi = .true.
          end if
       case default
@@ -1343,39 +1415,49 @@ contains
 
       nnds = env%tsnds - 2
       ! nnds = env%tsnds !  only if preopt end true selected reduce it by two to make it comparable to geodesic, xtb and gsm
-      if (env%geolevel == 'wb97x3c') then
-         call execute_command_line('sed -i "s/RKS/UKS/" orca.inp')
-         call execute_command_line('sed -i "s/NormalSCF/LOOSESCF/" orca.inp')
-         open (newunit=ich, file='orca.inp', status="old", position="append", action="write")
-         write (ich, *) "! RIJONX"
-
-      else
-         open (newunit=ich, file='orca.inp')
-      end if
-
-
-
+     
+      open (newunit=ich, file='orca.inp')
       write (ich, '(a)') '! NEB   ' ! "LOOSE-NEB" doesnt work ....
       
       if (env%solv) then
-         if (env%geolevel == 'gfn2' .or. env%geolevel == 'gfn1' .or. env%geolevel == 'gfn2spinpol') then
+         if (env%geolevel == 'gfn2' .or. env%geolevel == 'gfn1' .or. env%geolevel == 'gfn2spinpol' .or. env%geolevel == 'gfn2_tblite') then
          write (ich, *) "! ALPB(water)" 
          end if
      end if
 
-      if (trim(env%geolevel) .ne. 'wb97x3c') write (ich, *) "! "//trim(levelkeyword)
+      write (ich, *) "! "//trim(levelkeyword)
       write (ich, *) "%maxcore 8000" ! TODO make parameter or read in orca sample input file
 
-      !use  tblite
+
+      !use  tblite for proper uhf scf
+      if (env%geolevel == 'gfn2_tblite') then
+         xtbstring = 'XTBINPUTSTRING2 "--tblite "'
+         write (ich, *) "%xtb"
+         write (ich, '(a)') trim(xtbstring)
+         write (ich, *) "end"
+      end if
+
+
+      !use  spinpol
       if (env%geolevel == 'gfn2spinpol') then
          xtbstring = 'XTBINPUTSTRING2 "--tblite --spinpol"'
          write (ich, *) "%xtb"
          write (ich, '(a)') trim(xtbstring)
          write (ich, *) "end"
       end if
+
+      if (env%geolevel == 'gfn2' .or. env%geolevel == 'gfn1') then 
+         if (fermi)  then 
+            write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--etemp ',etemp,'"'
+            write (ich, *) "%xtb"
+            write (ich, '(a)') trim(xtbstring)
+            write (ich, *) "end"
+         end if
+      end if
+
       if (env%geolevel == 'gxtb') then
          xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -symthr 0.0''"'
-         if (fermi) xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -tel 15000 -symthr 0.0''"'
+         if (fermi)  write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -tel ',etemp,' -symthr 0.0''"'
          write (ich, *) "%xtb"
          write (ich, '(a)') trim(xtbstring)
          write (ich, *) "end"
@@ -1510,13 +1592,15 @@ contains
       close (ich)
       ! prepare ograd
       ! write xtbcall here
-      if (env%geolevel == "gfn1" .or. env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" .or. env%geolevel == "pm6" .or. env%geolevel == "gxtb" .or. env%geolevel == "aimnet2") then
+      if (env%geolevel == "gfn1" .or. env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" &
+      & .or. env%geolevel == "gfn2_tblite" .or. env%geolevel == "pm6" .or. env%geolevel == "gxtb" .or. env%geolevel == "aimnet2") then
          etemp = 300.0_wp
          if (re) etemp = 5000.0_wp
          write (jobcall, '(a)') 'xtb $ofile.xyz -grad --'//trim(env%geolevel)
          if (env%fermi) write (jobcall, '(a,i4)') trim(jobcall)//' --etemp ', etemp
          if (env%dxtb) write (jobcall, '(a)') trim(jobcall)//' --vparam dxtb_param.txt'
          if (env%geolevel == 'gfn2spinpol') write (jobcall, '(a)') trim(jobcall)//' --tblite --spinpol'
+         if (env%geolevel == 'gfn2_tblite') write (jobcall, '(a)') trim(jobcall)//' --tblite'
    
          write (jobcall, '(a)') trim(jobcall)//' > $ofile.xtbout'
          if (env%geolevel == 'gxtb') then
@@ -1627,45 +1711,6 @@ contains
 
             close(ich)
    end if
-
-   ! for atb we need amesp and atb2orcy.py! 
-   if (env%geolevel == 'atb') then
-      call rdshort_int('.CHRG', chrg)
-      call rdshort_int(".UHF", uhf)
-   
-      mult = uhf + 1
-      open (newunit=ich, file='ograd')
-
-      write (ich, '(a)') '#!/bin/bash  '     
-      write (ich, '(a)') 'ofile=orcain$1.in'
-      write (ich, '(a)') 'ofileout=orcain$1.out'
-      write (ich, '(a)') 'molfile=structure$1'   ! for ORCA 5.0 
-      write (ich, '(a)') 'ncpu=$2'  
-      write (ich, '(a)') 'basename="${ofile%.*}"'  
-       write (ich, '(a)') 'cd scratch '
-      write (ich, '(a)') 'echo "! atb" > $ofile' 
-      write (ich, '(a)') 'echo "! opt" >> $ofile'
-      write (ich, '(a)') 'echo "% maxcore 1000" >> $ofile'
-       write (ich, '(a,i0,a)') 'echo " % npara ',env%threads,'" >> $ofile'
-      write (ich, '(a)') 'echo ">opt" >> $ofile'
-      write (ich, '(a)') 'echo " maxcyc 1" >> $ofile'
-      write (ich, '(a)') 'echo "end" >> $ofile'
-
-      !qdis converges better?
-      write (ich, '(a)') 'echo ">scf" >> $ofile'
-      write (ich, '(a)') 'echo "diis qdiis" >> $ofile'
-      write (ich, '(a)') 'echo "end" >> $ofile'
-      
-      write (ich, '(a,i0,1x,i0,1x,a)') 'echo ">xyz ', chrg, mult,'">> $ofile'
-      write (ich, '(a)') 'cat $molfile  >> $ofile'
-      write (ich, '(a)') 'echo "end" >> $ofile'
-      write (ich, '(a)') 'amesp $ofile  $ofileout'
-      write (ich, '(a)') 'python $(which atb2orca.py) $ofileout --basename $basename'
-      write (ich, '(a)') 'cd ..'
-      close(ich)
-      end if
-   
-
       call execute_command_line('chmod u+x ograd')
       io = makedir('scratch')
       call execute_command_line('sed -i "2s/.*/ /" start.xyz')
@@ -1694,10 +1739,6 @@ contains
       if (trim(env%geolevel) == 'gfn2' .or. trim(env%geolevel) == 'gfn1') maxtime = 3600
       if (trim(env%geolevel) == 'gxtb') maxtime = 10000 ! TODO make dependent on number of atoms
        write(jobcall,'(a,i0,a)') 'timeout ',maxtime,' gsm > gsm.out 2> gsmerror.out'
-      ! if (env%geolevel == 'atb') then
-       !   write (jobcall, '(a,i0,a)') ' timeout ', maxtime, ' gsm.orca > gsm.out 2> gsmerror.out' ! note if gsm failes gsm.out gets very large, just dont write it
-        !  write (jobcall, '(a,i0,a)') ' timeout ', maxtime, ' gsm.orca > /dev/null 2>/dev/null' ! note if gsm failes gsm.out gets very large, just dont write it
-       !end if
       write (jobcall, '(a)') trim(jobcall)//' && touch gsm_finished '
       if (env%printlevel .le. 1) write (jobcall, '(a)') trim(jobcall)//' && rm -r scratch '
 
@@ -1790,7 +1831,7 @@ contains
          lastpoint = nnds
       end if
 
-      tsthr = 1.0_wp
+      tsthr = 0.0_wp
       inquire (file=trim(fname), exist=ex, size=nlines)
       if (ex .and. nlines .gt. 0) then ! gsm can fail and produces and empty stringfile
          open (newunit=ich, file=trim(fname))
@@ -1839,8 +1880,9 @@ contains
          emin = e_rels(1)
          emin_loc = e_rels(1)
          nmax = 0
+
          ! but  threshold values is needed take 1 kcal?
-         tsthr = 1.0_wp ! kcal threshold for a TS ! xyz(j) is taken already for threshold 0.0 so a different threshold here makes no sense ! TODO FIXME incosistent
+         tsthr = 1.0_wp ! kcal threshold for a TS ! xyz(j) is taken already for threshold 0.0 so a different threshold here makes no sense ! TODO FIXME inconsistent
 
          diffthr = 0.0_wp ! can not set too high value, if sampling is very dense -> no maximum is detected
 

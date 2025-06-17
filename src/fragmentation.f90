@@ -335,10 +335,15 @@ contains
       ! each xtb calculation is done with 1 thread, so we have to set it here
       call setomptoone
       write (jobcall, '(a,i0)') 'crest infrag.xyz --msreact --mslargeprint --msnbonds ', env%msnbonds
+      !write (jobcall, '(a,i0)') 'crestmsring infrag.xyz --msreact --mslargeprint --msnbonds ', env%msnbonds
       write (jobcall, '(a,i0,a,i0)') trim(jobcall)//' --chrg ', env%chrg, ' --uhf ', uhf
       write (jobcall, '(a,i0,a)') trim(jobcall)//' --T ', env%cores, ' --'//fraglevel
       write (jobcall, '(a,f10.5)') trim(jobcall)//' --ewin ', ewin
 
+      ! important for CREST to work properly with xtb versions newer than 6.7.1
+      if (env%mode == 'cid') then 
+         write (jobcall, '(a)') trim(jobcall)//' --mscid'
+      end if
       !to prevent too many fragments isomers can be skipped
       if (env%msnoiso .or. (nfragl .gt. 1 .and. .not. env%msfulliso)) then
          write (jobcall, '(a)') trim(jobcall)//' --msnoiso'
@@ -361,6 +366,7 @@ contains
       if (env%msfragdist .gt. 0.0_wp) then
          call wrshort_real('crestms.inp', env%msfragdist)
          open (newunit=ich, file='crestms.inp')
+         write (ich, '(a,1x,f8.6)') 'fragdist', env%msfragdist
          write (ich, '(a,1x,f8.6)') 'fragdist', env%msfragdist
          close (ich)
          write (jobcall, '(a)') trim(jobcall)//' --msinput crestms.inp '
