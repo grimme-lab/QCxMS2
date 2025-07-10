@@ -1456,8 +1456,8 @@ contains
       end if
 
       if (env%geolevel == 'gxtb') then
-         xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -symthr 0.0''"'
-         if (fermi)  write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -tel ',etemp,' -symthr 0.0''"'
+         xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c xtbdriver.xyz -symthr 0.0  -b  ~/.basisq ''"'
+         if (fermi)  write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -tel  -b  ~/.basisq  ',etemp,' -symthr 0.0''"'
          write (ich, *) "%xtb"
          write (ich, '(a)') trim(xtbstring)
          write (ich, *) "end"
@@ -1604,8 +1604,8 @@ contains
    
          write (jobcall, '(a)') trim(jobcall)//' > $ofile.xtbout'
          if (env%geolevel == 'gxtb') then
-            write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad > $ofile.xtbout'
-            if (env%fermi) write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad -tel 15000 > $ofile.xtbout'
+            write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad   -b  ~/.basisq > $ofile.xtbout'
+            if (env%fermi) write (jobcall, '(a)') ' gxtb -c $ofile.xyz -grad -tel 15000   -b  ~/.basisq > $ofile.xtbout'
          end if
          if (env%geolevel == 'aimnet2') then
             call remove('coord') ! necessary the way the xtb driver works at the momen TODO fix this

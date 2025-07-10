@@ -7,8 +7,8 @@ module mcsimu
    use iomod
    use utility
    use qmmod
-   use cid
-
+   use tsmod
+   use structools
    implicit none
 
 contains
@@ -208,7 +208,7 @@ contains
       call findhdiss(env, fname, nat, npairs, fragdirs, ishdiss, scaleeinthdiss)
 
       ! account for inhomogeneous IEE distribution
-      if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 2 )) then ! scale IEE with active coordination number for CID also for subsequent frags
+      if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then ! scale IEE with active coordination number for CID also for subsequent frags
          allocate (active_cn(npairs))
          call get_active_cn(env, fname, nat, npairs, fragdirs, active_cn)
 
@@ -319,7 +319,7 @@ contains
 
       ! not the best solution but should be ok for now ..
       if (env%mode == "cid") then
-         maxiee = maxiee + env%cid_elab
+         maxiee = 60.0_wp !TODO repair eiee array!!
       end if
 
       ! energy distribution can exceed for very large molecules eimp0, so we have to check this
@@ -328,20 +328,6 @@ contains
             if (env%printlevel .eq. 3) write (*, *) "maxiee is negative or larger than eimp0, something went wrong, set it to eimp0"
             maxiee = env%eimp0
          end if
-      end if
-
-      ! For CID, due to collisions we can have more energy but check also here
-      ! that we dont exceed it by too much
-      if (env%mode == "cid") then
-         if (maxiee .lt. 0 .or. maxiee .gt. env%cid_elab*1.5_wp) then
-          if (env%printlevel .eq. 3) write (*, *) "maxiee is negative or larger than elab, something went wrong, set it to 1.5 elab"
-            maxiee = env%cid_elab*1.5_wp
-            if (env%cid_elab .eq. 0) then
-               !write (*, *) "temprun mode, set energy to 60 eV"
-               maxiee = 60.0_wp !TODO repair eiee array!!
-            end if
-         end if
-        
       end if
 
       allocate (ts_rrhos(nincr))
@@ -444,12 +430,6 @@ contains
          if (eiee(i) .lt. 0.0_wp) eiee(i) = 0.0_wp
       end do
 
-      ! simulate collisions by adding collision energy on top of IEE
-      if (env%mode == "cid") then
-         call simcid(env, tf, maxiee, eiee, piee, nsamples, alldgs, nincr, &
-         & nfragl, KERavold, de0, Ea0, nat0, nvib0, npairs, ishdiss, scaleeinthdiss, isrearr, .false.)
-      end if
-
       deallocate (ts_rrhos, start_rrhos, f1_rrhos, f2_rrhos, dgs, dgeas)
 
      ! do j = 1, npairs ! for each pair
@@ -528,7 +508,7 @@ contains
             do j = 1, npairs
                freq = irc(j)
                IEE = eiee(i)
-               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 2 )) then
+               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then
                   IEE = IEE*(active_cn(j)/max_active_cn)**iee_cn_scale
                   !IEE = IEE*EXP(-coll_cooling*tav(j)) 
                   !IEE = IEE / (1.0_wp + coll_cooling*tav0) ! collisional cooling
@@ -734,13 +714,7 @@ contains
       end if
 
       !!!!!!!!!!!!!!!! END OF ISOMER MODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      !return
-
-      ! allow again collisions after equilibration of system via Isomerizations
-      if (env%mode == "cid") then
-         call simcid(env, tf, maxiee, eiee, piee, nsamples, alldgs, nincr, nfragl, KERavold, &
-         & de0, Ea0, nat0, nvib0, npairs, ishdiss, scaleeinthdiss, isrearr, .true.)
-      end if
+   
 
       pfrag_prec = pfrag(npairs + 1, 1)
       pfrag(:, :) = 0
@@ -787,7 +761,7 @@ contains
                   !"write(*,*) "IEE is", IEE
               ! end if
 
-               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 2 )) then
+               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then
                    IEE = IEE*(active_cn(j)/max_active_cn)**iee_cn_scale
                    !IEE = IEE*1/nfragl ! collisional cooling
                    !IEE = IEE*EXP(-coll_cooling*tav(j)) ! collisional cooling

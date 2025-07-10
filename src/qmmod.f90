@@ -711,8 +711,8 @@ contains
          end if
          write (ich, *) "end"
          if (env%geolevel == 'gxtb') then
-            xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -symthr 0.0 ''"'
-            if (fermi)  write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -tel ',etemp,' -symthr 0.0''"'
+            xtbstring = 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz -b  ~/.basisq -symthr 0.0 ''"'
+            if (fermi)  write(xtbstring,'(a,i0,a)') 'XTBINPUTSTRING2 "--driver ''gxtb -c orca.xtbdriver.xyz  -b  ~/.basisq  -tel ',etemp,' -symthr 0.0''"'
             write (ich, *) "%xtb"
             write (ich, '(a)') trim(xtbstring)
             write (ich, *) "end"
@@ -852,6 +852,7 @@ contains
       write (jobkeyword, '(a)') 'xtb xtbin.xyz --'//trim(job)//' --'//trim(level)
       if (jobkeyword == 'bhess') then 
          write(jobkeyword, '(a)') 'timeout 60 xtb xtbin.xyz --'//trim(job)//' --'//trim(level)
+      end if
       ! use tblite for correct uhf
       if (level == "gfn2_tblite") write (jobkeyword, '(a)') trim(jobkeyword)//' --tblite '
       ! use tblite for gfn2spinpol
@@ -933,9 +934,9 @@ contains
          call remove('.GRAD')
          call remove('.HESS')
          if (etemp .gt. 0) then ! apply fermi smearing
-            write (jobcall, '(a,i0,a)') 'gxtb -c xtbin.xyz -tel ',etemp,' > gxtb.out 2>errorfile' ! TODO has currently no effect
+            write (jobcall, '(a,i0,a)') 'gxtb -c xtbin.xyz  -b  ~/.basisq -tel ',etemp,' > gxtb.out 2>errorfile' ! TODO has currently no effect
          else
-            write (jobcall, '(a)') 'gxtb -c xtbin.xyz > gxtb.out 2>errorfile'
+            write (jobcall, '(a)') 'gxtb -c xtbin.xyz  -b  ~/.basisq  > gxtb.out 2>errorfile'
          end if
          fout = 'gxtb.out'
          !pattern='total                   :'
@@ -943,8 +944,8 @@ contains
       case ('opt')
          call touch('.GRAD')
          call remove('coord') ! necessary the way the xtb driver works at the momen TODO fix this
-         write (jobcall, '(a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -symthr 0.0" > opt.out 2>/dev/null'
-         if (etemp .gt. 0) write (jobcall, '(a,i0,a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -tel ',etemp,' -symthr 0.0" > opt.out 2>/dev/null'
+         write (jobcall, '(a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -symthr 0.0  -b  ~/.basisq " > opt.out 2>/dev/null'
+         if (etemp .gt. 0) write (jobcall, '(a,i0,a)') 'xtb xtbin.xyz --opt --driver "gxtb -c xtbdriver.xyz -tel ',etemp,' -symthr 0.0  -b  ~/.basisq " > opt.out 2>/dev/null'
          write (jobcall, '(a)') trim(jobcall)//' && cp xtbopt.xyz opt.xyz'
          fout = 'opt.out'
          write (cleanupcall, '(a)') trim(cleanupcall)//' xtbdriver.xyz opt.out .GRAD'
@@ -953,8 +954,8 @@ contains
          call touch('.HESS')
 
          call execute_command_line(trim(jobcall), exitstat=io)
-         write (jobcall, '(a)') 'gxtb -c xtbin.xyz > gxtb.out 2>/dev/null'
-         if (etemp .gt. 0)  write (jobcall, '(a,i0,a)') 'gxtb -c xtbin.xyz -tel ',etemp,' > gxtb.out 2>/dev/null'
+         write (jobcall, '(a)') 'gxtb -c xtbin.xyz  -b  ~/.basisq  > gxtb.out 2>/dev/null'
+         if (etemp .gt. 0)  write (jobcall, '(a,i0,a)') 'gxtb -c xtbin.xyz -tel  ',etemp,'  -b  ~/.basisq > gxtb.out 2>/dev/null'
          fout = 'gxtb.out'
          write (cleanupcall, '(a)') trim(cleanupcall)//' .GRAD .HESS'
       case default

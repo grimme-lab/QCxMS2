@@ -9,7 +9,6 @@ srcs += files(
 'boxmuller.f90',
 'iee.f90',
 'mcsimu.f90',
-'cid.f90',
 'tsmod.f90',
 'iomod.f90',
 'qcxms2_data.f90',

@@ -131,25 +131,16 @@ module qcxms2_data
       logical :: picktsrun = .false. ! do only an IRC analysis
 
       ! CID DATA
-      ! TODO
       integer :: eltemp_gga = 0 ! electron temperature in K for GGAs
       integer :: eltemp_hybrid = 0 ! electronic temperature in K for hybrids  
       logical :: prot = .false.   ! for positve ESI Mode
       logical :: deprot = .false.    ! for negative ESI Mode
-      integer  :: cid_mode = 1 ! 1: auto 2: temprun (no collisions) 3: only collisions
-      real(wp) :: cid_elab = 40 ! collision energy in laboratory fram in eV
+      integer  :: cid_mode = 1 ! 1: temprun (no collisions) maybe add in the future more runtypes
       real(wp) :: cid_esi = 0.0_wp ! ionization energy in eV by default 0.0,
       real(wp) :: cid_esiatom = 0.0_wp ! ionization energy per atom in eV by default 0.0,
       real(wp) :: cid_esiw = 0.2_wp ! width of ionization energy distribution in eV
-      real(wp) :: cid_collw = 0.5_wp ! width of collision energy distribution in eV
-      integer  :: cid_maxcoll = 10 ! maximum number of collisions
-      real(wp) :: cid_lchamb = 0.25 ! chamber length in m
-      real(wp) :: cid_pgas = 0.132 !Pa 0.000132 ! 1mtor   !0.5 ! gas pressure in Pa ! 1 torr QCxMS1
-      real(wp) :: cid_TGas = 300 ! gas temperature in K
-      real(wp) :: cid_mgas = 39.94800_wp ! argon ! mass of gas in u !He, Ne, Ar, Kr, Xe, N2 available TODO include them
-      real(wp) :: cid_rgas = 3.55266638_wp !  bohr vdw-radius of Ar ! TODO include them
-      real(wp) :: cid_scool = 1.0 ! scale collissional cooling
-      logical :: solv = .false. ! use solvation for fragmentations
+      real(wp) :: cid_scool = 1.0 ! scale collissional cooling !experimental option to simulate collisional cooling
+      logical :: solv = .false. ! deprecated experimental option to include solvation effects for barrier calculation
    end type runtypedata
 
    ! some more constants
