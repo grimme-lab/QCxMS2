@@ -15,7 +15,6 @@ program QCxMS2
    use plot
    use iomod
    use qcxms_iee
-   use cid
 
    use mctc_env, only: error_type, get_argument!, fatal_error
    use mctc_io, only: structure_type, read_structure, write_structure, &

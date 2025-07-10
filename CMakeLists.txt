@@ -15,7 +15,7 @@ endif()
 project(
   qcxms2 
   LANGUAGES "C" "Fortran"
-  VERSION  1.0.0
+  VERSION  1.2.0
   DESCRIPTION "Program package for the quantum mechanical calculation of EI mass spectra using automated reaction network exploration "
 )
 

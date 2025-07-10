@@ -290,11 +290,10 @@ contains
    ! ESI energy instead of discrete scaling with number of atoms
    ! TODO test this with different molecules for CID mode
    subroutine scaleesi(env, nsamples, eiee, piee, plotlog)
-      use cid
       implicit none
       integer, intent(in) :: nsamples
       real(wp), allocatable, intent(out) :: eiee(:), piee(:)
-      real(wp) :: edum, eimpw, randx, escale
+      real(wp) :: edum, eimpw, randx, Eavg
       real(wp) :: energy, prob
       logical, intent(in) :: plotlog
       integer :: i, ich
@@ -306,53 +305,23 @@ contains
       eiee = 0.0_wp
       piee = 0.0_wp
 
-      if (env%cid_mode == 3) then ! only collisions
-         eiee = 0.0_wp
-         piee = 1.0_wp/nsamples
-         return
-      end if
 
       call rdshort_int(trim(env%infile), nat)
 
-      !scale dependent on the number of atoms
-      ! if (env%cid_esi .le. 0.0_wp) then ! if esi is not set set dependent on the number of atoms
-
-      ! taken from QCxMS
-      call random_number(randx)
-
-      ! b    = nat / 10.0_wp
-      ! dep = int(b)
-      !  if ( b < 2.0_wp ) dep = 1 ! hard coded for small molecules
-
-      !>> Make random energy depending on molecular size
-      !if (dep == 1) escale = 1 + FLOOR(2*randx)     ! 1-2
-      !if (dep == 2) escale = 2 + FLOOR(2*randx)     ! 2-3
-      !if (dep == 3) escale = 3 + FLOOR(3*randx)     ! 3-5
-      !if (dep == 4) escale = 3 + FLOOR(4*randx)     ! 3-6
-      !if (dep >= 5) escale = 4 + FLOOR(5*randx)     ! 4-8
-      !else
-      !    escale = env%cid_esi
-      ! end if
-
-      ! escale = dep
-      !  escale = escale + env%cid_esi
-
       if (env%cid_esiatom == 0) then ! i.e. no input take default
-         if (env%cid_mode == 2) then
+         if (env%cid_mode == 1) then
             env%cid_esiatom = 0.4_wp ! temprun mode
-         else
-            env%cid_esiatom = 0.1_wp
          end if
       end if
 
-      escale = env%cid_esiatom*nat + env%cid_esi
+      Eavg = env%cid_esiatom*nat + env%cid_esi
       write (*, *) "scaling energy in ESI by", env%cid_esiatom, " eV per atom and shift by", env%cid_esi, " eV"
-      write (*, *) "ESCALE in ESI is", escale
+      write (*, *) "Average energy is set to", Eavg
 
       ! vary energies by Box-Muller
       eimpw = env%cid_esiw ! width of distribution 0.2 is default
       do i = 1, nsamples
-         edum = vary_energies(escale, eimpw)
+         edum = vary_energies(Eavg, eimpw)
          eiee(i) = edum
          piee(i) = 1.0_wp/nsamples
       end do

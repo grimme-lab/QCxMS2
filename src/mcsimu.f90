@@ -7,8 +7,8 @@ module mcsimu
    use iomod
    use utility
    use qmmod
-   use cid
-
+   use tsmod
+   use structools
    implicit none
 
 contains
@@ -60,8 +60,9 @@ contains
       real(wp) :: kmax_frag, kmax_iso
 
       real(wp), allocatable :: active_cn(:) ! number of active coordination number
+      real(wp), allocatable :: dist_to_prot(:) ! distance to protonation site
       real(wp) :: max_active_cn
-      real(wp), parameter :: iee_cn_scale = 1.0_wp ! scaling factor for IEE  in dependence of the active coordination number
+      real(wp) :: iee_cn_scale  ! scaling factor for IEE  in dependence of the active coordination number
 
       integer :: ind
 
@@ -83,6 +84,10 @@ contains
       character(len=1024) :: thisdir
       character(len=1024) :: jobcall
 
+      real(wp) :: coll_cooling
+
+      !coll_cooling = 1.0e07_wp
+     
       write (*, *)
       write (*, *) "----------------------------------------------------------------------"
       write (*, *) "|Initializing the Monte Carlo Simulation to calculate all intensities|"
@@ -92,6 +97,9 @@ contains
  if (env%eyring) write (*, '(a,i3,a)') "Eyring equation is used to compute rate constants, with mRRHO-cutoff: ", env%sthr, " cm-1"
       if (.not. env%eyring) write (*, *) "Simplified RRKM equation is used to compute rate constants"
 
+      iee_cn_scale = env%iee_cn_scale
+      if (env%cneintscale) write (*, *) "Active coordination number is used to scale IEE with factor of", iee_cn_scale 
+      if (env%iee_prot_scale .ne. 0) write (*, *) "IEE for reactions in proximity to protonation side is scaled with factor of", env%iee_prot_scale
       tav0 = 0.0_wp
       call rdshort_real('tav', tav0)
 
@@ -116,10 +124,13 @@ contains
       if (env%scaleeinthdiss .ne. 1.0_wp) write (*, '(a,f4.2)') "Scaling of IEE for H-dissociation is", env%scaleeinthdiss
       if (env%tfscale .ne. 0.0_wp) write (*, *) "Scaling of time of flight for subsequent fragmentations is", env%tfscale
       if (env%scaleker .ne. 1.0_wp) write (*, *) "Scaling of KER for subsequent fragmentations is", env%scaleker
+     
       if (env%sumreacscale .ne. 1.0_wp) then
          write (*, *) "Scaling of sum of reaction energies for subsequent fragmentations is", env%sumreacscale
       end if
       tf = env%tf*1.0e-06_wp/(nfragl**env%tfscale) - tav0 ! 50 mukroseconds usually time in MS, p 42 Gross
+
+
       if (tf .gt. env%tf*1.0e-06_wp) then
     if (env%printlevel .eq. 3) write (*, *) "time of flight is larger than 50 microseconds, something went wrong, set it to default"
          tf = env%tf*1.0e-06_wp
@@ -197,21 +208,21 @@ contains
       call findhdiss(env, fname, nat, npairs, fragdirs, ishdiss, scaleeinthdiss)
 
       ! account for inhomogeneous IEE distribution
-      if (env%cneintscale .and. nfragl .eq. 1) then ! scale IEE with active coordination number
+      if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then ! scale IEE with active coordination number for CID also for subsequent frags
          allocate (active_cn(npairs))
          call get_active_cn(env, fname, nat, npairs, fragdirs, active_cn)
 
          max_active_cn = 0.0_wp
 
          do i = 1, npairs
-            write (*, *) "Active coordination number of fragment ", i, " is ", active_cn(i)
+            write (*, *) "Active coordination number of fragment pair ",  trim(fragdirs(i,1)), " is ", active_cn(i)
          end do
 
          max_active_cn = maxval(active_cn)
          write (*, *) "Maximal active coordination number is ", max_active_cn
 
          do i = 1, npairs
-            write (*, *) "Scale IEE for reaction ", i, " with ", (active_cn(i)/max_active_cn)**iee_cn_scale
+            write (*, *) "Scale IEE for reaction ", trim(fragdirs(i,1)), " with ", (active_cn(i)/max_active_cn)**iee_cn_scale
          end do
       end if
 
@@ -308,7 +319,7 @@ contains
 
       ! not the best solution but should be ok for now ..
       if (env%mode == "cid") then
-         maxiee = maxiee + env%cid_elab
+         maxiee = 60.0_wp !TODO repair eiee array!!
       end if
 
       ! energy distribution can exceed for very large molecules eimp0, so we have to check this
@@ -317,20 +328,6 @@ contains
             if (env%printlevel .eq. 3) write (*, *) "maxiee is negative or larger than eimp0, something went wrong, set it to eimp0"
             maxiee = env%eimp0
          end if
-      end if
-
-      ! For CID, due to collisions we can have more energy but check also here
-      ! that we dont exceed it by too much
-      if (env%mode == "cid") then
-         if (maxiee .lt. 0 .or. maxiee .gt. env%cid_elab*1.5_wp) then
-          if (env%printlevel .eq. 3) write (*, *) "maxiee is negative or larger than elab, something went wrong, set it to 1.5 elab"
-            maxiee = env%cid_elab*1.5_wp
-            if (env%cid_elab .eq. 0) then
-               !write (*, *) "temprun mode, set energy to 60 eV"
-               maxiee = 60.0_wp !TODO repair eiee array!!
-            end if
-         end if
-        
       end if
 
       allocate (ts_rrhos(nincr))
@@ -348,28 +345,48 @@ contains
 
       do j = 1, npairs
          call rdshort_real(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/earrho_"//trim(env%geolevel), earrho)
-         ! for DFT spectra
-         if (env%bhess) then
+
+         call rdshort_int(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/nmode", nmode)
+
+          ! if only one imaginary mode is found, we can use hess instead of bhess
+         if (nmode .eq. 1 .and. (env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" .or. env%geolevel == "gfn2_tblite")) then
+            inquire (file=trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2/ts.xyz", exist=ex)
+            if (ex) then 
+               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2")
+               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
+               call chdir(trim(thisdir))  
+            else
+               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess")
+               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
+               call chdir(trim(thisdir)) 
+            end if
+         else
             call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
             call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
             call chdir(trim(thisdir))
-         else ! currently not supported TODO FIXME
-            ! we cannot take hess here as we have no TS!! TODO CHECKME
-            call rdshort_int(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/nmode", nmode)
+         end if 
 
-            if (nmode .eq. 0) then
-               write (*, *) "no irc mode found for ", trim(env%path)//"/"//trim(fragdirs(j, 1))
-               write (*, *) "we take bhess instead"
-               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
-               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
-               call chdir(trim(thisdir))
-            else
-               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess") ! try alternatively hess
-               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false., irc(j)) ! for hess we invert all except for the imaginary mode
-               call chdir(trim(thisdir))
-            end if
-
-         end if
+         ! for DFT spectra
+         !if (env%bhess) then
+         !   call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
+         !   call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
+         !   call chdir(trim(thisdir))
+         !else ! currently not supported TODO FIXME
+         !   ! we cannot take hess here as we have no TS!! TODO CHECKME
+         !   call rdshort_int(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/nmode", nmode)
+!
+         !   if (nmode .eq. 0) then
+         !      write (*, *) "no irc mode found for ", trim(env%path)//"/"//trim(fragdirs(j, 1))
+         !      write (*, *) "we take bhess instead"
+         !      call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
+         !      call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
+         !      call chdir(trim(thisdir))
+         !   else
+         !      call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess") ! try alternatively hess
+         !      call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false., irc(j)) ! for hess we invert all except for the imaginary mode
+         !      call chdir(trim(thisdir))
+         !   end if    
+         !end if
 
          ! we have to subtract the ZPVE from the barrier
          barriers(j) = barriers(j) - earrho
@@ -413,13 +430,11 @@ contains
          if (eiee(i) .lt. 0.0_wp) eiee(i) = 0.0_wp
       end do
 
-      ! simulate collisions by adding collision energy on top of IEE
-      if (env%mode == "cid") then
-         call simcid(env, tf, maxiee, eiee, piee, nsamples, alldgs, nincr, &
-         & nfragl, KERavold, de0, Ea0, nat0, nvib0, npairs, ishdiss, scaleeinthdiss, isrearr, .false.)
-      end if
-
       deallocate (ts_rrhos, start_rrhos, f1_rrhos, f2_rrhos, dgs, dgeas)
+
+     ! do j = 1, npairs ! for each pair
+     !    write (*, *) "collisional cooling factor is", 1.0_wp/ (1.0_wp + coll_cooling*tav0)
+      !end do
       !Kerexpl TODO if (nfragl.gt. 1 .and. .not. isrearr  .and. env%calcKER) open(newunit=ich, file = "kerav")
 
       !!!!!!!!!!!!! FIRST ISOMERS!!!!!!!!!!
@@ -476,7 +491,7 @@ contains
          sumpiee = sumpiee + piee(i)
 
          ! energy can be negative here, so we have o check this
-         ! megative energy means, no reaction can happen anymore
+         ! negative energy means, no reaction can happen anymore
          ! this unphysical relict stems from the way
          ! the simulation is performed
          ! The "physical" way would be to keep track of the nsamples energies
@@ -493,9 +508,13 @@ contains
             do j = 1, npairs
                freq = irc(j)
                IEE = eiee(i)
+               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then
+                  IEE = IEE*(active_cn(j)/max_active_cn)**iee_cn_scale
+                  !IEE = IEE*EXP(-coll_cooling*tav(j)) 
+                  !IEE = IEE / (1.0_wp + coll_cooling*tav0) ! collisional cooling
+               elseif (env%iee_prot_scale .ne. 0 .and. nfragl .eq. 1) then 
+                  !if (any(j==closetoprot)) IEE = IEE*env%iee_prot_scale
 
-               if (env%cneintscale) then
-                  if (nfragl .eq. 1) IEE = IEE*active_cn(j)/max_active_cn**iee_cn_scale
                else
                   if (ishdiss(j)) then
                      IEE = IEE*scaleeinthdiss
@@ -695,13 +714,7 @@ contains
       end if
 
       !!!!!!!!!!!!!!!! END OF ISOMER MODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      !return
-
-      ! allow again collisions after equilibration of system via Isomerizations
-      if (env%mode == "cid") then
-         call simcid(env, tf, maxiee, eiee, piee, nsamples, alldgs, nincr, nfragl, KERavold, &
-         & de0, Ea0, nat0, nvib0, npairs, ishdiss, scaleeinthdiss, isrearr, .true.)
-      end if
+   
 
       pfrag_prec = pfrag(npairs + 1, 1)
       pfrag(:, :) = 0
@@ -742,8 +755,17 @@ contains
                freq = irc(j)
                IEE = eiee(i)
 
-               if (env%cneintscale) then
-                  if (nfragl .eq. 1) IEE = IEE*active_cn(j)/max_active_cn**iee_cn_scale
+              ! if (trim(fragdirs(j,1)) .ne. "p47") then
+                 
+              !    IEE = IEE *0.75_wp
+                  !"write(*,*) "IEE is", IEE
+              ! end if
+
+               if ((env%cneintscale .and. nfragl .eq. 1) .or. (env%cneintscale .and. env%cid_mode .eq. 1 )) then
+                   IEE = IEE*(active_cn(j)/max_active_cn)**iee_cn_scale
+                   !IEE = IEE*1/nfragl ! collisional cooling
+                   !IEE = IEE*EXP(-coll_cooling*tav(j)) ! collisional cooling
+                   !IEE = IEE / (1.0_wp + coll_cooling*tav0) ! collisional cooling
                else
                   if (ishdiss(j)) then
                      IEE = IEE*scaleeinthdiss
@@ -1147,6 +1169,11 @@ contains
                   write (jobcall, '(a)') 'xtb thermo '//trim(fname)//' hessian --temp '//trim(temps)
                   write (jobcall, '(a,i0,a,i0,a)') trim(jobcall)//' --ithr ', ithr, ' --sthr ', sthr, ' --bhess hessian_sph '
                   write (jobcall, '(a)') trim(jobcall)//' > thermo.out 2>/dev/null'
+               else 
+                  ithr = 100
+                  write (jobcall, '(a)') 'xtb thermo '//trim(fname)//' orca.hess --orca --temp '//trim(temps)
+                  write (jobcall, '(a,i0,a,i0)') trim(jobcall)//' --ithr ', ithr, ' --sthr ', sthr
+                  write (jobcall, '(a)') trim(jobcall)//' > thermo.out 2>/dev/null'    
                end if
                call execute_command_line(trim(jobcall))
 
@@ -1169,6 +1196,12 @@ contains
             write (jobcall, '(a)') 'xtb thermo '//trim(fname)//' hessian --temp 0.1'
             write (jobcall, '(a,i0,a,i0,a)') trim(jobcall)//' --ithr ', ithr, ' --sthr ', sthr, ' --bhess hessian_sph '
             write (jobcall, '(a)') trim(jobcall)//' > thermo.out 2>/dev/null'
+         else ! for hessians we dont invert imaginary frequencies
+            ithr = 100
+            write (jobcall, '(a)') 'xtb thermo '//trim(fname)//' orca.hess --orca --temp 0.1'
+            write (jobcall, '(a,i0,a,i0)') trim(jobcall)//' --ithr ', ithr, ' --sthr ', sthr
+            write (jobcall, '(a)') trim(jobcall)//' > thermo.out 2>/dev/null' 
+
          end if
          call execute_command_line(trim(jobcall))
          call readoutthermo(nincr, nincr, rrhos)

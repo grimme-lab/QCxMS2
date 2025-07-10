@@ -8,7 +8,7 @@ module argparser
    use mctc_env, only: error_type, get_argument!, fatal_error
    use mctc_io, only: structure_type, read_structure, write_structure, &
      & filetype, get_filetype, to_symbol
-   use cid
+   use utility
    implicit none
    character(len=:), allocatable :: arg(:)
 
@@ -90,6 +90,8 @@ contains
       env%noirc = .false.
 ! for testing
       env%cneintscale = .false.
+      env%iee_cn_scale = 1.0_wp
+      env%iee_prot_scale = 0.0_wp 
       env%printlevel = 1 ! 1: normal, 2: verbose, 3: debug mode
       env%ignoreip = .false.
       env%fermi = .false. ! TODO make default
@@ -108,21 +110,14 @@ contains
       env%erelaxtime = 5.0e-12_wp !
       env%scaleeinthdiss = 0.5_wp
 
+      env%eltemp_gga = 0 ! electronic temperature for fermi smearing
+      env%eltemp_hybrid = 0 ! electronic temperature for fermi smearing
       ! CID specific settings
-      env%cid_mode = 1 ! 1: auto 2: temprun (no collisions) 3: only collisions
-      env%cid_elab = 40 ! collision energy in laboratory fram in eV
+      env%cid_mode = 1 !1: temprun (no collisions) maybe add in the future more runtypes
       env%cid_esi = 0.0_wp ! ionization energy in eV by default 0.0,
       env%cid_esiatom = 0.0_wp ! ionization energy in eV by default 0.0,
       env%cid_esiw = 0.2_wp ! width of ionization energy distribution in eV
-      env%cid_collw = 0.5_wp ! width of collision energy distribution in eV
-      env%cid_maxcoll = 10 ! maximum number of collisions
-      env%cid_lchamb = 0.25 ! chamber length in m
-      env%cid_pgas = 0.132 ! gas pressure in Pa ! 1 torr QCxMS1 0.132 Pa
-      env%cid_TGas = 300 ! gas temperature in K
-      env%cid_mgas = 39.94800_wp ! argon ! mass of gas in u !He, Ne, Ar, Kr, Xe, N2 available TODO include them
-      env%cid_rgas = 3.55266638_wp !  bohr vdw-radius of Ar ! TODO include them
-      env%cid_scool = 1.0 ! no cooling of ions
-      env%solv = .false.
+      env%solv = .false. ! experimental option to include solvent effects in CID
 
       do i = 1, nargs
          if (any((/character(7)::'-h', '-H', '--h', '--H', '-help', '--help'/) == trim(arg(i)))) then
@@ -145,16 +140,15 @@ contains
          end if
          end if
          select case (argument)
-            ! needed??
          case ('-ei ')
             env%mode = 'ei' !perform prediction of EI spectrum
             !todo
          case ('-cid ')
-            env%mode = 'cid' ! perform prediction of CID spectrum (not yet implemented) ! TODO modify mcsimu for this, add collision energies
+            env%mode = 'cid' ! perform prediction of CID spectrum (changes energy distribution and fragment generation call of msreact)
+            env%cid_mode = 1 ! default mode of CID "temprun" mode
          case ('-chrg ')  ! set charge of molecule (not yet implemented) ! TODO
             call readl(arg(i + 1), xx, j)
             env%chrg = xx(1)
-
          case ('-geolevel ')
             env%geolevel = arg(i + 1) ! gfn2 and gfn1 possible and wb97m-3c possible
          case ('-path ')
@@ -293,6 +287,12 @@ contains
             env%sortoutcascade = .true.
          case ('-fermi ') !apply fermi smearing
             env%fermi = .true.
+         case ('-eltemp_gga ') ! electronic temperature for fermi smearing for GGAs
+            call readl(arg(i + 1), xx, j)
+            env%eltemp_gga = int(xx(1))
+         case ('-eltemp_hybrid ') ! electronic temperature for fermi smearing for Hybrids
+            call readl(arg(i + 1), xx, j)
+            env%eltemp_hybrid = int(xx(1))   
          case ('-rrkm ') ! use simplified RRKM instead of Eyring
             env%eyring = .false.
          case ('-eyzpve ') ! use eyring but with DH (without entropy) instead of DG
@@ -300,7 +300,13 @@ contains
             env%eyzpve = .true.
          case ('-cneintscale ') ! scale internal energy of subsequent fragmentations according to number of atoms
             env%cneintscale = .true.
+         case ('-iee_cn_scale ')
+            call readl(arg(i + 1), xx, j)      
+            env%iee_cn_scale =  xx(1) 
             !SEED FOR RANDOM NO. GENERATOR
+         case ('-iee_prot_scale ')
+            call readl(arg(i + 1), xx, j)    
+            env%iee_prot_scale = xx(1)
          case ('iseed ')
             call readl(arg(i + 1), xx, j)
             iseed = int(xx(1))
@@ -341,20 +347,10 @@ contains
             env%prot = .true. !perform search of favoured protomers
          case ('-deprotonate ')
             env%deprot = .true. !perform search of favoured deprotonated structures
-         case ('-cidauto ')
+         case ('-cidtemprun ') ! default mode of CID
             env%mode = 'cid'
             env%cid_mode = 1
-         case ('-cidtemprun ')
-            env%mode = 'cid'
-            env%cid_mode = 2
-            env%cid_maxcoll = 0
-         case ('-cidforced ')
-            env%mode = 'cid'
-            env%cid_mode = 3
             ! various parameters
-         case ('-elab ') !thermal temperature in biased hessian calculation default is 5000
-            call readl(arg(i + 1), xx, j)
-            env%cid_elab = xx(1)
          case ('-esi ')
             call readl(arg(i + 1), xx, j)
             env%cid_esi = xx(1)
@@ -364,28 +360,10 @@ contains
          case ('-esiw ')
             call readl(arg(i + 1), xx, j)
             env%cid_esiw = xx(1)   ! width of ionization energy distribution in eV
-         case ('-collw ')
-            call readl(arg(i + 1), xx, j)
-            env%cid_collw = xx(1)    ! width of collision energy distribution in eV
-         case ('-maxcoll ')
-            call readl(arg(i + 1), xx, j)
-            env%cid_maxcoll = xx(1)
-         case ('-lchamb ')
-            call readl(arg(i + 1), xx, j)
-            env%cid_lchamb = xx(1)
-         case ('-mgas ') ! in u
-            call readl(arg(i + 1), xx, j)
-            env%cid_mgas = xx(1)
-         case ('-rgas ') ! in u
-            call readl(arg(i + 1), xx, j)
-            env%cid_rgas = xx(1)
-         case ('-pgas ') ! in u
-            call readl(arg(i + 1), xx, j)
-            env%cid_pgas = xx(1)
-         case ('-cidscool ') ! in u
+         case ('-cidscool ') ! scale collissional cooling !experimental option to simulate collisional cooling
             call readl(arg(i + 1), xx, j)
             env%cid_scool = xx(1)
-         case ('-solv ') ! in u
+         case ('-solv ') !  deprecated experimental option to include solvation effects for barrier calculation
             env%solv = .true.   
          case default
             continue
@@ -430,6 +408,7 @@ contains
       write (*, *)
       write (*, '(/,1x,''runtype options:'')')
       write (*, '(5x,''-ei: compute a electron impact (EI) spectrum (default)'')')
+      write (*, '(5x,''-cid: compute a CID spectrum '')')
       write (*, '(5x,''-esim: simulate only different IEE distributions for given reaction network from previous calculation '')')
       write (*, '(5x,''-oplot: plot only peaks from previous QCxMS2 calculation '')') ! give exp.dat as csv file
       write (*, *)
@@ -449,7 +428,7 @@ contains
       write (*, '(5x,''-tslevel  [method] : select level for computing reaction barriers'')')
       write (*, '(5x,''-iplevel  [method] : select level for computing IPs for charge assignment'')')
       write (*, '(5x,''-ip2level  [method] : select level for computing IPs for charge assignment of critical cases with close IPs'')')
-      write (*, '(8x,''available methods: ("gfn2","gfn2spinpol","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb",")'')') !dxtb gxtb wb97m3c ! ma-
+      write (*, '(8x,''available methods: ("gfn2","gfn2spinpol","gfn2_tblite","gfn1","r2scan3c","pbeh3c","wb97x3c","pbe0","gxtb",")'')') !dxtb gxtb wb97m3c ! ma-
       write (*, '(5x,''-nebnormal: use normal settings instead of loose settings for NEB search'')')
       write (*, '(5x,''-checkmult: check multiplicity of TS'')')
       write (*, '(5x,''-pathmult: compute reaction path with sum of multiplicities of products'')')
@@ -473,7 +452,9 @@ contains
       write (*, '(5x ''-mskeepdir: keep the MSDIR directory with the constrained optimizations)'')')
       write (*, *)
       write (*, '(/,1x,''Special options:'')')
-      write (*, '(5x,''-cneintscale  : scale internal energy of subsequent fragmentations according to number of atoms '')')
+      write (*, '(5x,''-cneintscale  : scale internal energy according to effective coordination number of reaction '')')
+      write (*, '(5x,''-iee_cn_scale [real] : give scaling factor for CN-scaling. Positive values favour reactions in the inner region of the molecule &
+     & , negative values favour reactions in the outer region (default 1.0)'')')
       write (*, '(5x,''-noKER  : do not compute kinetic energy release (KER) '')')
       write (*, '(5x,''-usetemp  : take G_mRRHO contribution instead of only ZPVE ( ZPVE is default)  '')')
       write (*, '(5x,''-scaleeinthdiss [real] this decreases the internal energy only for -H or -H2 abstractions (default  0.5)'')')
@@ -488,6 +469,11 @@ contains
       write (*, '(5x,''-mthr [real] m/z at which fragment is plotted (default 0)'')')
       write (*, '(5x,''-intthr [real] peak intensity threshold at which peak is plotted in percent (default 0)'')')
       write (*, *)
+      write (*, '(/,1x,''CID mode specific options:'')')
+      write (*, '(5x,''-cidtemprun : CID simulation without collisions (only thermal heating in ESI simulation (default)) '')')
+      write (*, '(5x,''-esi [real] : increase of average internal energy for CID mode (default 0.0) '')')
+      write (*, '(5x,''-esiatom [real] : average internal energy for CID mode in eV per atom (default  0.4) eV/per atom) '')')
+      write (*, '(5x,''-esiw [real] : width internal of internal energy distribution for CID mode in eV (default 0.2) '')')
       ! write (*, '(/,1x,''for more options use  [-advanced] flag'')')
       stop '   [-h/-help] displayed. exit.'
    end subroutine printhelp
@@ -509,6 +495,8 @@ contains
       write (*, '(5x,''-nobhess  : do not compute thermo correction for barrier with bhess '')') ! currently not implemented
       write (*, '(5x,''-path [method]     : select pathfinder methods (default is "neb", "gsm" also possible)'')')
       write (*, '(5x,''-fermi : apply  fermi smearing (deactivated by default)'')')
+      write (*, '(5x,''-eltemp_gga [int] : electronic temperature for fermi smearing for GGAs and GFNn-xTB (default 0 means 300K)'')')
+      write (*, '(5x,''-eltemp_hybrid [int] : electronic temperature for fermi smearing for hybrids (default 0)'')')
       write (*, '(5x,''-tfscale [real] : scale time of flight for subseauent fragmentations (default 1.0 means no scaling)'')')
       write (*, '(5x,''-scaleker [real] : scale kinetic energy release upon fragmentation (default 1.0 means no scaling)'')')
       write (*, '(5x,''-sumreacscale [real] : scale sumreac in mcsimu (default 1.0 means no scaling)'')')
@@ -528,20 +516,11 @@ contains
       write (*, '(5x,''-picktsrun : search reaction path for maxima/potential TSs'')')
       write (*, *)
       write (*, '(/,1x,''CID mode specific options (!!!!!Warning: highly experimental!!!!):'')')
-      write (*, '(5x,''-cidauto : auto mode for CID simulation (default) '')')
-      write (*, '(5x,''-cidtemprun : CID simulation without collisions (only thermal heating in ESI simulation) '')')
-      write (*, '(5x,''-cidforced : CID simulation with only collisions (no thermal heating in ESI simulation) '')')
-      write (*, '(5x,''-elab [real] : collision energy in laboratory frame in eV (default 40 eV) '')')
+      write (*, '(5x,''-cidtemprun : CID simulation without collisions (only thermal heating in ESI simulation, default at the moment) '')')
       write (*, '(5x,''-esi [real] : internal energy scaling in esi in eV (default dependent on number of atoms) '')')
- write (*, '(5x,''-esiatom [real] : internal energy scaling in esi per atom in eV (default  0.1 (for temprun 0.4) eV/per atom) '')')
+      write (*, '(5x,''-esiatom [real] : internal energy scaling in esi per atom in eV (default  0.1 (for temprun 0.4) eV/per atom) '')')
       write (*, '(5x,''-esiw [real] : width internal energy scaling in esi in eV (default 0.2) '')')
-      write (*, '(5x,''-collw [real] : width of collision energy distribution (default 0.5) '')')
-      !write (*, '(5x,''-maxcoll [int] : maximum number of collisions (default 10) '')') ! TODO not yet implemented
-      write (*, '(5x,''-lchamb [real] : length of collision chamber in m (default 0.25 m) '')')
-      write (*, '(5x,''-mgas [real] : mass of gas in u (default Ar: 39.948 u) '')')
-      write (*, '(5x,''-rgas [real] : vdw radius of gas in bohr (default Ar: 3.55266638 bohr) '')')
-      write (*, '(5x,''-pgas [real] : pressure of gas in Pa (default Ar: 0.132 Pa) '')')
-      write (*, '(5x,''-cidscool [real] : scale collisional cooling of ions in CID mode (default 1.0) '')')
+      write (*, '(5x,''-cidscool [real] : scale collisional cooling of ions in CID mode (default 1.0, currently not in code) '')')
       write (*, *)
       stop '   [-advanced] displayed. exit.'
 
@@ -575,13 +554,7 @@ contains
          write (*, *) "spectral mode: EI-MS" !
       elseif (env%mode == "cid") then
          if (env%cid_mode == 1) then
-            write (*, *) "spectral mode: CID auto (!WARNING: highly experimental!)"
-         elseif (env%cid_mode == 2) then
-            write (*, *) "spectral mode: CID temprun (no collisions simulated)"
-         elseif (env%cid_mode == 3) then
-            write (*, *) "spectral mode: CID forced collisions (!WARNING: not yet implemented)"
-            write (*, *) "Aborting..."
-            stop
+             write (*, *) "spectral mode: CID temprun (no collisions simulated) apply Gaussian distribution for internal energy"
          end if
       end if
 
@@ -614,14 +587,26 @@ contains
       !write(*,*) "Number of nodes for path search:", env%tsnds
       if (env%exstates .gt. 0) write (*, *) "Number of excited states to include via TDDFT:", env%exstates
 
-      ! CID specific settings TODO
-      if (env%cid_mode == 2) env%cid_elab=0.0_wp
-
       if (env%solv) then 
          write(*,*) "Solvation selected for barrier and energy calculations"
       end if
+
+      if (env%cid_scool .ne. 1.0_wp) then
+         write(*,*) "Collisional Cooling of ions in CID mode scaled by factor: ", env%cid_scool
+         write(*,*) "!WARNING!: This is an experimental option to simulate collisional cooling and is not tested yet"
+      end if
+
       write (*, '(60(''*''))')
 
+      if (env%eltemp_hybrid .gt. 0) then 
+         write(*,*) "Fermi smearing is applied for hybrids with electronic Temperature of:, ",env%eltemp_hybrid,"K"
+      end if
+      if (env%eltemp_gga .gt. 0) then 
+         write(*,*) "Fermi smearing is applied for GGAs and GFNn-xTB with electronic Temperature of:, ",env%eltemp_gga,"K"
+      end if
+      if (env%fermi) then 
+         write(*,*) "Fermi smearing is applied for all levels at their given electronic Temperature"
+      end if
       
 
    end subroutine check_settings

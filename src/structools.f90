@@ -283,7 +283,7 @@ contains
       character(len=80) :: fname
       real(wp) :: tav0 !half life of reactions up to this point in ps
       real(wp) :: time_relax !TODO tune this parameter, maybe scale with size of vibrational DOF
-      real(wp), allocatable :: cn0(:), cn(:), bond0(:, :), bond(:, :)
+      real(wp), allocatable :: cn0(:), cn(:), bond0(:, :), bond(:, :), cn0_lrange(:), dum(:,:)
       integer, allocatable :: rhbond0(:), rhbond(:)
 
       call getcwd(thisdir)
@@ -298,21 +298,25 @@ contains
       !end if
 
       ! get CN numbers of reactant and bond order matrix
-      call get_CN(fname, cn0, bond0, .false.)
+      allocate (cn0(nat), bond0(nat, nat),cn(nat), bond(nat, nat),actatoms(npairs),cn0_lrange(nat),dum(nat,nat))
+      call get_CN(fname, nat,cn0, bond0, .false.)
+
+      call get_CN(fname,nat, cn0_lrange, dum, .true.)
 
       do i = 1, npairs
          !check if  fragment  is isomer
          if (index(fragdirs(i, 3), 'p') .ne. 0) then
-            write (*, *) "determine active atoms for pair ", i
+            write (*, *) "determine active atoms for pair ", trim(fragdirs(i, 1))
             fname = "pair.xyz"
             call chdir(trim(env%path)//"/"//trim(fragdirs(i, 1)))
-            call get_CN(fname, cn, bond, .false.)
+            call get_CN(fname, nat,cn, bond, .false.)
 
             ! compare bond order matrices and get active atoms
             call compare_bond(nat, bond0, bond, actatoms)
+            
 
-            deallocate (bond)
-            call get_CN(fname, cn, bond, .true.)
+            !deallocate (bond0,cn0,cn,bond)
+           
             ! effective CN of bond breakage
             active_cn(i) = 0
             n_act = 0
@@ -320,26 +324,30 @@ contains
                if (actatoms(j) .ne. 0) then
                   n_act = n_act + 1
                   write (*, *) "active atom is ", actatoms(j)
-                  write (*, *) "CN of active atom is ", cn0(actatoms(j))
-                  active_cn(i) = active_cn(i) + cn0(actatoms(j))
+                  write (*, *) "CN of active atom is ", cn0_lrange(actatoms(j))
+                  active_cn(i) = active_cn(i) + cn0_lrange(actatoms(j))
                end if
             end do
             active_cn(i) = active_cn(i)/n_act
-            write (*, *) "effective CN of bond breakage ", i, " is ", active_cn(i)
+            write (*, *) "effective CN of bond breakage ", trim(fragdirs(i,1)), " is ", active_cn(i)
+            
+            if (active_cn(i) /= active_cn(i))  then 
+               write (*, *) "active cn is nan, set it to 4"
+               write(*, *) "n_act is", n_act
+               active_cn(i) = 4.0_wp
+            end if
 
             call chdir(trim(thisdir))
 
             ! for isomers TODO
          else
             fname = "isomer.xyz"
-            write (*, *) "determine active atoms for isomer ", i
+            write (*, *) "determine active atoms for isomer ", trim(fragdirs(i, 1))
             call chdir(trim(env%path)//"/"//trim(fragdirs(i, 1)))
-            call get_CN(fname, cn, bond, .false.)
+            call get_CN(fname,nat, cn, bond, .false.)
 
             ! compare bond order matrices and get active atoms
             call compare_bond(nat, bond0, bond, actatoms)
-            deallocate (bond)
-            call get_CN(fname, cn, bond, .true.)
 
             ! effective CN of bond breakage
             active_cn(i) = 0
@@ -347,18 +355,24 @@ contains
             do j = 1, size(actatoms)
                if (actatoms(j) .ne. 0) then
                   n_act = n_act + 1
-                  write (*, *) "active atom is ", actatoms(j)
-                  write (*, *) "CN of active atom is ", cn0(actatoms(j))
-                  active_cn(i) = active_cn(i) + cn0(actatoms(j))
+                 write (*, *) "active atom is ", actatoms(j)
+                  write (*, *) "CN of active atom is ", cn0_lrange(actatoms(j))
+                  active_cn(i) = active_cn(i) + cn0_lrange(actatoms(j))
                end if
             end do
             active_cn(i) = active_cn(i)/n_act
-            write (*, *) "effective CN of bond breakage ", i, " is ", active_cn(i)
+            write (*, *) "effective CN of isomerisation ", trim(fragdirs(i,1)), " is ", active_cn(i)
+
+            if (active_cn(i) /= active_cn(i))  then 
+               write (*, *) "active cn is nan, set it to 4"
+               write(*, *) "n_act is", n_act
+               active_cn(i) = 4.0_wp
+            end if
 
             call chdir(trim(thisdir))
          end if
       end do
-
+      deallocate (cn0, bond0,cn, bond)
    end subroutine get_active_cn
 
    ! execute this only in "ts" directory!!!
@@ -379,9 +393,9 @@ contains
       call chdir("..") ! go in ts search directory
       call rdshort_int('start.xyz', nat)
       fname = "start.xyz"
-      call get_CN(fname, cn0, bond0, .false.)
+      call get_CN(fname,nat, cn0, bond0, .false.)
       fname = "end.xyz"
-      call get_CN(fname, cn, bond, .false.)
+      call get_CN(fname,nat, cn, bond, .false.)
       call compare_bond(nat, bond0, bond, actatoms)
       do i = 1, size(actatoms)
          actatoms(i) = actatoms(i) - 1 ! ORCA indices start with 0 ...
@@ -389,6 +403,7 @@ contains
             write(act_atom_string, '(a,x,i0)') trim(act_atom_string), actatoms(i)
          end if
       end do
+      !
       write(*,*) "active atoms are ", trim(act_atom_string)
       call chdir(trim(thisdir)) ! go back in "ts" dir
 
@@ -400,22 +415,24 @@ contains
       implicit none
       integer, intent(in) :: nat
       real(wp), intent(in) :: bond0(nat, nat), bond(nat, nat)
-      integer, allocatable, intent(out) :: actatoms(:)
+      integer, intent(out) :: actatoms(:)
       integer :: i, j
       real(wp) :: diff, diffthr
 
       ! threshold for bond order change !TODO tune this parameter
       diffthr = 0.5_wp
 
-      allocate (actatoms(nat)) ! maximum number of active atoms is nat
+      !allocate (actatoms(nat)) ! maximum number of active atoms is nat
       ! 0 means no active atom
-      actatoms = 0
+      actatoms(:) = 0
 
       do i = 1, nat
          ! if any bond order changes more than diffthr, atom is active
          do j = 1, nat
+            !write(*,*) "bond order is ",i,j, bond0(i, j), bond(i, j)
             diff = ABS(bond0(i, j) - bond(i, j))
             if (diff .gt. diffthr) then
+               write(*,*) "bond order changed for atom ", i, j, bond0(i, j), bond(i, j)
                actatoms(i) = i
 
             end if
@@ -996,7 +1013,7 @@ contains
       return
    end subroutine coordline
 
-   subroutine get_CN(fname, cn, bond, lrange)
+   subroutine get_CN(fname,nat, cn, bond, lrange)
       use mctc_io, only: structure_type, read_structure, write_structure, &
              & filetype, get_filetype, to_symbol, to_number
       use mctc_env, only: error_type, get_argument!, fatal_error
@@ -1005,7 +1022,7 @@ contains
       implicit none
       character(len=80) :: fname
 
-      real(wp), allocatable, intent(out) :: cn(:), bond(:, :)
+      real(wp), intent(out) :: cn(nat), bond(nat, nat)
       real(wp), allocatable :: xyz(:, :)
       real(wp) :: rcovi, rcovj, rij(3), r2, r, rco
       real(wp) :: damp, den
@@ -1081,17 +1098,26 @@ contains
       ! leave it in Bohr !!!
       xyz = mol%xyz
 
-      allocate (cn(nat), source=0.0_wp)
+      !allocate (cn(nat), source=0.0_wp)
+      cn(:)     = 0.0_wp
+      !allocate (bond(nat, nat), source=0.0_wp)
+      bond(:,:) = 0.0_wp
 
-      allocate (bond(nat, nat), source=0.0_wp)
-
-      cn(:) = 0.0_wp
+     
       !>--- actual calculation
 
       do i = 1, nat
          ati = iat(i)
          rcovi = RCOV(ati)
 
+           ! only scale down H radius for effective active CN (not for Bond detection )
+         if (lrange) then 
+            if ( ati .eq. 1) then 
+               rcovi = rcovi*0.5_wp ! scale down H radius
+            end if
+         end if
+
+        
          do j = 1, i - 1
             rij(:) = xyz(:, i) - xyz(:, j)
             r2 = sum(rij**2)
@@ -1100,6 +1126,14 @@ contains
             r = sqrt(r2)
             atj = iat(j)
             rcovj = RCOV(atj)
+
+             ! only scale down H radius for effective active CN (not for Bond detection )
+         if (lrange) then 
+            if ( atj .eq. 1) then 
+               rcovj = rcovj*0.5_wp ! scale down H radius
+            end if
+         end if
+       
             rco = rcovi + rcovj
 
             !>--- select the correct CN version
@@ -1113,6 +1147,8 @@ contains
                damp = cn_damp_exp(rco, r)
             end if
 
+           
+
             bond(j, i) = damp
             bond(i, j) = damp
 
@@ -1125,9 +1161,9 @@ contains
          end do
       end do
 
-      do i = 1, nat
-         write (*, *) "CN of atom ", i, " is ", cn(i)
-      end do
+     ! do i = 1, nat
+         !write (*, *) "CN of atom ", i, " is ", cn(i)
+     ! end do
 
    end subroutine get_CN
 
@@ -1156,8 +1192,8 @@ contains
       implicit none
       real(wp) :: damp
       real(wp), intent(in) :: rco, r
-      real(wp), parameter :: kcn = 4.0_wp !16.0_wp
-      real(wp), parameter :: k2 = 1.5_wp
+      real(wp), parameter :: kcn = 16.0_wp !16.0_wp
+      real(wp), parameter :: k2 = 4/3_wp
       damp = 1.0_wp/(1.0_wp + exp(-kcn*(k2*rco/r - 1.0_wp)))
    end function cn_damp_exp
 
@@ -1169,7 +1205,8 @@ contains
       real(wp) :: damp
       real(wp), intent(in) :: rco, r
       real(wp), parameter :: kcn = 8.0_wp !16.0_wp
-      damp = 1.0_wp/(1.0_wp + exp(-kcn*(rco/r - 1.0_wp)))
+      real(wp), parameter :: k2 = 1.5_wp
+      damp = 1.0_wp/(1.0_wp + exp(-kcn*(k2*rco/r - 1.0_wp)))
    end function cn_damp_exp_lrange
 
 

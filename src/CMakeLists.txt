@@ -11,7 +11,6 @@ list(APPEND srcs
 "${dir}/boxmuller.f90"
 "${dir}/iee.f90"
 "${dir}/mcsimu.f90"
-"${dir}/cid.f90"
 "${dir}/tsmod.f90"
 "${dir}/iomod.f90"
 "${dir}/qcxms2_data.f90"

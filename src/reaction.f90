@@ -756,6 +756,7 @@ contains
       end do
 
       call setompthreads(env, njobs)
+      njobs = 0
 
       ! actually prepare jobs
       do i = 1, npairs_in
@@ -787,7 +788,7 @@ contains
          end if
       end do
 
-      write (*, *) "starting ", njobs, trim(env%geolevel), "restarted optimizations in parallel"
+      write (*, *) "starting ", njobs, trim(env%geolevel), " restarted optimizations in parallel"
       call omp_samejobcall(njobs, dirs, jobcall)
 
       do i = 1, npairs_in
