@@ -1417,6 +1417,8 @@ contains
       ! nnds = env%tsnds !  only if preopt end true selected reduce it by two to make it comparable to geodesic, xtb and gsm
      
       open (newunit=ich, file='orca.inp')
+      open (newunit=ich, file='orca.inp')
+
       write (ich, '(a)') '! NEB   ' ! "LOOSE-NEB" doesnt work ....
       
       if (env%solv) then
@@ -1425,7 +1427,11 @@ contains
          end if
      end if
 
+      
       write (ich, *) "! "//trim(levelkeyword)
+      if (env%geolevel .ne. 'gfn1' .and. env%geolevel .ne. 'gfn2' .and. env%geolevel .ne. 'gfn2spinpol') then
+         write (ich, *) "! LOOSESCF UKS" ! DFT calculations with UKS for correct dissociation and LOOSESCF for faster convergence
+      end if
       write (ich, *) "%maxcore 8000" ! TODO make parameter or read in orca sample input file
 
 
@@ -1882,7 +1888,7 @@ contains
          nmax = 0
 
          ! but  threshold values is needed take 1 kcal?
-         tsthr = 1.0_wp ! kcal threshold for a TS ! xyz(j) is taken already for threshold 0.0 so a different threshold here makes no sense ! TODO FIXME inconsistent
+         tsthr = 1.0_wp ! here different threshold than for taking highest point
 
          diffthr = 0.0_wp ! can not set too high value, if sampling is very dense -> no maximum is detected
 
@@ -2510,6 +2516,8 @@ contains
       call remove("orca.NEB.log")
       call remove("orca_NEB-HEI_converged.xyz")
       call remove("orca_MEP_ALL_trj.xyz")
+      call execute_command_line("rm orca_atom*")
+      call execute_command_line("rm orca_im*")
    
    end subroutine cleanup_nebcalc
 
