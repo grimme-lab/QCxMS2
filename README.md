@@ -115,8 +115,8 @@ A more detailed documentation on topics like input settings can be found at [rea
 Coming soon ...
 
 **Citations**
-1. J.Gorges, S. Grimme, *ChemRxiv*, **2025**, "QCxMS2 - a program for the calculation of electron ionization mass spectra via automated reaction network discovery".
-  DOI: [10.26434/chemrxiv-2025-277zm](https://dx.doi.org/10.26434/chemrxiv-2025-277zm)
+1. J.Gorges, S. Grimme, *Phys. Chem. Chem. Phys., 27, 6899-6911*, **2025**, "QCxMS2 - a program for the calculation of electron ionization mass spectra via automated reaction network discovery". DOI: [10.1039/D5CP00316D](https://doi.org/10.1039/D5CP00316D)
+2. for the CID mode: J.Gorges, M. Engeser, S. Grimme, *J. Am. Soc. Mass Spectrom.*, **2025**, "Evaluation of the QCxMS2 Method for the Calculation of Collision-Induced Dissociation Spectra via Automated Reaction Network Exploration". DOI: [10.1021/jasms.5c00234](https://doi.org/10.1021/jasms.5c00234)
 
 
 **License**

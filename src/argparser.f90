@@ -692,10 +692,14 @@ contains
 
       write (*, '(3x,a)') &
          "Cite this work as:", &
-         "* J.Gorges, S. Grimme, ChemRxiv, 2025,", &
+         "* J.Gorges, S. Grimme, Phys. Chem. Chem. Phys., 2025, 27, 6899-6911", &
          " QCxMS2 - a program for the calculation of electron ionization mass ", &
          "spectra via automated reaction network discovery", &
-         "DOI: 10.26434/chemrxiv-2025-277zm", &
+         "DOI: 10.1039/D5CP00316D", &
+         "", &
+         "for CID mode:", &
+         "* J.Gorges, M. Engeser, S. Grimme, J. Am. Soc. Mass Spectrom., 2025", &
+         "  DOI: 10.1021/jasms.5c00234", &
          "", &
          "for GFN2-xTB:", &
          "* C. Bannwarth, E. Caldeweyher, S. Ehlert, A. Hansen, P. Pracht,", &
