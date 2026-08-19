@@ -545,7 +545,7 @@ contains
                   if (.not. isrearr(l)) cycle
                   write (fname2, '(a,i0,a)') "k_", nfragl, "_"//trim(fragdirs(l, 1))
                   open (l, file=fname2, STATUS='OLD', POSITION='APPEND')
-                  write (l, '(e10.4,2x,e10.4)') kabs(l), eiee(i)
+                  write (l, '(e11.4,2x,e11.4)') kabs(l), eiee(i)
                   close (l)
                end do
             end if
@@ -797,7 +797,7 @@ contains
                   if (isrearr(l)) cycle
                   write (fname2, '(a,i0,a)') "k_", nfragl, "_"//trim(fragdirs(l, 1))
                   open (l, file=fname2, STATUS='OLD', POSITION='APPEND')
-                  write (l, '(e10.4,2x,e10.4)') kabs(l), eiee(i)
+                  write (l, '(e11.4,2x,e11.4)') kabs(l), eiee(i)
                   close (l)
                end do
             end if

@@ -145,6 +145,7 @@ contains
    ! normalization of all obtained fragment peaks
    ! to get final spectrum
    subroutine getpeaks(env, nfrags, allfrags)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
       implicit none
       integer :: i, j, npeaks, npeaks1, maxatm
       integer :: index_mass, count_mass
@@ -181,6 +182,7 @@ contains
       write (*, *) "Normalize Intensities for all fragments"
       write (*, *) "Number of fragments is: ", nfrags
 ! set whole array to zero to avoid later problems in normalization off allpeaks.dat
+      list_masses = 0.0_wp
       intensity = 0.0_wp
       fname = 'fragment.xyz'
       call rdshort_int(trim(fname), maxatm)
@@ -211,6 +213,7 @@ contains
       deallocate (isotope_masses)
 
       do i = 1, nfrags
+         ex = .false.
          inquire (file=trim(allfrags(i + 1))//"/fragment.xyz", exist=ex1)
          if (.not. ex1) then
             inquire (file=trim(allfrags(i + 1))//"/isomer.xyz", exist=ex2)
@@ -254,6 +257,8 @@ contains
 ! add peaks with same m/z values
 ! in principle we only need this, if we round to integers
       allocate (added_masses(count_mass), added_ints(count_mass), double(count_mass))
+      added_masses = 0.0_wp
+      added_ints = 0.0_wp
       double = .false.
       npeaks = 0
       do i = 1, count_mass
@@ -290,7 +295,7 @@ contains
          ind(i) = i ! array is not allowed to be empty somehow for qsort
       end do
 
-      call qsort(peak_masses, 1, npeaks, ind)
+      if (npeaks .gt. 0) call qsort(peak_masses, 1, npeaks, ind)
       do i = 1, npeaks
          peak_ints(i) = added_ints(ind(i))
       end do
@@ -304,9 +309,18 @@ contains
       env%intthr = env%intthr*100 ! to 10000 like in NIST
 !normalize to 10000 like in NIST
 
-      imax = maxval(added_ints)
+      if (npeaks .gt. 0) then
+         imax = maxval(peak_ints)
+      else
+         imax = 0.0_wp
+      end if
+      if (ieee_is_finite(imax) .and. imax .gt. tiny(1.0_wp)) then
+         peak_ints = peak_ints/imax*10000.0_wp
+      else
+         write (*, *) "WARNING: No positive finite peak intensity found; spectrum cannot be normalized."
+         peak_ints = 0.0_wp
+      end if
       do i = 1, npeaks
-         peak_ints(i) = peak_ints(i)/(1.0_wp*imax)*10000
          npeaks1 = npeaks1 + 1
          peak_ints1(npeaks1) = peak_ints(i)
          peak_masses1(npeaks1) = peak_masses(i)
@@ -343,6 +357,8 @@ contains
 ! write all peaks without isotope pattern to "allpeaks.dat", so that we know which fragment contributes
       env%noiso = .true. ! all peaks without isotope pattern here, so that we know which fragment contributes to intensity of m/z
       allocate (fragment_masses(nfrags + 1), fragment_intensities(nfrags + 1))
+      fragment_masses = 0.0_wp
+      fragment_intensities = 0.0_wp
 
       index_mass = 0
       count_mass = 0
@@ -359,6 +375,7 @@ contains
 
       do i = 1, nfrags
 
+         ex = .false.
          inquire (file=trim(allfrags(i + 1))//"/fragment.xyz", exist=ex1)
          if (.not. ex1) then
             inquire (file=trim(allfrags(i + 1))//"/isomer.xyz", exist=ex2)
@@ -393,6 +410,12 @@ contains
 
 !write all peaks without isotope pattern to "allpeaks.dat", so that we know which fragment contributes
       imax = maxval(fragment_intensities)
+      if (ieee_is_finite(imax) .and. imax .gt. tiny(1.0_wp)) then
+         fragment_intensities = fragment_intensities/imax*10000.0_wp
+      else
+         write (*, *) "WARNING: No positive finite fragment intensity found; fragments cannot be normalized."
+         fragment_intensities = 0.0_wp
+      end if
       allfrags(1) = "input structure"
       write (*, *)
       write (*, *) "Writing all fragment intensities without isotope pattern to allpeaks.dat"
@@ -401,7 +424,6 @@ contains
       open (newunit=ich, file='allpeaks.dat')
       write (ich, *) "fragment|", "fragment mass|", "relative intensity"
       do i = 1, nfrags + 1
-         fragment_intensities(i) = fragment_intensities(i)/(1.0_wp*imax)*10000
          write (ich, '(x,a,2x,f10.6,2x,f10.1)') trim(allfrags(i)), fragment_masses(i), fragment_intensities(i)
 !important fragments
          if (fragment_intensities(i)/100 .gt. 10) then
@@ -759,7 +781,7 @@ contains
                exit inner
 
                !elseif  ( list_masses(loop) == isotope_masses(loop2) ) then
-            elseif (mass_diff < 1.0d0 - 10 .or. mass_diff == 0.0_wp) then
+            elseif (mass_diff .le. 1.0d-10) then
                there = .true.
                intensity(loop) = intensity(loop) + 1*exact_intensity(loop2) &
                                  *abs(chrg)
@@ -768,7 +790,7 @@ contains
 
                !>> false if not in list, store
                !elseif ( list_masses(loop) /= isotope_masses(loop2) ) then
-            elseif (mass_diff > 1.0d0 - 10) then
+            else
                there = .false.
                if (loop == sum_index) exit inner
             end if

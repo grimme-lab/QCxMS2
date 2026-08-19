@@ -31,7 +31,7 @@ contains
       integer, allocatable :: nmode(:), nmode2(:)
       integer :: chrg, uhf, spin
       integer :: io
-      logical :: ex, ldum, found, failed, there, conv
+      logical :: ex, ldum, found, failed, there, conv, irc_failed
       logical, allocatable :: tsopt(:)
       character(len=80) :: pwd
       character(len=80) :: sumform
@@ -558,8 +558,13 @@ contains
             call chdir(trim(env%path))
             cycle
          end if
-         call findirc(env, nmode(i), ircmode)
-         if (nmode(i) .eq. 0) then
+         call findirc(env, nmode(i), ircmode, irc_failed)
+         if (irc_failed) then
+            write (*, *) "IRC analysis failed, keeping current TS guess and skipping TS optimization"
+            tsopt(i) = .true.
+            nmode(i) = 0
+            ircmode = 0.0_wp
+         elseif (nmode(i) .eq. 0) then
             write (*, *) "No imaginary mode found, we have to take end as ts ircmode set to 0"
             ircmode = 0.0_wp
          else
@@ -706,8 +711,10 @@ contains
          call chdir("ts")
          call chdir("hess2")
          ! failed calculations are handled in this routine
-         call findirc(env, nmode2(i), ircmode)
-         if (nmode2(i) .eq. 0) then ! includes also the cases without IRC mode in the first findirc check
+         call findirc(env, nmode2(i), ircmode, irc_failed)
+         if (irc_failed) then
+            write (*, *) "IRC analysis failed, keeping optimized TS structure"
+         elseif (nmode2(i) .eq. 0) then ! includes also the cases without IRC mode in the first findirc check
             write (*, *) "No imaginary mode found, &
             & we just take highest point on reaction path as transition state"
             call copy("../../ts.xyz", "../ts.xyz") ! copy tsguess from highest point into tsdir overwrite failed ts optimization
@@ -1217,6 +1224,216 @@ contains
       close (ich)
       return
    end subroutine rdg98modes
+
+   subroutine rdorcahessmodes(nat, freqs, modes, freqcount, failed)
+      implicit none
+
+      integer, intent(in) :: nat
+      real(wp), intent(out) :: modes(:, :, :)
+      real(wp), intent(out) :: freqs(:)
+      integer, intent(out) :: freqcount
+      logical, intent(out) :: failed
+      character(len=1024) :: line
+      integer :: io, ich
+      integer :: nfreq, nrows, ncols
+      integer :: i, j, coord, atom, comp, freq_index
+      integer :: colstart, blocksize, nvals, modecount
+      logical :: found, file_open, parse_ok
+      real(wp), allocatable :: allfreqs(:)
+      real(wp), allocatable :: modemat(:, :)
+      real(wp) :: values(128)
+
+      parse_ok = .false.
+      file_open = .false.
+      failed = .true.
+      freqcount = 0
+      freqs = 0.0_wp
+      modes = 0.0_wp
+
+
+      write(*, *) "Reading ORCA Hessian file for imaginary modes"
+      parse_orca: do
+         open (newunit=ich, file='orca.hess', status='old', action='read', iostat=io)
+         if (io .ne. 0) exit parse_orca
+         file_open = .true.
+
+         call find_orca_hess_section(ich, '$vibrational_frequencies', found)
+         if (.not. found) exit parse_orca
+         call read_next_nonempty_line(ich, line, io)
+         if (io .ne. 0) exit parse_orca
+         read (line, *, iostat=io) nfreq
+         if (io .ne. 0 .or. nfreq .ne. 3*nat) exit parse_orca
+
+         allocate (allfreqs(nfreq))
+         allfreqs = 0.0_wp
+         do i = 1, nfreq
+            call read_next_nonempty_line(ich, line, io)
+            if (io .ne. 0) exit parse_orca
+            read (line, *, iostat=io) freq_index, allfreqs(i)
+            if (io .ne. 0 .or. freq_index .ne. i - 1) exit parse_orca
+         end do
+
+         call find_orca_hess_section(ich, '$normal_modes', found)
+         if (.not. found) exit parse_orca
+         call read_next_nonempty_line(ich, line, io)
+         if (io .ne. 0) exit parse_orca
+         read (line, *, iostat=io) nrows, ncols
+         if (io .ne. 0) exit parse_orca
+         if (nrows .ne. 3*nat .or. ncols .ne. nfreq) exit parse_orca
+         if (size(modes, 1) .ne. size(freqs) .or. size(modes, 2) .ne. 3 &
+         & .or. size(modes, 3) .ne. nat) exit parse_orca
+
+         allocate (modemat(nrows, ncols))
+         modemat = 0.0_wp
+         colstart = 1
+         do while (colstart .le. ncols)
+            call read_next_nonempty_line(ich, line, io)
+            if (io .ne. 0) exit parse_orca
+            call read_numeric_tokens(line, values, nvals)
+            if (nvals .le. 0) exit parse_orca
+            blocksize = nvals
+            if (blocksize .gt. ncols - colstart + 1) exit parse_orca
+            do i = 1, nrows
+               call read_next_nonempty_line(ich, line, io)
+               if (io .ne. 0) exit parse_orca
+               call read_numeric_tokens(line, values, nvals)
+               if (nvals .lt. blocksize + 1) exit parse_orca
+               do j = 1, blocksize
+                  modemat(i, colstart + j - 1) = values(j + 1)
+               end do
+            end do
+            colstart = colstart + blocksize
+         end do
+
+         ! ORCA stores zero modes first in the file. TS_Mode numbering instead
+         ! follows ascending eigenvalues, so the imaginary modes keep rank 1..N.
+         modecount = 0
+         do j = 1, nfreq
+            if (allfreqs(j) .ge. -1.0_wp) cycle
+            if (modecount .eq. size(freqs)) exit
+            modecount = modecount + 1
+            freqs(modecount) = allfreqs(j)
+            do coord = 1, nrows
+               atom = (coord - 1)/3 + 1
+               comp = mod(coord - 1, 3) + 1
+               modes(modecount, comp, atom) = modemat(coord, j)
+            end do
+         end do
+
+         freqcount = modecount
+         parse_ok = .true.
+         exit parse_orca
+      end do parse_orca
+
+      if (file_open) close (ich, iostat=io)
+      failed = .not. parse_ok
+      if (failed) then
+         freqcount = 0
+         freqs = 0.0_wp
+         modes = 0.0_wp
+      end if
+      return
+   end subroutine rdorcahessmodes
+
+   subroutine find_orca_hess_section(ich, section, found)
+      implicit none
+
+      integer, intent(in) :: ich
+      character(len=*), intent(in) :: section
+      logical, intent(out) :: found
+      character(len=1024) :: line
+      integer :: io
+
+      found = .false.
+      rewind (ich)
+      do
+         read (ich, '(a)', iostat=io) line
+         if (io .ne. 0) exit
+         if (trim(adjustl(line)) .eq. trim(section)) then
+            found = .true.
+            return
+         end if
+      end do
+   end subroutine find_orca_hess_section
+
+   subroutine read_next_nonempty_line(ich, line, io)
+      implicit none
+
+      integer, intent(in) :: ich
+      character(len=*), intent(out) :: line
+      integer, intent(out) :: io
+
+      line = ''
+      do
+         read (ich, '(a)', iostat=io) line
+         if (io .ne. 0) return
+         if (len_trim(line) .gt. 0) return
+      end do
+   end subroutine read_next_nonempty_line
+
+   subroutine read_numeric_tokens(line, values, nvals)
+      implicit none
+
+      character(len=*), intent(in) :: line
+      real(wp), intent(out) :: values(:)
+      integer, intent(out) :: nvals
+      character(len=64) :: tokens(128)
+      character(len=64) :: token
+      integer :: ntokens, io, i
+      real(wp) :: tmp
+
+      values = 0.0_wp
+      nvals = 0
+      call split_line_tokens(line, tokens, ntokens)
+      do i = 1, ntokens
+         token = tokens(i)
+         call normalize_numeric_token(token)
+         read (token, *, iostat=io) tmp
+         if (io .eq. 0) then
+            nvals = nvals + 1
+            if (nvals .le. size(values)) values(nvals) = tmp
+         end if
+      end do
+   end subroutine read_numeric_tokens
+
+   subroutine split_line_tokens(line, tokens, ntokens)
+      implicit none
+
+      character(len=*), intent(in) :: line
+      character(len=*), intent(out) :: tokens(:)
+      integer, intent(out) :: ntokens
+      integer :: i, j, linelen
+
+      tokens = ''
+      ntokens = 0
+      linelen = len_trim(line)
+      i = 1
+      do while (i .le. linelen)
+         do while (i .le. linelen .and. (line(i:i) .eq. ' ' .or. iachar(line(i:i)) .eq. 9))
+            i = i + 1
+         end do
+         if (i .gt. linelen) exit
+         j = i
+         do while (j .le. linelen .and. line(j:j) .ne. ' ' .and. iachar(line(j:j)) .ne. 9)
+            j = j + 1
+         end do
+         if (ntokens .eq. size(tokens)) exit
+         ntokens = ntokens + 1
+         tokens(ntokens) = line(i:j - 1)
+         i = j + 1
+      end do
+   end subroutine split_line_tokens
+
+   subroutine normalize_numeric_token(token)
+      implicit none
+
+      character(len=*), intent(inout) :: token
+      integer :: i
+
+      do i = 1, len_trim(token)
+         if (token(i:i) .eq. 'D' .or. token(i:i) .eq. 'd') token(i:i) = 'E'
+      end do
+   end subroutine normalize_numeric_token
 ! read all modes from g98 file
    subroutine rdg98allmodes(nat, modes)
       implicit none
@@ -1780,7 +1997,7 @@ contains
 
    end subroutine checkpath
 !> check if TS search gave reasonable path and recognize multiple reaction steps in one path
-!> TOOD build in to spllit multiple reaction steps in different paths
+!> TODO build in to split multiple reaction steps in different paths
 !> for now they can be sorted out with "sortoutcascade" keyword
    subroutine pickts(env, found)
       implicit none
@@ -1959,53 +2176,75 @@ contains
 ! and the RMSD of the TS is compared for each point to start and end structure
 ! if at least half of the points exhibit changes in RMSD ("score" over > 4*10) that suit to
 ! the expected behavior of a TS, the IRC is considered as valid
-   subroutine findirc(env, nmode, ircmode)
-      use mctc_env, only: error_type, get_argument!, fatal_error
-      use mctc_io, only: structure_type, read_structure, write_structure, &
-     & filetype, get_filetype, to_symbol, to_number
-      use structools, only: wrxyz
+   subroutine findirc(env, nmode, ircmode, analysis_failed)
+      use mctc_env, only: error_type
+      use mctc_io, only: structure_type, read_structure, filetype
       implicit none
-      logical :: ldum
       real(wp), intent(out) :: ircmode
       integer :: nat
       real(wp), allocatable :: freqs(:)
       real(wp), allocatable :: modes(:, :, :)
       real(wp), allocatable :: start(:, :), end(:, :), ts(:, :) ! geometry of start end, and ts
       real(wp), allocatable :: ts_for(:, :), ts_back(:, :) ! geometry of ts for- and backwards propagated
-      integer, allocatable :: iat(:)
-      integer :: nimags
+      integer :: nmodes, nimags
       type(structure_type) :: mol
       type(error_type), allocatable :: error
       real(wp) :: rmsd_ts_start, rmsd_ts_end
       real(wp) :: rmsd_ts_for_start, rmsd_ts_for_end, rmsd_ts_back_start, rmsd_ts_back_end
       real(wp), allocatable :: diff_for_start(:), diff_back_start(:), diff_for_end(:), diff_back_end(:)
       real(wp) :: rmsd_thr ! threshold for significant change in RMSD, tune this parameter
-      real(wp), allocatable :: gradient(:, :)
-      real(wp) :: trafo(3, 3)
-      integer :: i, j, ndispl
+      integer :: i, j, ndispl, best_mode, best_score
       integer, intent(out) :: nmode ! number of mode
       integer :: score ! a "score" to evaluate if we have a good IRC
       type(runtypedata) :: env
-      character(len=1024) :: jobcall
-      logical :: ex
+      logical :: ex_g98, ex_orca_g98, ex_hess, parse_failed
+      logical, intent(out) :: analysis_failed
 
+      analysis_failed = .false.
+      nmode = 0
+      ircmode = 0.0_wp
       call rdshort_int('ts.xyz', nat)
       allocate (modes(9, 3, nat))
       allocate (freqs(9))
-      call move('orca.g98.out', 'g98.out')
-      inquire (file='g98.out', exist=ex)
-      if (.not. ex) then
-         write (*, *) "ERROR: Could not find orca.g98.out, Hessian calculation failed"
-         call printpwd
-         nmode = 0
-         ircmode = 0.0_wp
-         return
+
+      ! Some ORCA/xTB version combinations suppress Gaussian-style g98 output.
+      ! Prefer it when present, otherwise read the ORCA Hessian directly.
+      inquire (file='g98.out', exist=ex_g98)
+      if (.not. ex_g98) then
+         inquire (file='orca.g98.out', exist=ex_orca_g98)
+         if (ex_orca_g98) then
+            call copy('orca.g98.out', 'g98.out')
+            ex_g98 = .true.
+         end if
       end if
-      call rdg98modes(nat, freqs, modes, nimags)
+
+      if (ex_g98) then
+         call rdg98modes(nat, freqs, modes, nmodes)
+      else
+         inquire (file='orca.hess', exist=ex_hess)
+         if (.not. ex_hess) then
+            write (*, *) "ERROR: Could not find g98.out, orca.g98.out, or orca.hess."
+            call printpwd
+            analysis_failed = .true.
+            return
+         end if
+         call rdorcahessmodes(nat, freqs, modes, nmodes, parse_failed)
+         if (parse_failed) then
+            write (*, *) "ERROR: Could not read vibrational modes from orca.hess"
+            call printpwd
+            analysis_failed = .true.
+            return
+         end if
+      end if
+
+      if (nmodes .gt. 0) then
+         nimags = count(freqs(1:nmodes) .lt. -1.0_wp)
+      else
+         nimags = 0
+      end if
       if (nimags .eq. 0) then
          write (*, *) "NO IMAGINARY FREQUENCY FOUND"
          call printpwd
-         nmode = 0
          return
       end if
       ! somehow the comment line makes problems here....
@@ -2013,7 +2252,7 @@ contains
       if (allocated(error)) then
       if (error%stat .eq. 1) then ! error reading structure
          write (*, *) "ERROR: Could not read start.xyz"
-         nmode = 0
+         analysis_failed = .true.
          return
       end if
       end if
@@ -2022,8 +2261,8 @@ contains
       call read_structure(mol, '../../end.xyz', error, filetype%xyz)
       if (allocated(error)) then
       if (error%stat .eq. 1) then ! error reading structure
-         write (*, *) "ERROR: Could not read start.xyz"
-         nmode = 0
+         write (*, *) "ERROR: Could not read end.xyz"
+         analysis_failed = .true.
          return
       end if
       end if
@@ -2031,15 +2270,15 @@ contains
       call read_structure(mol, 'ts.xyz', error, filetype%xyz) ! todo we have to delet for this the content of the second line in the xyz file???
       if (allocated(error)) then
       if (error%stat .eq. 1) then ! error reading structure
-         write (*, *) "ERROR: Could not read start.xyz"
-         nmode = 0
+         write (*, *) "ERROR: Could not read ts.xyz"
+         analysis_failed = .true.
          return
       end if
       end if
       ts = mol%xyz*bohr
       if (size(ts) .ne. size(start) .or. size(ts) .ne. size(end)) then
          write (*, *) "ERROR: TS, start and end have different number of atoms"
-         nmode = 0
+         analysis_failed = .true.
          return
       end if
 
@@ -2049,22 +2288,25 @@ contains
 
       if (rmsd_ts_start .lt. 1e-08_wp) then
          write (*, *) "WARNING: TS is identical to start, something went wrong aborting IRC determination"
-         nmode = 0
+         analysis_failed = .true.
          return
       end if
 
       call calcrmsd(nat, ts, end, rmsd_ts_end)
       if (rmsd_ts_end .lt. 1e-08_wp) then
-         write (*, *) "WARNING: TS is identical to start, something went wrong aborting IRC determination"
-         nmode = 0
+         write (*, *) "WARNING: TS is identical to end, something went wrong aborting IRC determination"
+         analysis_failed = .true.
          return
       end if
 
       ! distort along mode forward in steps of 0.1
       ndispl = 10
+      best_mode = 0
+      best_score = -1
+      rmsd_thr = 0.005_wp
       allocate (diff_for_start(ndispl), diff_for_end(ndispl), diff_back_start(ndispl), diff_back_end(ndispl))
-      do j = 1, nimags
-         if (freqs(j) .ge. -1.0_wp) exit ! only check negative frequencies
+      do j = 1, nmodes
+         if (freqs(j) .ge. -1.0_wp) cycle
          do i = 1, ndispl
             ts_for = ts + modes(j, :, :)*0.1_wp*i
             call calcrmsd(nat, ts_for, start, rmsd_ts_for_start)
@@ -2098,7 +2340,6 @@ contains
          ! discriminate here between 16 possible cases as each criterion can fail sometimes
          ! e.g. if rmsd to end is poor because end is very different due to relaxation at the end
          score = 0
-         rmsd_thr = 0.005_wp
          do i = 1, ndispl
             ! forwards ! end can be strange (due to relaxation at the end)
             !but to start should always be significant, so taking this as starting should be fine
@@ -2166,22 +2407,29 @@ contains
             if (env%ircrun) write (*, *) "SCORE IS", i, score
          end do
 
-         ! score ranges from 0 to 40, 40 is best
-         !write(*,*) "SCORE IS", score
-         ! TODO CHECKME critical parameter ! score of 20 /one half of max means, that at least the rmsd to the start
-         ! gets  larger (or smaller) going forward and smaller (or larger) going backwards along the mode
-         if (score .ge. ndispl*4/2) then
-            ircmode = freqs(j)
-            write (*, *) "IRC MODE found! mode ", j, " with ", ircmode
-            nmode = j
-            return
-         else ! continue search
-            write (*, *) "have to continue search"
+         if (env%ircrun) write (*, *) "Final score for mode", j, "is", score
+         if (score .gt. best_score) then
+            best_score = score
+            best_mode = j
          end if
       end do
-      write (*, *) "no suitable IRC mode found within first 9 frequencies for"
-      call printpwd
-      nmode = 0
+
+      if (best_mode .eq. 0) then
+         write (*, *) "NO IMAGINARY FREQUENCY FOUND"
+         call printpwd
+         return
+      end if
+
+      nmode = best_mode
+      ircmode = freqs(best_mode)
+      if (best_score .ge. ndispl*4/2) then
+         write (*, *) "IRC MODE found! mode ", nmode, " with ", ircmode, " score ", best_score
+      else
+         ! A weak RMSD score is uncertainty, not evidence that the mode is absent.
+         write (*, *) "WARNING: No IRC mode reached the RMSD score threshold."
+         write (*, *) "Using best imaginary mode ", nmode, " with ", ircmode, " score ", best_score
+         call printpwd
+      end if
 
       ! DEPRECATED CODE, instead of score we used thresholds for RMSD
       ! to evaluate how good the IRC mode is

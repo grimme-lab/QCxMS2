@@ -93,7 +93,7 @@ program QCxMS2
 
    ! just for testing purposes here:
    if (env%ircrun) then
-      call findirc(env, i, dum)
+      call findirc(env, i, dum, ldum)
       write (*, *) "IRC is", dum!
       STOP
    end if

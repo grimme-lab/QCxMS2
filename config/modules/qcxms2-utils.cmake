@@ -82,8 +82,14 @@ macro(
           "${${_pkg_uc}_BINARY_DIR}"
         )
 
-        add_library("${package}::${package}" INTERFACE IMPORTED)
-        target_link_libraries("${package}::${package}" INTERFACE "${package}")
+        if(NOT TARGET "${package}::${package}")
+          if(TARGET "${package}")
+            add_library("${package}::${package}" ALIAS "${package}")
+          else()
+            add_library("${package}::${package}" INTERFACE IMPORTED)
+            target_link_libraries("${package}::${package}" INTERFACE "${package}")
+          endif()
+        endif()
 
         # We need the module directory in the subproject before we finish the configure stage
         if(NOT EXISTS "${${_pkg_uc}_BINARY_DIR}/include")
@@ -107,8 +113,14 @@ macro(
       )
       FetchContent_MakeAvailable("${_pkg_lc}")
 
-      add_library("${package}::${package}" INTERFACE IMPORTED)
-      target_link_libraries("${package}::${package}" INTERFACE "${package}")
+      if(NOT TARGET "${package}::${package}")
+        if(TARGET "${package}")
+          add_library("${package}::${package}" ALIAS "${package}")
+        else()
+          add_library("${package}::${package}" INTERFACE IMPORTED)
+          target_link_libraries("${package}::${package}" INTERFACE "${package}")
+        endif()
+      endif()
 
       # We need the module directory in the subproject before we finish the configure stage
       FetchContent_GetProperties("${_pkg_lc}" SOURCE_DIR "${_pkg_uc}_SOURCE_DIR")
@@ -162,4 +174,3 @@ function (check_minimal_compiler_version lang compiler_versions)
     endif()
   endwhile()
 endfunction()
-

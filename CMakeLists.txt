@@ -67,21 +67,20 @@ if(NOT TARGET "test-drive::test-drive" AND WITH_TESTS)
 endif()
 
 
-if(WITH_TOMLF)                                                                                                                                                  
-   find_package("toml-f" REQUIRED)                                                                                                                               
-   add_compile_definitions(WITH_TOMLF)                                                                                                                           
- endif()   
-
 # TOML-F (needs to be imported before tblite)
-if(NOT TARGET "toml-f::toml-f" AND WITH_TOMLF)
-   find_package("toml-f" REQUIRED)
+if(WITH_TOMLF)
+   if(NOT TARGET "toml-f::toml-f")
+      find_package("toml-f" REQUIRED)
+   endif()
    add_compile_definitions(WITH_TOMLF)
 endif()
 
 
 #mctc-lib 
-if(NOT TARGET "mctc-lib::mctc-lib" AND WITH_MCTCLIB)
-   find_package("mctc-lib" REQUIRED)
+if(WITH_MCTCLIB)
+   if(NOT TARGET "mctc-lib::mctc-lib")
+      find_package("mctc-lib" REQUIRED)
+   endif()
    add_compile_definitions(WITH_MCTCLIB)
 endif()
 
@@ -326,4 +325,3 @@ install(
   "COPYING.LESSER"
   DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/${PROJECT_NAME}"
 )
-
