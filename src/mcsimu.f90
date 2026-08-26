@@ -346,25 +346,27 @@ contains
       do j = 1, npairs
          call rdshort_real(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/earrho_"//trim(env%geolevel), earrho)
 
-         call rdshort_int(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/nmode", nmode)
+         if (.not. env%nots) then
+            call rdshort_int(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/nmode", nmode)
 
-          ! if only one imaginary mode is found, we can use hess instead of bhess
-         if (nmode .eq. 1 .and. (env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" .or. env%geolevel == "gfn2_tblite")) then
-            inquire (file=trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2/ts.xyz", exist=ex)
-            if (ex) then 
-               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2")
-               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
-               call chdir(trim(thisdir))  
+             ! if only one imaginary mode is found, we can use hess instead of bhess
+            if (nmode .eq. 1 .and. (env%geolevel == "gfn2" .or. env%geolevel == "gfn2spinpol" .or. env%geolevel == "gfn2_tblite")) then
+               inquire (file=trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2/ts.xyz", exist=ex)
+               if (ex) then
+                  call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess2")
+                  call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
+                  call chdir(trim(thisdir))
+               else
+                  call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess")
+                  call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
+                  call chdir(trim(thisdir))
+               end if
             else
-               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/hess")
-               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .false.)
-               call chdir(trim(thisdir)) 
+               call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
+               call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
+               call chdir(trim(thisdir))
             end if
-         else
-            call chdir(trim(env%path)//"/"//trim(fragdirs(j, 1))//"/ts/bhess")
-            call xtbthermo(env, nincr, nvib, maxiee, ts_rrhos, .true.) ! for bhess we have to use constant ithr
-            call chdir(trim(thisdir))
-         end if 
+         end if
 
          ! for DFT spectra
          !if (env%bhess) then
@@ -391,7 +393,13 @@ contains
          ! we have to subtract the ZPVE from the barrier
          barriers(j) = barriers(j) - earrho
          ! now add thermal corrections
-         dgeas = barriers(j) + (ts_rrhos - start_rrhos)*autoev !
+         if (env%nots) then
+            ! no TS search ran, so ts_rrhos was never computed -- use the
+            ! raw (reaction-energy-based) barrier without a TS correction
+            dgeas = barriers(j)
+         else
+            dgeas = barriers(j) + (ts_rrhos - start_rrhos)*autoev !
+         end if
 
          if (index(fragdirs(j, 3), 'p') .ne. 0) then
             call chdir(trim(env%path)//"/"//trim(fragdirs(j, 2)))
